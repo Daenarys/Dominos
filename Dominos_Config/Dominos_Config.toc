@@ -1,4 +1,4 @@
-## Interface: 100200
+## Interface: 110002
 ## IconTexture: Interface/AddOns/Dominos/icons/Dominos
 ## Title: Dominos Config
 ## Notes: GUI based configuration for Dominos
