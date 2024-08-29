@@ -1139,14 +1139,14 @@ if not (C_AddOns.IsAddOnLoaded("ClassicFrames")) then
     hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
         self:SetParent(MinimapBackdrop)
         self:SetFrameLevel(6)
-        self:SetScale(0.85)
         self:ClearAllPoints()
-        self:SetPoint("TOPLEFT", MinimapBackdrop,"TOPLEFT", 45, -217)
+        self:SetPoint("TOPLEFT", MinimapBackdrop, "TOPLEFT", -8, -175)
+        self:SetScale(0.75)
     end)
 
     hooksecurefunc(QueueStatusFrame, "UpdatePosition", function(self)
-        self:ClearAllPoints();
-        self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT", -1, 1);
+        self:ClearAllPoints()
+        self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT")
     end)
 end
 
