@@ -10,10 +10,11 @@ local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 -- not the best looking, but I also don't need to keep it after I do the check
 if not ({
     DRUID = true,
+    EVOKER = true,
     PALADIN = true,
     PRIEST = true,
     ROGUE = true,
-    WARRIOR = true
+    WARRIOR = true,
 })[UnitClassBase('player')] then
     return
 end
@@ -43,22 +44,31 @@ local function skinStanceButton(self)
     self.CheckedTexture:SetPoint("TOPLEFT", self.icon, "TOPLEFT")
     self.CheckedTexture:SetPoint("BOTTOMRIGHT", self.icon, "BOTTOMRIGHT")
     self.CheckedTexture:SetBlendMode("ADD")
+    if self.IconMask then
+        self.IconMask:Hide()
+    end
 end
 
 for id = 1, 10 do
     local button = getStanceButton(id)
 
+    -- set the buttontype
     button.buttonType = 'SHAPESHIFTBUTTON'
+    button:SetAttribute("commandName", "SHAPESHIFTBUTTON" .. id)
 
-    -- add quick binding support
-    Addon.BindableButton:AddQuickBindingSupport(button, ('SHAPESHIFTBUTTON%s'):format(id))
+    -- apply hooks for quick binding
+    Addon.BindableButton:AddQuickBindingSupport(button)
 
-    skinStanceButton(button)
-
-    -- disable to prevent art updates
+    -- disable new texture loading
     if button.UpdateButtonArt then
         button.UpdateButtonArt = function() end
     end
+
+    -- apply pre 10.x button skin
+    skinStanceButton(button)
+
+    -- enable cooldown bling
+    button.cooldown:SetDrawBling(true)
 end
 
 --------------------------------------------------------------------------------

@@ -32,10 +32,9 @@ local function skinPetButton(self)
     self.Flash:SetTexture([[Interface\Buttons\UI-QuickslotRed]])
     self.Flash:ClearAllPoints()
     self.Flash:SetAllPoints()
-    self.AutoCastable:SetTexture("Interface\\Buttons\\UI-AutoCastableOverlay")
-    self.AutoCastable:SetSize(58, 58)
-    self.AutoCastable:ClearAllPoints()
-    self.AutoCastable:SetPoint("CENTER", 0, 0)
+    if self.IconMask then
+        self.IconMask:Hide()
+    end
 
     --simulate old floatingbg
     hooksecurefunc(PetActionBar, 'Update', function()
@@ -60,16 +59,23 @@ end
 for id = 1, NUM_PET_ACTION_SLOTS do
     local button = getPetButton(id)
 
+    -- set the buttontype
     button.buttonType = 'BONUSACTIONBUTTON'
+    button:SetAttribute("commandName", "BONUSACTIONBUTTON" .. id)
 
-    Addon.BindableButton:AddQuickBindingSupport(button, ('BONUSACTIONBUTTON%d'):format(id))
+    -- apply hooks for quick binding
+    Addon.BindableButton:AddQuickBindingSupport(button)
 
-    skinPetButton(button)
-
-    -- disable to prevent art updates
+    -- disable new texture loading
     if button.UpdateButtonArt then
         button.UpdateButtonArt = function() end
     end
+
+    -- apply pre 10.x button skin
+    skinPetButton(button)
+
+    -- enable cooldown bling
+    button.cooldown:SetDrawBling(true)
 end
 
 --------------------------------------------------------------------------------

@@ -5,111 +5,31 @@
 local AddonName, Addon = ...
 local ActionButtonMixin = {}
 
-function ActionButtonMixin:SetActionOffsetInsecure(offset)
-    if InCombatLockdown() then
+local function GetActionButtonCommand(id)
+    -- 0
+    if id <= 0 then
         return
-    end
-
-    local oldActionId = self:GetAttribute('action')
-    local newActionId = self:GetAttribute('index') + (offset or 0)
-
-    if oldActionId ~= newActionId then
-        self:SetAttribute('action', newActionId)
-        self:UpdateState()
-    end
-end
-
--- configuration commands
-function ActionButtonMixin:SetFlyoutDirection(direction)
-    if InCombatLockdown() then
-        return
-    end
-
-    self:SetAttribute("flyoutDirection", direction)
-    self:UpdateFlyout()
-end
-
-function ActionButtonMixin:SetShowCountText(show)
-    if show then
-        self.Count:Show()
-    else
-        self.Count:Hide()
-    end
-end
-
-function ActionButtonMixin:SetShowMacroText(show)
-    if show then
-        self.Name:Show()
-    else
-        self.Name:Hide()
-    end
-end
-
-function ActionButtonMixin:SetShowEquippedItemBorders(show)
-    if show then
-        self.Border:SetParent(self)
-    else
-        self.Border:SetParent(Addon.ShadowUIParent)
-    end
-end
-
--- we hide cooldowns when action buttons are transparent
--- so that the sparks don't appear
-function ActionButtonMixin:SetShowCooldowns(show)
-    if show then
-        if self.cooldown:GetParent() ~= self then
-            self.cooldown:SetParent(self)
-            ActionButton_UpdateCooldown(self)
-        end
-    else
-        self.cooldown:SetParent(Addon.ShadowUIParent)
-    end
-end
-
--- exports
-Addon.ActionButtonMixin = ActionButtonMixin
-
---------------------------------------------------------------------------------
--- ActionButtons - A pool of action buttons
---------------------------------------------------------------------------------
-local ACTION_BUTTON_COUNT = 120
-
-local function createActionButton(id)
-    local name = ('%sActionButton%d'):format(AddonName, id)
-    local button = CreateFrame('CheckButton', name, nil, 'ActionBarButtonTemplate')
-
-    Addon.BindableButton:AddCastOnKeyPressSupport(button)
-
-    return button
-end
-
-local function acquireActionButton(id)
-    if id <= 12 then
-        return _G[('ActionButton%d'):format(id)]
+    -- 1
+    elseif id <= 12 then
+        return "ACTIONBUTTON" .. id
+    -- 2
     elseif id <= 24 then
-        return _G[('MultiBar5Button%d'):format(id - 12)]
+        return
+    -- 3
     elseif id <= 36 then
-        return _G[('MultiBarRightButton%d'):format(id - 24)]
+        return "MULTIACTIONBAR3BUTTON" .. (id - 24)
+    -- 4
     elseif id <= 48 then
-        return _G[('MultiBarLeftButton%d'):format(id - 36)]
+        return "MULTIACTIONBAR4BUTTON" .. (id - 36)
+    -- 5
     elseif id <= 60 then
-        return _G[('MultiBarBottomRightButton%d'):format(id - 48)]
+        return "MULTIACTIONBAR2BUTTON" .. (id - 48)
+    -- 6
     elseif id <= 72 then
-        return _G[('MultiBarBottomLeftButton%d'):format(id - 60)]
-    elseif id <= 84 then
-        return _G[('MultiBar6Button%d'):format(id - 72)]
-    elseif id <= 96 then
-        return _G[('MultiBar7Button%d'):format(id - 84)]
-    else
-        return createActionButton(id - 96)
-    end
-end
-
-local function getBindingAction(button)
-    local id = button:GetID()
-
-    if id > 0 then
-        return (button.buttonType or 'ACTIONBUTTON') .. id
+        return "MULTIACTIONBAR1BUTTON" .. (id - 60)
+    -- 7-10
+    elseif id <= 120 then
+        return
     end
 end
 
@@ -121,9 +41,11 @@ local function skinActionButton(self)
     self.NormalTexture:SetPoint("BOTTOMRIGHT", 15, -15)
     self.NormalTexture:SetVertexColor(1, 1, 1, 0.5)
     self.PushedTexture:SetTexture([[Interface\Buttons\UI-Quickslot-Depress]])
-    self.PushedTexture:SetSize(36, 36)
+    self.PushedTexture:ClearAllPoints()
+    self.PushedTexture:SetAllPoints()
     self.HighlightTexture:SetTexture([[Interface\Buttons\ButtonHilight-Square]])
-    self.HighlightTexture:SetSize(36, 36)
+    self.HighlightTexture:ClearAllPoints()
+    self.HighlightTexture:SetAllPoints()
     self.HighlightTexture:SetBlendMode("ADD")
     self.CheckedTexture:SetTexture([[Interface\Buttons\CheckButtonHilight]])
     self.CheckedTexture:ClearAllPoints()
@@ -139,15 +61,11 @@ local function skinActionButton(self)
     self.SpellHighlightTexture:ClearAllPoints()
     self.SpellHighlightTexture:SetPoint("CENTER")
     self.SpellHighlightTexture:SetBlendMode("ADD")
-    self.QuickKeybindHighlightTexture:SetAtlas("bags-newitem")
-    self.QuickKeybindHighlightTexture:ClearAllPoints()
-    self.QuickKeybindHighlightTexture:SetPoint("TOPLEFT", -2, 2)
-    self.QuickKeybindHighlightTexture:SetPoint("BOTTOMRIGHT", 2, -2)
-    self.QuickKeybindHighlightTexture:SetBlendMode("ADD")
-    self.QuickKeybindHighlightTexture:SetAlpha(0.5)
+    self.Border:SetTexture([[Interface\Buttons\UI-ActionButton-Border]])
+    self.Border:SetSize(62, 62)
     self.Border:ClearAllPoints()
-    self.Border:SetPoint("TOPLEFT", -3, 3)
-    self.Border:SetPoint("BOTTOMRIGHT", 3, -3)
+    self.Border:SetPoint("CENTER")
+    self.Border:SetBlendMode("ADD")
     self.cooldown:ClearAllPoints()
     self.cooldown:SetAllPoints()
     self.Flash:SetTexture([[Interface\Buttons\UI-QuickslotRed]])
@@ -155,65 +73,244 @@ local function skinActionButton(self)
     self.Flash:SetAllPoints()
     self.Count:ClearAllPoints()
     self.Count:SetPoint("BOTTOMRIGHT", -2, 2)
-
-    if (self.RightDivider:IsShown()) then
-        self.RightDivider:Hide()
+    self.Count:SetDrawLayer("ARTWORK", 2)
+    self.FlyoutBorderShadow:SetSize(48, 48)
+    if self.IconMask then
+        self.IconMask:Hide()
     end
-    if (self.BottomDivider:IsShown()) then
-        self.BottomDivider:Hide()
-    end
-    if (self.SlotArt:IsShown()) then
-        self.SlotArt:Hide()
-    end
-    if (self.SlotBackground:IsShown()) then
+    if self.SlotBackground then
         self.SlotBackground:Hide()
     end
-
-    if not self.FlyoutContainer then
-        self.FlyoutContainer = CreateFrame("Frame", nil, self)
-        self.FlyoutContainer:SetAllPoints()
-        self.FlyoutContainer:Hide()
-    end
-
-    if not self.FlyoutArrow then
-        self.FlyoutArrow = self.FlyoutContainer:CreateTexture()
-        self.FlyoutArrow:SetSize(23, 11)
-        self.FlyoutArrow:SetDrawLayer("ARTWORK", 2)
-        self.FlyoutArrow:SetTexture("Interface\\Buttons\\ActionBarFlyoutButton")
-        self.FlyoutArrow:SetTexCoord(0.62500000, 0.98437500, 0.74218750, 0.82812500)
-        self.FlyoutArrow:Hide()
-    end
-
-    hooksecurefunc(self, "UpdateFlyout", function()
-        if not self.FlyoutArrowContainer then return end
-
-        local actionType = GetActionInfo(self.action);
-        if (actionType == "flyout") then
-            self.FlyoutContainer:Show()
-            self.FlyoutArrow:Show()
-            self.FlyoutArrow:ClearAllPoints()
-            local direction = self:GetAttribute("flyoutDirection")
-            if (direction == "LEFT") then
-                self.FlyoutArrow:SetPoint("LEFT", self, "LEFT", -5, 0)
-                SetClampedTextureRotation(self.FlyoutArrow, 270)
-            elseif (direction == "RIGHT") then
-                self.FlyoutArrow:SetPoint("RIGHT", self, "RIGHT", -5, 0)
-                SetClampedTextureRotation(self.FlyoutArrow, 90)
-            elseif (direction == "DOWN") then
-                self.FlyoutArrow:SetPoint("BOTTOM", self, "BOTTOM", 0, 5)
-                SetClampedTextureRotation(self.FlyoutArrow, 180)
-            else
-                self.FlyoutArrow:SetPoint("TOP", self, "TOP", 0, 5)
-            end
-        else
-            self.FlyoutContainer:Hide()
-            self.FlyoutArrow:Hide()
-        end
-        self.FlyoutArrowContainer:Hide()
-        self.FlyoutBorderShadow:Hide()
-    end)
 end
 
+function ActionButtonMixin:OnCreate(id)
+    -- initialize secure state
+    self:SetAttributeNoHandler("action", 0)
+    self:SetAttributeNoHandler("commandName", GetActionButtonCommand(id) or self:GetName())
+    self:SetAttributeNoHandler("showgrid", 0)
+    self:SetAttributeNoHandler("useparent-checkfocuscast", true)
+    self:SetAttributeNoHandler("useparent-checkmouseovercast", true)
+    self:SetAttributeNoHandler("useparent-checkselfcast", true)
+
+    -- register for clicks on all buttons, and enable mousewheel bindings
+    self:EnableMouseWheel()
+    self:RegisterForClicks("AnyUp", "AnyDown")
+
+    -- secure handlers
+    self:SetAttributeNoHandler('_childupdate-offset', [[
+        local offset = message or 0
+        local id = self:GetAttribute('index') + offset
+
+        if self:GetAttribute('action') ~= id then
+            self:SetAttribute('action', id)
+            self:RunAttribute("UpdateShown")
+        end
+    ]])
+
+    self:SetAttributeNoHandler("UpdateShown", [[
+        local show = (HasAction(self:GetAttribute("action")))
+            and not self:GetAttribute("statehidden")
+
+        if show then
+            self:SetAlpha(1)
+        else
+            self:SetAlpha(0)
+        end
+    ]])
+
+    -- apply hooks for quick binding
+    Addon.BindableButton:AddQuickBindingSupport(self)
+
+    -- apply custom flyout
+    Addon.SpellFlyout:Register(self)
+
+    -- use pre 10.x button size
+    self:SetSize(36, 36)
+
+    -- apply button skin
+    skinActionButton(self)
+
+    -- enable cooldown bling
+    self.cooldown:SetDrawBling(true)
+end
+
+function ActionButtonMixin:UpdateOverrideBindings()
+    if InCombatLockdown() then return end
+
+    self.bind:SetOverrideBindings(GetBindingKey(self:GetAttribute("commandName")))
+end
+
+--------------------------------------------------------------------------------
+-- Configuration
+--------------------------------------------------------------------------------
+
+function ActionButtonMixin:SetFlyoutDirection(direction)
+    if InCombatLockdown() then return end
+
+    self:SetAttribute("flyoutDirection", direction)
+    self:UpdateFlyout()
+end
+
+function ActionButtonMixin:SetShowBindingText(show)
+    self.HotKey:SetAlpha(show and 1 or 0)
+end
+
+function ActionButtonMixin:SetShowMacroText(show)
+    self.Name:SetShown(show and true)
+end
+
+-- exports
+Addon.ActionButtonMixin = ActionButtonMixin
+
+--------------------------------------------------------------------------------
+-- Action Button 
+-- A pool of action buttons
+--------------------------------------------------------------------------------
+local ActionButton = CreateFrame('Frame', nil, nil, 'SecureHandlerAttributeTemplate')
+
+-- constants
+local ACTION_BUTTON_NAME_TEMPLATE = AddonName .. "ActionButton%d"
+
+ActionButton.buttons = {}
+
+ActionButton:Execute([[
+    ActionButton = table.new()
+]])
+
+--------------------------------------------------------------------------------
+-- Action Button Construction
+--------------------------------------------------------------------------------
+
+local function GetActionButtonName(id)
+    if id <= 0 then
+        return
+    else
+        return ACTION_BUTTON_NAME_TEMPLATE:format(id)
+    end
+end
+
+local function SafeMixin(button, trait)
+    for k, v in pairs(trait) do
+        if rawget(button, k) ~= nil then
+            error(("%s[%q] has alrady been set"):format(button:GetName(), k), 2)
+        end
+
+        button[k] = v
+    end
+end
+
+function ActionButton:GetOrCreateActionButton(id, parent)
+    local name = GetActionButtonName(id)
+    if name == nil then
+        error(("Invalid Action ID %q"):format(id))
+    end
+
+    local button = _G[name]
+    local created = false
+
+    -- button not found, create a new one
+    if button == nil then
+        button = CreateFrame("CheckButton", name, parent, "ActionBarButtonTemplate")
+
+        -- add custom methods
+        SafeMixin(button, Addon.ActionButtonMixin)
+
+        -- initialize the button
+        button:OnCreate(id)
+        created = true
+    -- button found, but not yet registered, reuse
+    elseif self.buttons[button] == nil then
+        -- add custom methods
+        SafeMixin(button, Addon.ActionButtonMixin)
+
+        -- reset the id of a button to zero to avoid triggering the paging
+        -- logic of the standard UI
+        button:SetParent(parent)
+        button:SetID(0)
+
+        -- initialize the button
+        button:OnCreate(id)
+        created = true
+    end
+
+    if created then
+        -- add secure handlers
+        self:AddCastOnKeyPressSupport(button)
+
+        -- register the button with the controller
+        self:SetFrameRef("add", button)
+
+        self:Execute([[
+            local b = self:GetFrameRef("add")
+            ActionButton[b] = b:GetAttribute("action") or 0
+        ]])
+
+        self.buttons[button] = 0
+    end
+
+    return button
+end
+
+-- update the pushed state of our parent button when pressing and releasing
+-- the button's hotkey
+local function bindButton_PreClick(self, _, down)
+    local owner = self:GetParent()
+
+    if down then
+        if owner:GetButtonState() == "NORMAL" then
+            owner:SetButtonState("PUSHED")
+        end
+    else
+        if owner:GetButtonState() == "PUSHED" then
+            owner:SetButtonState("NORMAL")
+        end
+    end
+end
+
+local function bindButton_SetOverrideBindings(self, ...)
+    ClearOverrideBindings(self)
+
+    local name = self:GetName()
+    for i = 1, select("#", ...) do
+        SetOverrideBindingClick(self, false, select(i, ...), name, "HOTKEY")
+    end
+end
+
+function ActionButton:AddCastOnKeyPressSupport(button)
+    local bind = CreateFrame("Button", "$parentHotkey", button, "SecureActionButtonTemplate")
+
+    bind:SetAttributeNoHandler("type", "action")
+    bind:SetAttributeNoHandler("typerelease", "actionrelease")
+    bind:SetAttributeNoHandler("useparent-action", true)
+    bind:SetAttributeNoHandler("useparent-checkfocuscast", true)
+    bind:SetAttributeNoHandler("useparent-checkmouseovercast", true)
+    bind:SetAttributeNoHandler("useparent-checkselfcast", true)
+    bind:SetAttributeNoHandler("useparent-flyoutDirection", true)
+    bind:SetAttributeNoHandler("useparent-pressAndHoldAction", true)
+    bind:SetAttributeNoHandler("useparent-unit", true)
+    SecureHandlerSetFrameRef(bind, "owner", button)
+
+    bind:EnableMouseWheel()
+    bind:RegisterForClicks("AnyUp", "AnyDown")
+
+    bind:SetScript("PreClick", bindButton_PreClick)
+
+    bind.SetOverrideBindings = bindButton_SetOverrideBindings
+
+    Addon.SpellFlyout:Register(bind)
+
+    -- translate HOTKEY button "clicks" into LeftButton
+    self:WrapScript(bind, "OnClick", [[
+        if button == "HOTKEY" then
+            return "LeftButton"
+        end
+    ]])
+
+    button.bind = bind
+    button:UpdateOverrideBindings()
+end
+
+-- restore old animations
 if (ActionBarActionEventsFrame) then
     ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
@@ -424,108 +521,14 @@ hooksecurefunc("ActionButton_HideOverlayGlow", function(button)
 end)
 
 hooksecurefunc("StartChargeCooldown", function(parent)
-    parent.chargeCooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
     parent.chargeCooldown:SetAllPoints(parent)
 end)
 
--- handle notifications from our parent bar about whate the action button
--- ID offset should be
-local actionButton_OnUpdateOffset = [[
-    local offset = message or 0
-    local id = self:GetAttribute('index') + offset
-
-    if self:GetAttribute('action') ~= id then
-        self:SetAttribute('action', id)
-        self:RunAttribute("UpdateShown")
-        self:CallMethod('UpdateState')
+hooksecurefunc("CooldownFrame_Set", function(self)
+    if not self:IsForbidden() then
+        self:SetEdgeTexture("Interface\\Cooldown\\edge")
     end
-]]
-
-local actionButton_UpdateShown = [[
-    local show = (HasAction(self:GetAttribute("action")))
-                 and not self:GetAttribute("statehidden")
-    if show then
-        self:SetAlpha(1.0)
-    else
-        self:SetAlpha(0.0)
-    end
-]]
-
--- action button creation is deferred so that we can avoid creating buttons for
--- bars set to show less than the maximum
-local ActionButtons = setmetatable({}, {
-    -- index creates & initializes buttons as we need them
-    __index = function(self, id)
-        -- validate the ID of the button we're getting is within an
-        -- our expected range
-        id = tonumber(id) or 0
-        if id < 1 or id > ACTION_BUTTON_COUNT then
-            error(('Usage: %s.ActionButtons[1-%d]'):format(AddonName, ACTION_BUTTON_COUNT), 2)
-        end
-
-        local button = acquireActionButton(id)
-        
-        -- apply our extra action button methods
-        Mixin(button, Addon.ActionButtonMixin)
-
-        -- apply hooks for quick binding
-        -- this must be done before we reset the button ID, as we use it
-        -- to figure out the binding action for the button
-        Addon.BindableButton:AddQuickBindingSupport(button, getBindingAction(button))
-
-        -- set a handler for updating the action from a parent frame
-        button:SetAttribute('_childupdate-offset', actionButton_OnUpdateOffset)
-        button:SetAttribute("UpdateShown", actionButton_UpdateShown)
-
-        -- reset the ID to zero, as that prevents the default paging code
-        -- from being used
-        button:SetID(0)
-
-        -- clear current position to avoid forbidden frame issues
-        button:ClearAllPoints()
-
-        -- reset the showgrid setting to default
-        button:SetAttribute('showgrid', 1)
-
-        -- enable mousewheel clicks
-        button:EnableMouseWheel(true)
-
-        -- use the pre 10.x button size
-        button:SetSize(36, 36)
-
-        -- apply the pre 10.x button skin
-        skinActionButton(button)
-
-        -- restore the cooldown bling
-        if button.cooldown then
-            button.cooldown:SetDrawBling(true)
-        end
-
-        -- disable to prevent art updates
-        if button.UpdateButtonArt then
-            button.UpdateButtonArt = function() end
-        end
-
-        -- implement custom flyout handling
-        Addon.SpellFlyout:WrapScript(button, "OnClick", [[
-            if not down then
-                local actionType, actionID = GetActionInfo(self:GetAttribute("action"))
-                if actionType == "flyout" then
-                    control:SetAttribute("caller", self)
-                    control:RunAttribute("Toggle", actionID)
-                    return false
-                end
-            end
-        ]])
-
-        rawset(self, id, button)
-        return button
-    end,
-    -- newindex is set to block writes to prevent errors
-    __newindex = function()
-        error(('%s.ActionButtons does not support writes'):format(AddonName), 2)
-    end
-})
+end)
 
 -- exports
-Addon.ActionButtons = ActionButtons
+Addon.ActionButton = ActionButton

@@ -63,6 +63,10 @@ ActionBar:Extend('OnLoadSettings', function(self)
 end)
 
 ActionBar:Extend('OnAcquire', function(self)
+    self:SetAttribute("checkselfcast", true)
+    self:SetAttribute("checkfocuscast", true)
+    self:SetAttribute("checkmouseovercast", true)
+
     self:LoadStateController()
     self:UpdateStateDriver()
     self:SetUnit(self:GetUnit())
@@ -99,28 +103,26 @@ end
 
 function ActionBar:AcquireButton(index)
     local id = index + (self.id - 1) * self:MaxLength()
-    local button = Addon.ActionButtons[id]
+    local button = Addon.ActionButton:GetOrCreateActionButton(id, self)
 
-    button:SetAttribute('index', index)
-    button:SetAttribute('statehidden', nil)
+    button:SetAttributeNoHandler('index', index)
 
     return button
 end
 
 function ActionBar:ReleaseButton(button)
-    button:SetAttribute('statehidden', true)
-    button:Hide()
+    button:SetAlpha(0)
 end
 
 function ActionBar:OnAttachButton(button)
-    button:SetActionOffsetInsecure(self:GetAttribute('actionOffset') or 0)
+    button:SetAttribute("action", button:GetAttribute("index") + (self:GetAttribute("actionOffset") or 0))
 
     button:SetFlyoutDirection(self:GetFlyoutDirection())
-    button:SetShowCountText(Addon:ShowCounts())
     button:SetShowMacroText(Addon:ShowMacroText())
-    button:SetShowEquippedItemBorders(Addon:ShowEquippedItemBorders())
-    button:SetShowCooldowns(self:GetAlpha() > 0)
-    button:UpdateHotkeys()
+
+    if button:HasAction() then
+        button:SetAlpha(1)
+    end
 
     Addon:GetModule('Tooltips'):Register(button)
 end

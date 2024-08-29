@@ -129,7 +129,7 @@ local DragFrameLabelFont = CreateFont(AddonName .. 'DragFrameFont')
 
 DragFrameLabelFont:CopyFontObject('GameFontNormal')
 DragFrameLabelFont:SetJustifyH('CENTER')
-DragFrameLabelFont:SetJustifyV('CENTER')
+DragFrameLabelFont:SetJustifyV('MIDDLE')
 
 local DragFrameLabelHighlightFont = CreateFont(AddonName .. 'DragFrameHighlightFont')
 
@@ -139,7 +139,7 @@ DragFrameLabelHighlightFont:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGBA())
 local DragFrameTextFont = CreateFont(AddonName .. 'DragFrameContentFont')
 DragFrameTextFont:CopyFontObject('GameFontNormal')
 DragFrameTextFont:SetJustifyH('CENTER')
-DragFrameTextFont:SetJustifyV('CENTER')
+DragFrameTextFont:SetJustifyV('MIDDLE')
 
 --------------------------------------------------------------------------------
 -- Events

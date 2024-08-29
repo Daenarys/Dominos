@@ -4,7 +4,7 @@ local Addon = LibStub('AceAddon-3.0'):NewAddon(AddonTable, AddonName, 'AceEvent-
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 local KeyBound = LibStub('LibKeyBound-1.0')
 
-local ADDON_VERSION = GetAddOnMetadata(AddonName, 'Version')
+local ADDON_VERSION = C_AddOns.GetAddOnMetadata(AddonName, 'Version')
 local CONFIG_ADDON_NAME = AddonName .. '_Config'
 
 -- setup custom callbacks
@@ -339,7 +339,7 @@ function Addon:ShowOptionsFrame()
         return
     end
 
-    if self:IsConfigAddonEnabled() and LoadAddOn(CONFIG_ADDON_NAME) then
+    if self:IsConfigAddonEnabled() and C_AddOns.LoadAddOn(CONFIG_ADDON_NAME) then
         local dialog = LibStub('AceConfigDialog-3.0')
 
         dialog:Open(AddonName)
@@ -356,15 +356,15 @@ function Addon:NewMenu()
         return
     end
 
-    if not IsAddOnLoaded(CONFIG_ADDON_NAME) then
-        LoadAddOn(CONFIG_ADDON_NAME)
+    if not C_AddOns.IsAddOnLoaded(CONFIG_ADDON_NAME) then
+        C_AddOns.LoadAddOn(CONFIG_ADDON_NAME)
     end
 
     return self.Options.Menu:New()
 end
 
 function Addon:IsConfigAddonEnabled()
-    if GetAddOnEnableState(UnitName('player'), CONFIG_ADDON_NAME) >= 1 then
+    if C_AddOns.GetAddOnEnableState(CONFIG_ADDON_NAME, UnitName('player')) >= 1 then
         return true
     end
 end
@@ -402,8 +402,8 @@ function Addon:SetLock(locked)
     elseif (not locked) and self:Locked() then
         self.locked = false
         
-        if not IsAddOnLoaded(CONFIG_ADDON_NAME) then
-            LoadAddOn(CONFIG_ADDON_NAME)
+        if not C_AddOns.IsAddOnLoaded(CONFIG_ADDON_NAME) then
+            C_AddOns.LoadAddOn(CONFIG_ADDON_NAME)
         end
 
         self.callbacks:Fire('CONFIG_MODE_ENABLED')
@@ -749,85 +749,91 @@ end
 --------------------------------------------------------------------------------
 
 function Addon:HideBlizzard()
-    local function purgeKey(t, k)
-        t[k] = nil
-        local c = 42
-        repeat
-            if t[c] == nil then
-                t[c] = nil
-            end
-            c = c + 1
-        until issecurevariable(t, k)
-    end
+    local HiddenFrame = CreateFrame("Frame", nil, UIParent)
+    HiddenFrame:SetAllPoints(UIParent)
+    HiddenFrame:Hide()
 
-    local function hideActionBarFrame(frame, clearEvents)
-        if frame then
-            if clearEvents then
-                frame:UnregisterAllEvents()
-            end
+    local function apply(func, ...)
+        for i = 1, select('#', ...) do
+            local name = (select(i, ...))
+            local frame = _G[name]
 
-            if frame.system then
-                purgeKey(frame, "isShownExternal")
-            end
-
-            if frame.HideBase then
-                frame:HideBase()
+            if frame then
+                func(frame)
             else
-                frame:Hide()
+                self:Printf('Could not find frame %q', name)
             end
-            frame:SetParent(Addon.ShadowUIParent)
         end
     end
 
-    local function hideActionButton(button)
-        if not button then return end
-
-        button:Hide()
-        button:UnregisterAllEvents()
-        button:SetAttribute("statehidden", true)
+    local function banish(frame)
+        (frame.HideBase or frame.Hide)(frame)
+        frame:SetParent(HiddenFrame)
     end
 
-    hideActionBarFrame(MainMenuBar, false)
-    hideActionBarFrame(MultiBarBottomLeft, true)
-    hideActionBarFrame(MultiBarBottomRight, true)
-    hideActionBarFrame(MultiBarLeft, true)
-    hideActionBarFrame(MultiBarRight, true)
-    hideActionBarFrame(MultiBar5, true)
-    hideActionBarFrame(MultiBar6, true)
-    hideActionBarFrame(MultiBar7, true)
-
-    -- Hide MultiBar Buttons, but keep the bars alive
-    for i=1,12 do
-        hideActionButton(_G["ActionButton" .. i])
-        hideActionButton(_G["MultiBarBottomLeftButton" .. i])
-        hideActionButton(_G["MultiBarBottomRightButton" .. i])
-        hideActionButton(_G["MultiBarRightButton" .. i])
-        hideActionButton(_G["MultiBarLeftButton" .. i])
-        hideActionButton(_G["MultiBar5Button" .. i])
-        hideActionButton(_G["MultiBar6Button" .. i])
-        hideActionButton(_G["MultiBar7Button" .. i])
+    local function unregisterEvents(frame)
+        frame:UnregisterAllEvents()
     end
 
-    hideActionBarFrame(MicroButtonAndBagsBar, false)
-    hideActionBarFrame(StanceBar, true)
-    hideActionBarFrame(PossessActionBar, true)
-    hideActionBarFrame(MultiCastActionBarFrame, false)
-    hideActionBarFrame(PetActionBar, false)
-    hideActionBarFrame(StatusTrackingBarManager, false)
-    hideActionBarFrame(MainMenuBarVehicleLeaveButton, true)
-    hideActionBarFrame(BagsBar, true)
-    hideActionBarFrame(MicroMenu, true)
-    hideActionBarFrame(MicroMenuContainer, true)
+    local function disableActionButtons(bar)
+        local buttons = bar.actionButtons
+        if type(buttons) ~= "table" then
+            return
+        end
 
-    -- these events drive visibility, we want the MainMenuBar to remain invisible
-    MainMenuBar:UnregisterEvent("PLAYER_REGEN_ENABLED")
-    MainMenuBar:UnregisterEvent("PLAYER_REGEN_DISABLED")
-    MainMenuBar:UnregisterEvent("ACTIONBAR_SHOWGRID")
-    MainMenuBar:UnregisterEvent("ACTIONBAR_HIDEGRID")
+        for _, button in pairs(buttons) do
+            button:UnregisterAllEvents()
+            button:SetAttributeNoHandler("statehidden", true)
+            button:Hide()
+        end
+    end
 
-    -- these functions drive visibility so disable them
-    MultiActionBar_ShowAllGrids = function() end
-    MultiActionBar_HideAllGrids = function() end
+    apply(banish,
+        "MainMenuBar",
+        "MultiBarBottomLeft",
+        "MultiBarBottomRight",
+        "MultiBarLeft",
+        "MultiBarRight",
+        "MultiBar5",
+        "MultiBar6",
+        "MultiBar7",
+        "StanceBar",
+        "PossessActionBar",
+        "PetActionBar",
+        "StatusTrackingBarManager",
+        "MainMenuBarVehicleLeaveButton",
+        "MicroButtonAndBagsBar",
+        "BagsBar",
+        "MicroMenu",
+        "MicroMenuContainer"
+    )
+
+    apply(unregisterEvents,
+        "MultiBarBottomLeft",
+        "MultiBarBottomRight",
+        "MultiBarLeft",
+        "MultiBarRight",
+        "MultiBar5",
+        "MultiBar6",
+        "MultiBar7",
+        "StanceBar",
+        "PossessActionBar",
+        "MainMenuBarVehicleLeaveButton",
+        "BagsBar",
+        "MicroMenu",
+        "MicroMenuContainer"
+    )
+
+    apply(disableActionButtons,
+        "MainMenuBar",
+        "MultiBar5",
+        "MultiBar6",
+        "MultiBar7",
+        "MultiBarBottomLeft",
+        "MultiBarBottomRight",
+        "MultiBarLeft",
+        "MultiBarRight"
+    )
 end
 
 --------------------------------------------------------------------------------
@@ -1129,59 +1135,18 @@ end
 -- Extra's
 --------------------------------------------------------------------------------
 
-if not (IsAddOnLoaded("ClassicFrames")) then
-    -- load and position the lfg eye
-    if (IsAddOnLoaded("SexyMap")) then
-        hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
-            self:SetParent(Minimap)
-            self:SetFrameLevel(6)
-            self:SetScale(0.6)
-            self:ClearAllPoints()
-            self:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 23, -208)
-        end)
-    else
-        hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
-            self:SetParent(MinimapBackdrop)
-            self:SetFrameLevel(6)
-            self:SetScale(0.85)
-            self:ClearAllPoints()
-            self:SetPoint("TOPLEFT", MinimapBackdrop,"TOPLEFT", 45, -217)
-        end)
-    end
-
-    hooksecurefunc("QueueStatusDropDown_Show", function()
-        DropDownList1:ClearAllPoints()
-        DropDownList1:SetPoint("BOTTOMLEFT", QueueStatusButton, "BOTTOMLEFT", 0, -62)
+if not (C_AddOns.IsAddOnLoaded("ClassicFrames")) then
+    hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
+        self:SetParent(MinimapBackdrop)
+        self:SetFrameLevel(6)
+        self:SetScale(0.85)
+        self:ClearAllPoints()
+        self:SetPoint("TOPLEFT", MinimapBackdrop,"TOPLEFT", 45, -217)
     end)
 
     hooksecurefunc(QueueStatusFrame, "UpdatePosition", function(self)
         self:ClearAllPoints();
         self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT", -1, 1);
-    end)
-
-    -- rare/elite dragon portrait improvements
-    hooksecurefunc(TargetFrame, "CheckClassification", function(self)
-        local classification = UnitClassification(self.unit)
-
-        local bossPortraitFrameTexture = self.TargetFrameContainer.BossPortraitFrameTexture
-        if (classification == "rare") then
-            bossPortraitFrameTexture:SetAtlas("UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare-Silver", TextureKitConstants.UseAtlasSize)
-            bossPortraitFrameTexture:SetPoint("TOPRIGHT", -11, -8)
-            bossPortraitFrameTexture:Show()
-        elseif (classification == "elite") then
-            bossPortraitFrameTexture:SetAtlas("UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged", TextureKitConstants.UseAtlasSize)
-            bossPortraitFrameTexture:SetPoint("TOPRIGHT", 8, -7)
-        end
-        self.TargetFrameContent.TargetFrameContentContextual.BossIcon:Hide()
-    end)
-
-    -- rare dragon on nameplates
-    hooksecurefunc("CompactUnitFrame_UpdateClassificationIndicator", function(frame)
-        local classification = UnitClassification(frame.unit);
-        if ( classification == "rare" ) then
-            frame.classificationIndicator:SetAtlas("nameplates-icon-elite-silver");
-            frame.classificationIndicator:Show();
-        end
     end)
 end
 
