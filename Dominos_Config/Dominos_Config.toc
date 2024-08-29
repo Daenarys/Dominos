@@ -1,0 +1,27 @@
+## Interface: 100200
+## IconTexture: Interface/AddOns/Dominos/icons/Dominos
+## Title: Dominos Config
+## Notes: GUI based configuration for Dominos
+## Author: Tuller
+## Dependencies: Dominos
+## LoadOnDemand: 1
+embeds.xml
+localization.xml
+main.lua
+panel.lua
+scrollableContainer.lua
+button.lua
+checkButton.lua
+colorPicker.lua
+slider.lua
+textInput.lua
+dropdown.lua
+textureSelector.lua
+fontSelector.lua
+menu.lua
+panelSelector.lua
+general.lua
+profiles.lua
+ui.lua
+dragFrame.lua
+help.lua

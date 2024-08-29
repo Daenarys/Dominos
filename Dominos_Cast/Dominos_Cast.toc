@@ -1,0 +1,11 @@
+## Interface: 100200
+## IconTexture: Interface/AddOns/Dominos/icons/Dominos
+## Title: Dominos Cast
+## Notes: A movable casting bar, with timer
+## Author: Tuller
+## Dependencies: Dominos
+localization.xml
+DominosTimerBarTemplate.xml
+castBar.lua
+mirrorTimer.lua
+main.lua
