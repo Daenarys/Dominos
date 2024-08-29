@@ -157,10 +157,9 @@ function BagBarModule:RegisterButton(name)
         button.IconOverlay:SetSize(37, 37)
     end
 
-    local function UpdateTextures(self)
+    local function updateTextures(self)
         self:GetNormalTexture():SetSize(64, 64)
         self:GetNormalTexture():SetTexture("Interface\\Buttons\\UI-Quickslot2")
-        self:GetNormalTexture():SetVertexColor(1, 1, 1, 0.5)
         self:GetNormalTexture():ClearAllPoints()
         self:GetNormalTexture():SetPoint("TOPLEFT", -15, 15)
         self:GetNormalTexture():SetPoint("BOTTOMRIGHT", 15, -15)
@@ -172,25 +171,10 @@ function BagBarModule:RegisterButton(name)
         self.SlotHighlightTexture:SetBlendMode("ADD")
     end
 
-    for i = 0, 3 do
-        local bagSlot = _G["CharacterBag"..i.."Slot"]
-        hooksecurefunc(bagSlot, "SetItemButtonQuality", ItemButtonMixin.SetItemButtonQuality)
-        hooksecurefunc(bagSlot, "UpdateTextures", UpdateTextures)
-    end
+    hooksecurefunc(button, "SetItemButtonQuality", ItemButtonMixin.SetItemButtonQuality)
+    hooksecurefunc(button, "UpdateTextures", updateTextures)
 
-    UpdateTextures(CharacterBag0Slot)
-    CharacterBag0Slot:ClearAllPoints()
-    CharacterBag0Slot:SetPoint("RIGHT", MainMenuBarBackpackButton, "LEFT", -4, -4)
-    UpdateTextures(CharacterBag1Slot)
-    CharacterBag1Slot:ClearAllPoints()
-    CharacterBag1Slot:SetPoint("RIGHT", CharacterBag0Slot, "LEFT", -2, 0)
-    UpdateTextures(CharacterBag2Slot)
-    CharacterBag2Slot:ClearAllPoints()
-    CharacterBag2Slot:SetPoint("RIGHT", CharacterBag1Slot, "LEFT", -2, 0)
-    UpdateTextures(CharacterBag3Slot)
-    CharacterBag3Slot:ClearAllPoints()
-    CharacterBag3Slot:SetPoint("RIGHT", CharacterBag2Slot, "LEFT", -2, 0)
-    UpdateTextures(MainMenuBarBackpackButton)
+    updateTextures(button)
     MainMenuBarBackpackButtonIconTexture:SetAtlas("hud-backpack", false)
     MainMenuBarBackpackButtonCount:ClearAllPoints()
     MainMenuBarBackpackButtonCount:SetPoint("CENTER", 0, -10)
@@ -200,17 +184,15 @@ end
 
 local function Disable_BagButtons()
     for i, bagButton in MainMenuBarBagManager:EnumerateBagButtons() do
-        bagButton:Disable();
-        SetDesaturation(bagButton.icon, true);
-        SetDesaturation(bagButton.NormalTexture, true);
+        bagButton:Disable()
+        SetDesaturation(bagButton.icon, true)
     end
 end
 
 local function Enable_BagButtons()
     for i, bagButton in MainMenuBarBagManager:EnumerateBagButtons() do
-        bagButton:Enable();
-        SetDesaturation(bagButton.icon, false);
-        SetDesaturation(bagButton.NormalTexture, false);
+        bagButton:Enable()
+        SetDesaturation(bagButton.icon, false)
     end
 end
 
