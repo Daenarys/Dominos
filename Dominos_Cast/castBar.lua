@@ -7,11 +7,11 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Dominos-CastBar")
 local GetSpellInfo = _G.GetSpellInfo
 local GetTime = _G.GetTime
 
-local UnitCastingInfo = _G.UnitCastingInfo or _G.CastingInfo
-local UnitChannelInfo = _G.UnitChannelInfo or _G.ChannelInfo
+local UnitCastingInfo = _G.UnitCastingInfo or CastingInfo
+local UnitChannelInfo = _G.UnitChannelInfo or ChannelInfo
 
-local IsHarmfulSpell = _G.IsHarmfulSpell
-local IsHelpfulSpell = _G.IsHelpfulSpell
+local IsHarmfulSpell = C_Spell.IsSpellHarmful or IsHarmfulSpell
+local IsHelpfulSpell = C_Spell.IsSpellHelpful or IsHelpfulSpell
 
 local ICON_OVERRIDES = {
     -- replace samwise with cog
@@ -30,7 +30,7 @@ local CAST_BAR_COLORS = {
 local LATENCY_BAR_ALPHA = 0.5
 
 local function GetSpellReaction(spellID)
-    local name = GetSpellInfo(spellID)
+    local name = C_Spell.GetSpellName(spellID)
     if name then
         if IsHelpfulSpell(name) then
             return "help"
@@ -486,7 +486,7 @@ end
 
 function CastBar:SetupDemo()
     local spellID = self:GetRandomSpellID()
-    local name, rank, icon, castTime = GetSpellInfo(spellID)
+    local name, rank, icon, castTime = C_Spell.GetSpellName(spellID)
 
     -- use the spell cast time if we have it, otherwise set a default one
     -- of a few seconds

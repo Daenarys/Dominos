@@ -48,8 +48,6 @@ local function possessButton_OnCreate(self)
     self:SetScript("OnClick", possessButton_OnClick)
     self:SetScript("OnEnter", possessButton_OnEnter)
     self:SetScript("OnLeave", possessButton_OnLeave)
-
-    Addon.BindableButton:AddQuickBindingSupport(self)
 end
 
 local function getOrCreatePossessButton(id)
@@ -109,9 +107,6 @@ function PossessBar:AcquireButton()
 end
 
 function PossessBar:OnAttachButton(button)
-    button:Show()
-    button:UpdateHotkeys()
-
     Addon:GetModule('Tooltips'):Register(button)
 end
 
