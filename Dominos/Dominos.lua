@@ -847,6 +847,10 @@ function Addon:HideBlizzard()
         "MultiBarLeft",
         "MultiBarRight"
     )
+
+    --these functions drive visibility
+    MultiActionBar_ShowAllGrids = function() end
+    MultiActionBar_HideAllGrids = function() end
 end
 
 --------------------------------------------------------------------------------
