@@ -201,6 +201,22 @@ ActionButton:Execute([[
 local function GetActionButtonName(id)
     if id <= 0 then
         return
+    -- 1, 2
+    elseif id <= 24 then
+        return ACTION_BUTTON_NAME_TEMPLATE:format(id)
+    -- 3
+    elseif id <= 36 then
+        return ("MultiBarRightActionButton%d"):format(id - 24)
+    -- 4
+    elseif id <= 48 then
+        return ("MultiBarLeftActionButton%d"):format(id - 36)
+    -- 5
+    elseif id <= 60 then
+        return ("MultiBarBottomRightActionButton%d"):format(id - 48)
+    -- 6
+    elseif id <= 72 then
+        return ("MultiBarBottomLeftActionButton%d"):format(id - 60)
+    -- 7-10
     else
         return ACTION_BUTTON_NAME_TEMPLATE:format(id)
     end
