@@ -22,7 +22,6 @@ CastBar = Dominos:CreateClass('Frame', Dominos.Frame)
 
 function CastBar:New()
 	local f = self.proto.New(self, 'cast')
-	f:SetFrameStrata('HIGH')
 
 	if not f.cast then
 		f.cast = CastingBar:New(f)
