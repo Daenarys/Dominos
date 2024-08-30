@@ -40,16 +40,12 @@ function CastBar:GetDefaults()
 	}
 end
 
-function CastBar:CreateMenu()
-	local menu = Dominos:NewMenu(self.id)
+function CastBar:OnCreateMenu(menu)
 	local panel = menu:NewPanel(LibStub('AceLocale-3.0'):GetLocale('Dominos-Config').Layout)
 
 	panel:NewOpacitySlider()
 	panel:NewFadeSlider()
 	panel:NewScaleSlider()
-	panel:NewPaddingSlider()
-
-	self.menu = menu
 end
 
 function CastBar:Layout()
