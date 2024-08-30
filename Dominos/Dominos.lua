@@ -26,9 +26,14 @@ function Addon:OnInitialize()
 
     -- slash command support
     self:RegisterSlashCommands()
+
+    -- debounce UPDATE_BINDINGS call
+    self.UPDATE_BINDINGS = self:Defer(self.UPDATE_BINDINGS, 0.1, self)
 end
 
 function Addon:OnEnable()
+    self:RegisterEvent('UPDATE_BINDINGS')
+    self:RegisterEvent("GAME_PAD_ACTIVE_CHANGED", "UPDATE_BINDINGS")
     self:HideBlizzard()
     self:UpdateUseOverrideUI()
     self:CreateDataBrokerPlugin()
@@ -89,6 +94,14 @@ function Addon:OnUpgradeAddon(oldVersion, newVersion)
 end
 
 -- keybound events
+function Addon:UPDATE_BINDINGS()
+    self.Frame:ForAll('ForButtons', 'UpdateHotkeys')
+
+    if not InCombatLockdown() then
+        self.Frame:ForAll('ForButtons', 'UpdateOverrideBindings')
+    end
+end
+
 function Addon:LIBKEYBOUND_ENABLED()
     self.Frame:ForAll('KEYBOUND_ENABLED')
 end
