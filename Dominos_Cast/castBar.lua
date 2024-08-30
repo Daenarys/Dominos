@@ -36,7 +36,7 @@ function CastBar:GetDefaults()
 	return {
 		point = 'CENTER',
 		x = 0,
-		y = 30
+		y = 30,
 	}
 end
 
@@ -65,20 +65,9 @@ CastingBar = Dominos:CreateClass('StatusBar')
 
 function CastingBar:New(parent)
 	local f = self:Bind(CreateFrame('StatusBar', 'DominosCastingBar', parent, 'DominosCastingBarTemplate'))
-	f:SetPoint('CENTER', 0, 5)
+	f:SetPoint('CENTER', -1, -3)
 
 	return f
-end
-
-DominosCastingBarMixin = {}
-
-function DominosCastingBarMixin:OnLoad()
-	local showTradeSkills = true
-	local showShieldNo = false
-	CastingBarMixin.OnLoad(self, "player", showTradeSkills, showShieldNo)
-	self.Icon:Hide()
-	self.Text:ClearAllPoints()
-	self.Text:SetPoint("TOP", 0, -9)
 end
 
 --hide the old casting bar
