@@ -27,9 +27,18 @@ local function GetActionButtonCommand(id)
     -- 6
     elseif id <= 72 then
         return "MULTIACTIONBAR1BUTTON" .. (id - 60)
-    -- 7-10
-    elseif id <= 120 then
+    -- 7-11
+    elseif id <= 132 then
         return
+    -- 12
+    elseif id <= 144 then
+        return "MULTIACTIONBAR5BUTTON" .. (id - 132)
+    -- 13
+    elseif id <= 156 then
+        return "MULTIACTIONBAR6BUTTON" .. (id - 144)
+    -- 14
+    elseif id <= 168 then
+        return "MULTIACTIONBAR7BUTTON" .. (id - 156)
     end
 end
 
@@ -201,8 +210,33 @@ ActionButton:Execute([[
 local function GetActionButtonName(id)
     if id <= 0 then
         return
-    else
+    -- 1, 2
+    elseif id <= 24 then
         return ACTION_BUTTON_NAME_TEMPLATE:format(id)
+    -- 3
+    elseif id <= 36 then
+        return ("MultiBarRightActionButton%d"):format(id - 24)
+    -- 4
+    elseif id <= 48 then
+        return ("MultiBarLeftActionButton%d"):format(id - 36)
+    -- 5
+    elseif id <= 60 then
+        return ("MultiBarBottomRightActionButton%d"):format(id - 48)
+    -- 6
+    elseif id <= 72 then
+        return ("MultiBarBottomLeftActionButton%d"):format(id - 60)
+    -- 7-11
+    elseif id <= 132 then
+        return ACTION_BUTTON_NAME_TEMPLATE:format(id)
+    -- 12
+    elseif id <= 144 then
+        return ("MultiBar5ActionButton%d"):format(id - 132)
+    -- 13
+    elseif id <= 156 then
+        return ("MultiBar6ActionButton%d"):format(id - 144)
+    -- 14
+    elseif id <= 168 then
+        return ("MultiBar7ActionButton%d"):format(id - 156)
     end
 end
 
@@ -244,6 +278,10 @@ function ActionButton:GetOrCreateActionButton(id, parent)
         -- logic of the standard UI
         button:SetParent(parent)
         button:SetID(0)
+
+        -- drop the reference to the bar's original parent, which would otherwise
+        -- call thing we do not want
+        button.Bar = nil
 
         -- initialize the button
         button:OnCreate(id)
