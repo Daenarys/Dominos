@@ -592,6 +592,9 @@ function MenuBarModule:OnInitialize()
         perf:ClearAllPoints()
         perf:SetPoint('BOTTOM')
     end
+
+    -- temp fix for 10.2.6 bug
+    MicroMenu.GetEdgeButton = function() end
 end
 
 function MenuBarModule:Load()
