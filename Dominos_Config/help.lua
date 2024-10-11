@@ -10,7 +10,7 @@ local GRID_SIZE_MINIMUM = 1
 local GRID_SIZE_MAXIMUM = 128
 local GRID_SIZE_STEP = 1
 
-local HelpDialog = _G.CreateFrame('Frame', nil, nil, _G.BackdropTemplateMixin and 'BackdropTemplate')
+local HelpDialog = _G.CreateFrame('Frame', nil, nil)
 
 HelpDialog:Hide()
 
@@ -23,29 +23,19 @@ function HelpDialog:OnLoad(owner)
     self:SetFrameStrata('FULLSCREEN_DIALOG')
     self:SetMovable(true)
     self:SetSize(360, 120)
-
-    self:SetBackdrop {
-        bgFile = 'Interface\\DialogFrame\\UI-DialogBox-Background',
-        edgeFile = 'Interface\\DialogFrame\\UI-DialogBox-Border',
-        tile = true,
-        insets = {left = 11, right = 12, top = 12, bottom = 11},
-        tileSize = 32,
-        edgeSize = 32
-    }
-
     self:SetPoint('TOP', 0, -24)
     self:SetScript('OnDragStart', self.OnDragStart)
     self:SetScript('OnDragStop', self.OnDragStop)
 
-    local header = self:CreateTexture(nil, 'ARTWORK')
-    header:SetTexture('Interface\\DialogFrame\\UI-DialogBox-Header')
-    header:SetWidth(326)
-    header:SetHeight(64)
+    local border = CreateFrame('Frame', nil, self, 'DialogBorderTemplate')
+
+    local header = CreateFrame('Frame', nil, self, 'DialogHeaderTemplate')
+    header:SetWidth(170) 
     header:SetPoint('TOP', 0, 12)
 
-    local title = self:CreateFontString(nil, 'ARTWORK')
+    local title = header:CreateFontString(nil, 'ARTWORK')
     title:SetFontObject('GameFontNormal')
-    title:SetPoint('TOP', header, 'TOP', 0, -14)
+    title:SetPoint('TOP', 0, -14)
     title:SetText(L.ConfigMode)
 
     local desc = self:CreateFontString(nil, 'ARTWORK')
