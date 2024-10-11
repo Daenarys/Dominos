@@ -40,9 +40,22 @@ function Addon:OnEnable()
 
     if AddonCompartmentFrame then
         AddonCompartmentFrame:RegisterAddon {
-            text = AddonName, keepShownOnClick = true, notCheckable = true,
+            text = AddonName,
             icon = 'Interface/AddOns/Dominos/icons/Dominos.tga',
-            func = function() Addon:ShowOptionsFrame() end
+            registerForAnyClick = true,
+            keepShownOnClick = true, 
+            notCheckable = true,
+            func = function(_, menuInputData)
+                if menuInputData.buttonName == "LeftButton" then
+                    if IsShiftKeyDown() then
+                        Addon:ToggleBindingMode()
+                    else
+                        Addon:ToggleLockedFrames()
+                    end
+                else
+                     Addon:ShowOptionsFrame()
+                end
+            end,
         }
     end
 end
