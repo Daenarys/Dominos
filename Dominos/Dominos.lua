@@ -36,53 +36,15 @@ function Addon:OnEnable()
     self:RegisterEvent("GAME_PAD_ACTIVE_CHANGED", "UPDATE_BINDINGS")
     self:HideBlizzard()
     self:UpdateUseOverrideUI()
-    self:CreateDataBrokerPlugin()
     self:Load()
-end
 
-function Addon:CreateDataBrokerPlugin()
-    local dataObject = LibStub:GetLibrary('LibDataBroker-1.1'):NewDataObject(AddonName, {
-        type = 'launcher',
-        icon = [[Interface\Addons\Dominos\icons\Dominos]],
-
-        OnClick = function(_, button)
-            if button == 'LeftButton' then
-                if IsShiftKeyDown() then
-                    Addon:ToggleBindingMode()
-                else
-                    Addon:ToggleLockedFrames()
-                end
-            elseif button == 'RightButton' then
-                Addon:ShowOptionsFrame()
-            end
-        end,
-
-        OnTooltipShow = function(tooltip)
-            if not tooltip or not tooltip.AddLine then
-                return
-            end
-
-            GameTooltip_SetTitle(tooltip, AddonName)
-
-            if Addon:Locked() then
-                GameTooltip_AddInstructionLine(tooltip, L.ConfigEnterTip)
-            else
-                GameTooltip_AddInstructionLine(tooltip, L.ConfigExitTip)
-            end
-
-            if Addon:IsBindingModeEnabled() then
-                GameTooltip_AddInstructionLine(tooltip, L.BindingExitTip)
-            else
-                GameTooltip_AddInstructionLine(tooltip, L.BindingEnterTip)
-            end
-
-            if Addon:IsConfigAddonEnabled() then
-                GameTooltip_AddInstructionLine(tooltip, L.ShowOptionsTip)
-            end
-        end,
-    })
-
-    LibStub('LibDBIcon-1.0'):Register(AddonName, dataObject, self.db.profile.minimap)
+    if AddonCompartmentFrame then
+        AddonCompartmentFrame:RegisterAddon {
+            text = AddonName, keepShownOnClick = true, notCheckable = true,
+            icon = 'Interface/AddOns/Dominos/icons/Dominos.tga',
+            func = function() Addon:ShowOptionsFrame() end
+        }
+    end
 end
 
 -- configuration events
@@ -240,8 +202,6 @@ function Addon:GetDatabaseDefaults()
             showTooltips = true,
             showTooltipsCombat = true,
             useOverrideUI = false,
-
-            minimap = { hide = false },
 
             ab = { count = 10, showgrid = true, rightClickUnit = 'player' },
 
@@ -683,16 +643,6 @@ end
 
 function Addon:ShowCombatTooltips()
     return self.db.profile.showTooltipsCombat
-end
-
--- minimap button
-function Addon:SetShowMinimap(enable)
-    self.db.profile.minimap.hide = not enable
-    self:GetModule('Launcher'):Update()
-end
-
-function Addon:ShowingMinimap()
-    return not self.db.profile.minimap.hide
 end
 
 -- sticky bars
@@ -1152,7 +1102,7 @@ end
 -- Extra's
 --------------------------------------------------------------------------------
 
-if not (C_AddOns.IsAddOnLoaded("ClassicFrames")) then
+if not (C_AddOns.IsAddOnLoaded("SexyMap")) then
     hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
         self:SetParent(MinimapBackdrop)
         self:SetFrameLevel(6)
@@ -1164,6 +1114,22 @@ if not (C_AddOns.IsAddOnLoaded("ClassicFrames")) then
     hooksecurefunc(QueueStatusFrame, "UpdatePosition", function(self)
         self:ClearAllPoints()
         self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT")
+    end)
+
+    Minimap:HookScript("OnEvent", function(self, event, ...)
+        if ( event == "PLAYER_ENTERING_WORLD" ) then
+            if (ExpansionLandingPageMinimapButton:GetNormalTexture():GetAtlas() == "dragonflight-landingbutton-up") then
+                ExpansionLandingPageMinimapButton:ClearAllPoints()
+                ExpansionLandingPageMinimapButton:SetPoint("TOPLEFT", 8, -156)
+            end
+
+            hooksecurefunc(ExpansionLandingPageMinimapButton, "UpdateIcon", function(self)
+                if (self:GetNormalTexture():GetAtlas() == "dragonflight-landingbutton-up") then
+                    self:ClearAllPoints()
+                    self:SetPoint("TOPLEFT", 8, -156)
+                end
+            end)
+        end
     end)
 end
 
