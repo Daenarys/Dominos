@@ -139,6 +139,7 @@ local SpellFlyoutFrameMixin = {}
 
 -- methods we're importing from the stock UI
 SpellFlyoutFrameMixin.SetBorderColor = SpellFlyout_SetBorderColor
+SpellFlyoutFrameMixin.SetBorderSize = SpellFlyout_SetBorderSize
 
 -- secure methods
 local SpellFlyoutFrame_Toggle = [[
