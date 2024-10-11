@@ -1135,5 +1135,14 @@ if not (C_AddOns.IsAddOnLoaded("SexyMap")) then
     end)
 end
 
+if TextToSpeechButtonFrame then
+    TextToSpeechButtonFrame:Hide()
+end
+
+QuickJoinToastButton:HookScript("OnUpdate", function(self)
+    self:ClearAllPoints()
+    self:SetPoint("BOTTOMLEFT", ChatAlertFrame, "BOTTOMLEFT")
+end)
+
 -- exports
 _G[AddonName] = Addon
