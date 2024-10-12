@@ -145,7 +145,7 @@ function BagBarModule:RegisterButton(name)
     button:SetSize(36, 36)
 
     MainMenuBarBackpackButtonCount:ClearAllPoints()
-    MainMenuBarBackpackButtonCount:SetPoint("CENTER", 0, -6)
+    MainMenuBarBackpackButtonCount:SetPoint("CENTER", 0, -7)
 
     tinsert(BagButtons, button)
 end
