@@ -21,6 +21,4 @@ actionButton.lua
 actionBar.lua
 petBar.lua
 stanceBar.lua
-bagBar.lua
-menuBar.lua
 possessBar.lua
