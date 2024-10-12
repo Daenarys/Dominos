@@ -218,6 +218,8 @@ function Addon:GetDatabaseDefaults()
 
             ab = { count = 10, showgrid = true, rightClickUnit = 'player' },
 
+            frames = { bags = { point = 'BOTTOMRIGHT', oneBag = true, keyRing = true, spacing = 2 } },
+
             alignmentGrid = { enabled = true, size = 32 },
 
             -- what modules are enabled
@@ -776,6 +778,10 @@ function Addon:HideBlizzard()
         "PetActionBar",
         "StatusTrackingBarManager",
         "MainMenuBarVehicleLeaveButton",
+        "MicroButtonAndBagsBar",
+        "BagsBar",
+        "MicroMenu",
+        "MicroMenuContainer",
         "PlayerCastingBarFrame"
     )
 
@@ -790,6 +796,9 @@ function Addon:HideBlizzard()
         "StanceBar",
         "PossessActionBar",
         "MainMenuBarVehicleLeaveButton",
+        "BagsBar",
+        "MicroMenu",
+        "MicroMenuContainer",
         "PlayerCastingBarFrame"
     )
 
