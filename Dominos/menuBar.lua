@@ -330,8 +330,6 @@ function MenuBarModule:OnInitialize()
     local perf = MainMenuMicroButton and MainMenuMicroButton.MainMenuBarPerformanceBar
     if perf then
         perf:SetSize(28, 58)
-        perf:ClearAllPoints()
-        perf:SetPoint('BOTTOM')
     end
 
     -- temp fix for 10.2.6 bug
