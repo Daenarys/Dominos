@@ -36,28 +36,53 @@ function Addon:OnEnable()
     self:RegisterEvent("GAME_PAD_ACTIVE_CHANGED", "UPDATE_BINDINGS")
     self:HideBlizzard()
     self:UpdateUseOverrideUI()
+    self:CreateDataBrokerPlugin()
     self:Load()
+end
 
-    if AddonCompartmentFrame then
-        AddonCompartmentFrame:RegisterAddon {
-            text = AddonName,
-            icon = 'Interface/AddOns/Dominos/icons/Dominos.tga',
-            registerForAnyClick = true,
-            keepShownOnClick = true, 
-            notCheckable = true,
-            func = function(_, menuInputData)
-                if menuInputData.buttonName == "LeftButton" then
-                    if IsShiftKeyDown() then
-                        Addon:ToggleBindingMode()
-                    else
-                        Addon:ToggleLockedFrames()
-                    end
+function Addon:CreateDataBrokerPlugin()
+    local dataObject = LibStub:GetLibrary('LibDataBroker-1.1'):NewDataObject(AddonName, {
+        type = 'launcher',
+        icon = [[Interface\Addons\Dominos\icons\Dominos]],
+
+        OnClick = function(_, button)
+            if button == 'LeftButton' then
+                if IsShiftKeyDown() then
+                    Addon:ToggleBindingMode()
                 else
-                     Addon:ShowOptionsFrame()
+                    Addon:ToggleLockedFrames()
                 end
-            end,
-        }
-    end
+            elseif button == 'RightButton' then
+                Addon:ShowOptionsFrame()
+            end
+        end,
+
+        OnTooltipShow = function(tooltip)
+            if not tooltip or not tooltip.AddLine then
+                return
+            end
+
+            GameTooltip_SetTitle(tooltip, AddonName)
+
+            if Addon:Locked() then
+                GameTooltip_AddInstructionLine(tooltip, L.ConfigEnterTip)
+            else
+                GameTooltip_AddInstructionLine(tooltip, L.ConfigExitTip)
+            end
+
+            if Addon:IsBindingModeEnabled() then
+                GameTooltip_AddInstructionLine(tooltip, L.BindingExitTip)
+            else
+                GameTooltip_AddInstructionLine(tooltip, L.BindingEnterTip)
+            end
+
+            if Addon:IsConfigAddonEnabled() then
+                GameTooltip_AddInstructionLine(tooltip, L.ShowOptionsTip)
+            end
+        end,
+    })
+
+    LibStub('LibDBIcon-1.0'):Register(AddonName, dataObject, self.db.profile.minimap)
 end
 
 -- configuration events
@@ -215,6 +240,8 @@ function Addon:GetDatabaseDefaults()
             showTooltips = true,
             showTooltipsCombat = true,
             useOverrideUI = false,
+
+            minimap = { hide = false },
 
             ab = { count = 10, showgrid = true, rightClickUnit = 'player' },
 
@@ -584,7 +611,7 @@ function Addon:SetUseOverrideUI(enable)
 end
 
 function Addon:UsingOverrideUI()
-    return self.db.profile.useOverrideUI
+    return self.db.profile.useOverrideUI and self:IsBuild('retail', 'wrath')
 end
 
 function Addon:UpdateUseOverrideUI()
@@ -656,6 +683,16 @@ end
 
 function Addon:ShowCombatTooltips()
     return self.db.profile.showTooltipsCombat
+end
+
+-- minimap button
+function Addon:SetShowMinimap(enable)
+    self.db.profile.minimap.hide = not enable
+    self:GetModule('Launcher'):Update()
+end
+
+function Addon:ShowingMinimap()
+    return not self.db.profile.minimap.hide
 end
 
 -- sticky bars
@@ -1117,7 +1154,7 @@ end
 -- Extra's
 --------------------------------------------------------------------------------
 
-if not (C_AddOns.IsAddOnLoaded("SexyMap")) then
+if not (C_AddOns.IsAddOnLoaded("ClassicFrames")) then
     hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
         self:SetParent(MinimapBackdrop)
         self:SetFrameLevel(6)

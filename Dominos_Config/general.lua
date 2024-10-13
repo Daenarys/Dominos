@@ -19,6 +19,15 @@ Addon:AddOptionsPanel(
                     ParentAddon:ToggleBindingMode()
                 end
             },
+            check(L.ShowMinimapButton) {
+                get = function()
+                    return ParentAddon:ShowingMinimap()
+                end,
+                set = function(_, enable)
+                    ParentAddon:SetShowMinimap(enable)
+                end,
+                width = "full",
+            },
             check(L.StickyBars) {
                 get = function()
                     return ParentAddon:Sticky()

@@ -65,18 +65,3 @@ function CastingBar:New(parent)
 
 	return f
 end
-
---------------------------------------------------------------------------------
--- Mixin
---------------------------------------------------------------------------------
-
-DominosCastingBarMixin = {}
-
-function DominosCastingBarMixin:OnLoad()
-	local showTradeSkills = true
-	local showShieldNo = false
-	CastingBarMixin.OnLoad(self, "player", showTradeSkills, showShieldNo)
-	self.Icon:Hide()
-	self.Text:ClearAllPoints()
-	self.Text:SetPoint("TOP", 0, -9)
-end
