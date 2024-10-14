@@ -10,7 +10,7 @@ local GRID_SIZE_MINIMUM = 1
 local GRID_SIZE_MAXIMUM = 128
 local GRID_SIZE_STEP = 1
 
-local HelpDialog = _G.CreateFrame('Frame', nil, nil, _G.BackdropTemplateMixin and 'BackdropTemplate')
+local HelpDialog = _G.CreateFrame('Frame', nil, nil)
 
 HelpDialog:Hide()
 
@@ -23,19 +23,42 @@ function HelpDialog:OnLoad(owner)
     self:SetFrameStrata('FULLSCREEN_DIALOG')
     self:SetMovable(true)
     self:SetSize(360, 120)
-
-    self:SetBackdrop {
-        bgFile = 'Interface\\DialogFrame\\UI-DialogBox-Background',
-        edgeFile = 'Interface\\DialogFrame\\UI-DialogBox-Border',
-        tile = true,
-        insets = {left = 11, right = 12, top = 12, bottom = 11},
-        tileSize = 32,
-        edgeSize = 32
-    }
-
     self:SetPoint('TOP', 0, -24)
     self:SetScript('OnDragStart', self.OnDragStart)
     self:SetScript('OnDragStop', self.OnDragStop)
+
+    local border = CreateFrame('Frame', nil, self, 'DialogBorderTemplate')
+    border.TopEdge:SetSize(32, 32)
+    border.TopEdge:SetTexture("Interface\\FrameGeneral\\UIFrameDiamondMetal", true)
+    border.TopEdge:SetTexCoord(0, 0.5, 0.13671875, 0.26171875)
+
+    border.TopLeftCorner:SetSize(32, 32)
+    border.TopLeftCorner:SetTexture("Interface\\FrameGeneral\\UIFrameDiamondMetal")
+    border.TopLeftCorner:SetTexCoord(0.015625, 0.515625, 0.53515625, 0.66015625)
+
+    border.TopRightCorner:SetSize(32, 32)
+    border.TopRightCorner:SetTexture("Interface\\FrameGeneral\\UIFrameDiamondMetal")
+    border.TopRightCorner:SetTexCoord(0.015625, 0.515625, 0.66796875, 0.79296875)
+
+    border.BottomEdge:SetSize(32, 32)
+    border.BottomEdge:SetTexture("Interface\\FrameGeneral\\UIFrameDiamondMetal", true)
+    border.BottomEdge:SetTexCoord(0, 0.5, 0.00390625, 0.12890625)
+
+    border.BottomLeftCorner:SetSize(32, 32)
+    border.BottomLeftCorner:SetTexture("Interface\\FrameGeneral\\UIFrameDiamondMetal")
+    border.BottomLeftCorner:SetTexCoord(0.015625, 0.515625, 0.26953125, 0.39453125)
+
+    border.BottomRightCorner:SetSize(32, 32)
+    border.BottomRightCorner:SetTexture("Interface\\FrameGeneral\\UIFrameDiamondMetal")
+    border.BottomRightCorner:SetTexCoord(0.015625, 0.515625, 0.40234375, 0.52734375)
+
+    border.LeftEdge:SetSize(32, 32)
+    border.LeftEdge:SetTexture("Interface\\FrameGeneral\\UIFrameDiamondMetalVertical", false, true)
+    border.LeftEdge:SetTexCoord(0.0078125, 0.2578125, 0, 1)
+
+    border.RightEdge:SetSize(32, 32)
+    border.RightEdge:SetTexture("Interface\\FrameGeneral\\UIFrameDiamondMetalVertical", false, true)
+    border.RightEdge:SetTexCoord(0.2734375, 0.5234375, 0, 1)
 
     local header = self:CreateTexture(nil, 'ARTWORK')
     header:SetTexture('Interface\\DialogFrame\\UI-DialogBox-Header')
