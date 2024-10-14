@@ -2,7 +2,7 @@
 ## IconTexture: Interface/AddOns/Dominos/icons/Dominos
 ## Title: Dominos
 ## Notes: A main actionbar replacement
-## Author: Tuller
+## Author: Daenarys
 ## Version: 1.00
 ## SavedVariables: DominosDB
 ## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, FlyPaper

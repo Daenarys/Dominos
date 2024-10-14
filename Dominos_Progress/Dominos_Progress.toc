@@ -2,7 +2,7 @@
 ## IconTexture: Interface/AddOns/Dominos/icons/Dominos
 ## Title: Dominos Progress
 ## Notes: Progress bars of all sorts
-## Author: Tuller
+## Author: Daenarys
 ## Dependencies: Dominos
 localization.xml
 config.lua
