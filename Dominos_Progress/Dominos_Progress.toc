@@ -1,4 +1,4 @@
-## Interface: 110005
+## Interface: 110007
 ## IconTexture: Interface/AddOns/Dominos/icons/Dominos
 ## Title: Dominos Progress
 ## Notes: Progress bars of all sorts
