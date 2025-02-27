@@ -24,6 +24,8 @@ function OverrideController:OnLoad()
 				page = GetOverrideBarIndex() or 0
 			elseif HasTempShapeshiftActionBar and HasTempShapeshiftActionBar() then
 				page = GetTempShapeshiftBarIndex() or 0
+			elseif GetBonusBarOffset() > 4 then
+				page = GetBonusBarOffset() + 6
 			else
 				page = 0
 			end
@@ -48,7 +50,8 @@ function OverrideController:OnLoad()
 		sstemp = '[shapeshift]1;0',
 		vehicle = '[@vehicle,exists]1;0',
 		vehicleui = '[vehicleui]1;0',
-		petbattleui = '[petbattle]1;0'
+		petbattleui = '[petbattle]1;0',
+		bonusbar = '[bonusbar:5]1;0'
 	} do
 		RegisterAttributeDriver(self, attribute, driver)
 	end
@@ -102,8 +105,6 @@ function OverrideController:SetShowOverrideUI(show)
 	end
 end
 
--- returns true if the player is in a state where they should be using actions
--- normally found on the override bar
 function OverrideController:OverrideBarActive()
 	return (self:GetAttribute("overridepage") or 0) > 10
 end
