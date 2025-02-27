@@ -611,7 +611,7 @@ function Addon:SetUseOverrideUI(enable)
 end
 
 function Addon:UsingOverrideUI()
-    return self.db.profile.useOverrideUI and self:IsBuild('retail', 'wrath')
+    return self.db.profile.useOverrideUI
 end
 
 function Addon:UpdateUseOverrideUI()
