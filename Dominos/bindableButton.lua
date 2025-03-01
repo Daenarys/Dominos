@@ -101,26 +101,10 @@ end
 
 function BindableButton:UpdateHotkeys()
     local key = (self.GetHotkey or getButtonHotkey)(self) or ''
+    local hotkey = self.HotKey
 
-    if key ~= '' and Addon:ShowBindingText() and self.buttonType == 'BONUSACTIONBUTTON' then
-        self.HotKey:SetText(key)
-        self.HotKey:Show()
-        self.HotKey:ClearAllPoints()
-        self.HotKey:SetPoint("TOPLEFT", -2, -3)
-    elseif key ~= '' and Addon:ShowBindingText() and self.buttonType == 'SHAPESHIFTBUTTON' then
-        self.HotKey:SetText(key)
-        self.HotKey:Show()
-        self.HotKey:ClearAllPoints()
-        self.HotKey:SetPoint("TOPLEFT", -2, -3)
-    elseif key ~= '' and Addon:ShowBindingText() then
-        self.HotKey:SetText(key)
-        self.HotKey:Show()
-        self.HotKey:ClearAllPoints()
-        self.HotKey:SetPoint("TOPLEFT", 3, -3)
-    else
-        self.HotKey:SetText('') --blank out non blank text, such as RANGE_INDICATOR
-        self.HotKey:Hide()
-    end
+    hotkey:SetText(key)
+    hotkey:SetShown(key ~= '')
 end
 
 function BindableButton:OnEnter()
