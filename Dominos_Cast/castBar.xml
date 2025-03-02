@@ -1,58 +1,85 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\Blizzard_SharedXML\UI.xsd">
+	<Script file="CastingBarFrame.lua"/>
 	<Script file="castBar.lua"/>
-	<StatusBar name="DominosCastingBarTemplate"  mixin="CastingBarMixin" inherits="CastingBarFrameAnimsTemplate" drawLayer="BORDER" virtual="true">
-		<Size x="208" y="11"/>
+	<StatusBar name="DominosCastingBarTemplate" drawLayer="BORDER" hidden="true" virtual="true">
+	<Size x="195" y="13" />
 		<Layers>
-			<Layer level="BACKGROUND" textureSubLevel="0">
-				<Texture parentKey="TextBorder" atlas="ui-castingbar-textbox">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="0" y="-12"/>
-					</Anchors>
-				</Texture>
-				<Texture parentKey="Background" atlas="ui-castingbar-background">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-					</Anchors>
-				</Texture>
+			<Layer level="BACKGROUND">
+				<Texture setAllPoints="true">
+					<Color r="0" g="0" b="0" a="0.5"/>
+				</Texture>		
 			</Layer>
-			<Layer level="OVERLAY">
-				<Texture parentKey="Border" atlas="ui-castingbar-frame">
+			<Layer level="ARTWORK">
+				<Texture parentKey="Border" file="Interface\CastingBar\UI-CastingBar-Border">
+					<Size>
+						<AbsDimension x="256" y="64"/>
+					</Size>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="-1" y="2"/>
-						<Anchor point="BOTTOMRIGHT" x="1" y="-2"/>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="28"/>
+							</Offset>
+						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture parentKey="Spark" atlas="ui-castingbar-pip">
-					<Size x="6" y="16"/>
+				<Texture parentKey="BorderShield" file="Interface\CastingBar\UI-CastingBar-Small-Shield" hidden="true">
+					<Size>
+						<AbsDimension x="256" y="64"/>
+					</Size>
 					<Anchors>
-						<Anchor point="CENTER" x="0" y="0"/>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="28"/>
+							</Offset>
+						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture parentKey="Flash" atlas="ui-castingbar-full-glow-standard" alphaMode="ADD">
+				<FontString parentKey="Text" inherits="GameFontHighlight">
+					<Size>
+						<AbsDimension x="185" y="16"/>
+					</Size>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="-1" y="1"/>
-						<Anchor point="BOTTOMRIGHT" x="1" y="-1"/>
-					</Anchors>
-				</Texture>
-				<FontString parentKey="Text" inherits="SystemFont_Shadow_Small">
-					<Size x="0" y="16"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="-8"/>
-						<Anchor point="TOPRIGHT" x="0" y="-8"/>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="5"/>
+							</Offset>
+						</Anchor>
 					</Anchors>
 				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Spark" file="Interface\CastingBar\UI-CastingBar-Spark" alphaMode="ADD">
+					<Size>
+						<AbsDimension x="32" y="32"/>
+					</Size>
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="2"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="Flash" file="Interface\CastingBar\UI-CastingBar-Flash" alphaMode="ADD">
+					<Size>
+						<AbsDimension x="256" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="28"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
 			</Layer>
 		</Layers>
 		<Scripts>
 			<OnLoad>
-				self:OnLoad("player", true, false)
+				CastingBarFrame_OnLoad(self, "player", true, false);
 			</OnLoad>
-			<OnEvent method="OnEvent"/>
-			<OnUpdate method="OnUpdate"/>
-			<OnShow method="OnShow"/>
+			<OnEvent function="CastingBarFrame_OnEvent" />
+			<OnUpdate function="CastingBarFrame_OnUpdate" />
+			<OnShow function="CastingBarFrame_OnShow" />
 		</Scripts>
+		<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+		<BarColor r="1.0" g="0.7" b="0.0"/>
 	</StatusBar>
 </Ui>
