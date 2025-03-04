@@ -103,9 +103,6 @@ function BindableButton:UpdateHotkeys()
     local key = (self.GetHotkey or getButtonHotkey)(self) or ''
     local hotkey = self.HotKey
 
-    self.TextOverlayContainer:SetFrameLevel(2)
-    hotkey:SetDrawLayer("ARTWORK", 2)
-
     hotkey:SetShown(key ~= '')
     hotkey:SetText(key)
 
