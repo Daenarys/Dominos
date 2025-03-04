@@ -255,13 +255,6 @@ end
 local MenuBarModule = Addon:NewModule('MenuBar')
 
 function MenuBarModule:OnInitialize()
-    local perf = MainMenuMicroButton and MainMenuMicroButton.MainMenuBarPerformanceBar
-    if perf then
-        perf:SetSize(28, 58)
-        perf:ClearAllPoints()
-        perf:SetPoint('BOTTOM')
-    end
-
     local layout = Addon:Defer(function()
         local frame = self.frame
         if frame then
