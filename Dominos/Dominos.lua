@@ -1154,6 +1154,19 @@ end
 --------------------------------------------------------------------------------
 
 if not (C_AddOns.IsAddOnLoaded("ClassicFrames")) then
+    hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
+        self:SetParent(MinimapBackdrop)
+        self:SetFrameLevel(6)
+        self:ClearAllPoints()
+        self:SetPoint("TOPLEFT", MinimapBackdrop, "TOPLEFT", -10, -160)
+        self:SetScale(0.8)
+    end)
+
+    hooksecurefunc(QueueStatusFrame, "UpdatePosition", function(self)
+        self:ClearAllPoints()
+        self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT")
+    end)
+
     Minimap:HookScript("OnEvent", function(self, event, ...)
         if ( event == "PLAYER_ENTERING_WORLD" ) then
             if (ExpansionLandingPageMinimapButton:GetNormalTexture():GetAtlas() == "dragonflight-landingbutton-up") then
@@ -1168,19 +1181,6 @@ if not (C_AddOns.IsAddOnLoaded("ClassicFrames")) then
                 end
             end)
         end
-    end)
-
-    hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
-        self:SetParent(MinimapBackdrop)
-        self:SetFrameLevel(6)
-        self:ClearAllPoints()
-        self:SetPoint("TOPLEFT", -8, -175)
-        self:SetScale(0.75)
-    end)
-
-    hooksecurefunc(QueueStatusFrame, "UpdatePosition", function(self)
-        self:ClearAllPoints()
-        self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT")
     end)
 end
 
