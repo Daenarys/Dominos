@@ -1,4 +1,4 @@
-## Interface: 110100
+## Interface: 110105
 ## IconTexture: Interface/AddOns/Dominos/icons/Dominos
 ## Title: Dominos Skin
 ## Notes: A Dominos UI skin
