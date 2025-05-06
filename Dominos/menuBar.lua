@@ -8,7 +8,6 @@
 local AddonName, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
-
 local MicroButtons = {}
 local PetMicroButtonFrame = PetBattleFrame and PetBattleFrame.BottomFrame.MicroButtonFrame
 
@@ -38,10 +37,10 @@ local MICRO_BUTTON_NAMES = {
     ['QuestLogMicroButton'] = QUESTLOG_BUTTON,
     ['GuildMicroButton'] = LOOKINGFORGUILD,
     ['LFDMicroButton'] = DUNGEONS_BUTTON,
+    ['CollectionsMicroButton'] = COLLECTIONS,
     ['EJMicroButton'] = ENCOUNTER_JOURNAL,
-    ['MainMenuMicroButton'] = MAINMENU_BUTTON,
     ['StoreMicroButton'] = BLIZZARD_STORE,
-    ['CollectionsMicroButton'] = COLLECTIONS
+    ['MainMenuMicroButton'] = MAINMENU_BUTTON
 }
 
 --------------------------------------------------------------------------------
