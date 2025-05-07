@@ -105,9 +105,6 @@ function ActionButtonMixin:OnCreate(id)
     -- apply hooks for quick binding
     Addon.BindableButton:AddQuickBindingSupport(self)
 
-    -- apply custom flyout
-    Addon.SpellFlyout:Register(self)
-
     -- use pre 10.x button size
     self:SetSize(36, 36)
 
@@ -301,8 +298,6 @@ function ActionButton:AddCastOnKeyPressSupport(button)
     bind:SetScript("PreClick", bindButton_PreClick)
 
     bind.SetOverrideBindings = bindButton_SetOverrideBindings
-
-    Addon.SpellFlyout:Register(bind)
 
     -- translate HOTKEY button "clicks" into LeftButton
     self:WrapScript(bind, "OnClick", [[

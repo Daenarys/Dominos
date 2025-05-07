@@ -15,7 +15,6 @@ buttonBar.lua
 bindableButton.lua
 fadeManager.lua
 overrideController.lua
-spellFlyout.lua
 tooltipController.lua
 actionButton.lua
 actionBar.lua
