@@ -18,14 +18,10 @@ for id = 1, NUM_PET_ACTION_SLOTS do
     local button = getPetButton(id)
 
     -- set the buttontype
-    button.buttonType = 'BONUSACTIONBUTTON'
     button:SetAttribute("commandName", "BONUSACTIONBUTTON" .. id)
 
     -- apply hooks for quick binding
     Addon.BindableButton:AddQuickBindingSupport(button)
-
-    -- enable cooldown bling
-    button.cooldown:SetDrawBling(true)
 end
 
 --------------------------------------------------------------------------------

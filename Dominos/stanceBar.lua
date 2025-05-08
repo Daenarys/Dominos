@@ -31,14 +31,10 @@ for id = 1, 10 do
     local button = getStanceButton(id)
 
     -- set the buttontype
-    button.buttonType = 'SHAPESHIFTBUTTON'
     button:SetAttribute("commandName", "SHAPESHIFTBUTTON" .. id)
 
     -- apply hooks for quick binding
     Addon.BindableButton:AddQuickBindingSupport(button)
-
-    -- enable cooldown bling
-    button.cooldown:SetDrawBling(true)
 end
 
 --------------------------------------------------------------------------------

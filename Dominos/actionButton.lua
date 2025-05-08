@@ -70,9 +70,6 @@ function ActionButtonMixin:OnCreate(id)
 
     -- apply hooks for quick binding
     Addon.BindableButton:AddQuickBindingSupport(self)
-
-    -- enable cooldown bling
-    self.cooldown:SetDrawBling(true)
 end
 
 function ActionButtonMixin:UpdateOverrideBindings()
@@ -268,22 +265,6 @@ function ActionButton:AddCastOnKeyPressSupport(button)
 
     button.bind = bind
     button:UpdateOverrideBindings()
-end
-
--- disable new animations
-if (ActionBarActionEventsFrame) then
-    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_START")
-    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_STOP")
-    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
-    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_RETICLE_TARGET")
-    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_RETICLE_CLEAR")
-    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_START")
-    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
-    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_SENT")
-    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_FAILED")
 end
 
 -- exports
