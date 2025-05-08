@@ -83,9 +83,6 @@ function ActionBar:GetDefaults()
         x = 0,
         y = 40 * (self.id - 1),
         pages = {},
-        spacing = 4,
-        padW = 2,
-        padH = 2,
         numButtons = self:MaxLength(),
         unit = "none",
         rightClickUnit = "none"

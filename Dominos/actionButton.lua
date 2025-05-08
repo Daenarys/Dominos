@@ -33,40 +33,6 @@ local function GetActionButtonCommand(id)
     end
 end
 
-local function skinActionButton(self)
-    self.icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
-    self.NormalTexture:ClearAllPoints()
-    self.NormalTexture:SetPoint("TOPLEFT", -3, 3)
-    self.NormalTexture:SetPoint("BOTTOMRIGHT", 7, -7)
-    self.PushedTexture:ClearAllPoints()
-    self.PushedTexture:SetPoint("TOPLEFT", -2, 2)
-    self.PushedTexture:SetPoint("BOTTOMRIGHT", 6, -6)
-    self.HighlightTexture:ClearAllPoints()
-    self.HighlightTexture:SetPoint("TOPLEFT", -3, 3)
-    self.HighlightTexture:SetPoint("BOTTOMRIGHT", 3, -2)
-    self.CheckedTexture:ClearAllPoints()
-    self.CheckedTexture:SetPoint("TOPLEFT", -3, 3)
-    self.CheckedTexture:SetPoint("BOTTOMRIGHT", 3, -2)
-    self.NewActionTexture:ClearAllPoints()
-    self.NewActionTexture:SetPoint("TOPLEFT", -3, 3)
-    self.NewActionTexture:SetPoint("BOTTOMRIGHT", 3, -2)
-    self.SpellHighlightTexture:ClearAllPoints()
-    self.SpellHighlightTexture:SetPoint("TOPLEFT", -3, 3)
-    self.SpellHighlightTexture:SetPoint("BOTTOMRIGHT", 3, -2)
-    self.Border:ClearAllPoints()
-    self.Border:SetPoint("TOPLEFT", -3, 3)
-    self.Border:SetPoint("BOTTOMRIGHT", 2, -2)
-    self.cooldown:ClearAllPoints()
-    self.cooldown:SetAllPoints()
-    self.Count:ClearAllPoints()
-    self.Count:SetPoint("BOTTOMRIGHT", -2, 2)
-    self.Flash:ClearAllPoints()
-    self.Flash:SetAllPoints()
-    if self.SlotBackground then
-        self.SlotBackground:Hide()
-    end
-end
-
 function ActionButtonMixin:OnCreate(id)
     -- initialize secure state
     self:SetAttributeNoHandler("action", 0)
@@ -104,12 +70,6 @@ function ActionButtonMixin:OnCreate(id)
 
     -- apply hooks for quick binding
     Addon.BindableButton:AddQuickBindingSupport(self)
-
-    -- use pre 10.x button size
-    self:SetSize(36, 36)
-
-    -- apply button skin
-    skinActionButton(self)
 
     -- enable cooldown bling
     self.cooldown:SetDrawBling(true)
