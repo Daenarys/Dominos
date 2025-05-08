@@ -1,0 +1,20 @@
+## Interface: 110105
+## IconTexture: Interface/AddOns/Dominos/icons/Dominos
+## Title: Dominos Skin
+## Notes: A Dominos UI skin
+## Author: Daenarys
+## Dependencies: Dominos
+skins\AddonList.lua
+skins\Character.lua
+skins\Chat.lua
+skins\Collections.lua
+skins\DressingRoom.lua
+skins\ExpansionLandingPage.lua
+skins\GameMenu.lua
+skins\LFG.lua
+skins\ModelPreview.lua
+skins\ObjectiveTracker.lua
+skins\QuestLog.lua
+skins\TimeManager.lua
+skins\Wardrobe.lua
+skins\WorldMap.lua
