@@ -14,7 +14,6 @@ skins\GameMenu.lua
 skins\LFG.lua
 skins\ModelPreview.lua
 skins\ObjectiveTracker.lua
-skins\PVP.lua
 skins\QuestLog.lua
 skins\TimeManager.lua
 skins\Wardrobe.lua
