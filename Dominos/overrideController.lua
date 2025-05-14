@@ -3,7 +3,7 @@ local _, Addon = ...
 local OverrideController = CreateFrame('Frame', nil, OverrideActionBar, 'SecureHandlerAttributeTemplate, SecureHandlerShowHideTemplate')
 
 function OverrideController:OnLoad()
-	self:SetAttributeNoHandler("_onattributechanged", [[
+	self:SetAttribute("_onattributechanged", [[
 		if name == "overrideui" then
 			for _, frame in pairs(myFrames) do
 				frame:SetAttribute("state-overrideui", value == 1)
@@ -36,9 +36,9 @@ function OverrideController:OnLoad()
 		end
 	]])
 
-	self:SetAttributeNoHandler("_onshow", [[ self:SetAttribute("overrideui", 1) ]])
-	self:SetAttributeNoHandler("_onhide", [[ self:SetAttribute("overrideui", 0) ]])
-	self:SetAttributeNoHandler('overrideui', OverrideActionBar:IsVisible())
+	self:SetAttribute("_onshow", [[ self:SetAttribute("overrideui", 1) ]])
+	self:SetAttribute("_onhide", [[ self:SetAttribute("overrideui", 0) ]])
+	self:SetAttribute('overrideui', OverrideActionBar:IsVisible())
 
 	-- init
 	self:Execute([[ myFrames = table.new() ]])

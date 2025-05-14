@@ -35,18 +35,18 @@ end
 
 function ActionButtonMixin:OnCreate(id)
     -- initialize secure state
-    self:SetAttributeNoHandler("action", 0)
-    self:SetAttributeNoHandler("commandName", GetActionButtonCommand(id) or self:GetName())
-    self:SetAttributeNoHandler("useparent-checkfocuscast", true)
-    self:SetAttributeNoHandler("useparent-checkmouseovercast", true)
-    self:SetAttributeNoHandler("useparent-checkselfcast", true)
+    self:SetAttribute("action", 0)
+    self:SetAttribute("commandName", GetActionButtonCommand(id) or self:GetName())
+    self:SetAttribute("useparent-checkfocuscast", true)
+    self:SetAttribute("useparent-checkmouseovercast", true)
+    self:SetAttribute("useparent-checkselfcast", true)
 
     -- register for clicks on all buttons, and enable mousewheel bindings
     self:EnableMouseWheel()
     self:RegisterForClicks("AnyUp", "AnyDown")
 
     -- secure handlers
-    self:SetAttributeNoHandler('_childupdate-offset', [[
+    self:SetAttribute('_childupdate-offset', [[
         local offset = message or 0
         local id = self:GetAttribute('index') + offset
 
@@ -56,7 +56,7 @@ function ActionButtonMixin:OnCreate(id)
         end
     ]])
 
-    self:SetAttributeNoHandler("UpdateShown", [[
+    self:SetAttribute("UpdateShown", [[
         local show = (HasAction(self:GetAttribute("action")))
             and not self:GetAttribute("statehidden")
 
@@ -237,15 +237,15 @@ end
 function ActionButton:AddCastOnKeyPressSupport(button)
     local bind = CreateFrame("Button", "$parentHotkey", button, "SecureActionButtonTemplate")
 
-    bind:SetAttributeNoHandler("type", "action")
-    bind:SetAttributeNoHandler("typerelease", "actionrelease")
-    bind:SetAttributeNoHandler("useparent-action", true)
-    bind:SetAttributeNoHandler("useparent-checkfocuscast", true)
-    bind:SetAttributeNoHandler("useparent-checkmouseovercast", true)
-    bind:SetAttributeNoHandler("useparent-checkselfcast", true)
-    bind:SetAttributeNoHandler("useparent-flyoutDirection", true)
-    bind:SetAttributeNoHandler("useparent-pressAndHoldAction", true)
-    bind:SetAttributeNoHandler("useparent-unit", true)
+    bind:SetAttribute("type", "action")
+    bind:SetAttribute("typerelease", "actionrelease")
+    bind:SetAttribute("useparent-action", true)
+    bind:SetAttribute("useparent-checkfocuscast", true)
+    bind:SetAttribute("useparent-checkmouseovercast", true)
+    bind:SetAttribute("useparent-checkselfcast", true)
+    bind:SetAttribute("useparent-flyoutDirection", true)
+    bind:SetAttribute("useparent-pressAndHoldAction", true)
+    bind:SetAttribute("useparent-unit", true)
     SecureHandlerSetFrameRef(bind, "owner", button)
 
     bind:EnableMouseWheel()

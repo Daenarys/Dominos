@@ -102,7 +102,7 @@ function ActionBar:AcquireButton(index)
     local id = index + (self.id - 1) * self:MaxLength()
     local button = Addon.ActionButton:GetOrCreateActionButton(id, self)
 
-    button:SetAttributeNoHandler('index', index)
+    button:SetAttribute('index', index)
 
     return button
 end
