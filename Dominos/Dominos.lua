@@ -839,11 +839,11 @@ function Addon:HideBlizzard()
     )
 
     apply(disableActionButtons,
+        "MainMenuBar",
         "MultiBarBottomLeft",
         "MultiBarBottomRight",
         "MultiBarLeft",
         "MultiBarRight",
-        "MainMenuBar",
         "MultiBar5",
         "MultiBar6",
         "MultiBar7"
