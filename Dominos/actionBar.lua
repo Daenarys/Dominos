@@ -102,7 +102,7 @@ function ActionBar:AcquireButton(index)
     local id = index + (self.id - 1) * self:MaxLength()
     local button = Addon.ActionButton:GetOrCreateActionButton(id, self)
 
-    button:SetAttribute('index', index)
+    button:SetAttributeNoHandler('index', index)
 
     return button
 end
@@ -185,11 +185,17 @@ function ActionBar:LoadStateController()
         local offset = 0
 
         local overridePage = self:GetAttribute('state-overridepage') or 0
-        if overridePage > 10 and self:GetAttribute('state-overridebar') then
+        if overridePage > 0 and self:GetAttribute('state-overridebar') then
             offset = (overridePage - 1) * self:GetAttribute('overrideBarLength')
         else
             local page = self:GetAttribute('state-page') or 1
+
             offset = (page - 1) * self:GetAttribute('barLength')
+
+            -- skip action bar 12 slots (not really usable)
+            if offset >= 132 then
+                offset = offset + 12
+            end
         end
 
         self:SetAttribute('actionOffset', offset)

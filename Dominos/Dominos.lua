@@ -792,7 +792,7 @@ function Addon:HideBlizzard()
 
         for _, button in pairs(buttons) do
             button:UnregisterAllEvents()
-            button:SetAttribute("statehidden", true)
+            button:SetAttributeNoHandler("statehidden", true)
             button:Hide()
         end
     end
