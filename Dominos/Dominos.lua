@@ -33,7 +33,6 @@ end
 
 function Addon:OnEnable()
     self:RegisterEvent('UPDATE_BINDINGS')
-    self:RegisterEvent("GAME_PAD_ACTIVE_CHANGED", "UPDATE_BINDINGS")
     self:HideBlizzard()
     self:UpdateUseOverrideUI()
     self:CreateDataBrokerPlugin()
