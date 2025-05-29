@@ -242,7 +242,7 @@ function Addon:GetDatabaseDefaults()
 
             minimap = { hide = false },
 
-            ab = { count = 10, showgrid = true, rightClickUnit = 'player' },
+            ab = { count = 10, showEmptyButtons = false, rightClickUnit = 'player' },
 
             frames = { bags = { point = 'BOTTOMRIGHT', oneBag = true, keyRing = true, spacing = 2 } },
 
@@ -550,17 +550,63 @@ function Addon:SetClickThroughForFrames(...)
 end
 
 -- empty button display
-function Addon:ToggleGrid()
-    self:SetShowGrid(not self:ShowGrid())
+function Addon:SetShowEmptyButtons(enable)
+    enable = enable and true
+
+    self.db.profile.showEmptyButtons = enable and true
+    self.Frame:ForAll('SetShowEmptyButtons', enable)
 end
 
-function Addon:SetShowGrid(enable)
-    self.db.profile.showgrid = enable or false
-    self.Frame:ForAll('UpdateGrid')
+function Addon:ShowingEmptyButtons()
+    return self.db.profile.showEmptyButtons and true
 end
 
-function Addon:ShowGrid()
-    return self.db.profile.showgrid
+-- binding text
+function Addon:SetShowBindingText(enable)
+    enable = enable and true
+
+    self.db.profile.showBindingText = enable
+    self.Frame:ForAll('SetShowBindingText', enable)
+end
+
+function Addon:ShowBindingText()
+    return self.db.profile.showBindingText
+end
+
+-- macro text
+function Addon:SetShowMacroText(enable)
+    enable = enable and true
+
+    self.db.profile.showMacroText = enable
+    self.Frame:ForAll('SetShowMacroText', enable)
+end
+
+function Addon:ShowMacroText()
+    return self.db.profile.showMacroText
+end
+
+-- show counts toggle
+function Addon:SetShowCounts(enable)
+    enable = enable and true
+
+    self.db.profile.showCounts = enable
+    self.Frame:ForAll('SetShowCounts', enable)
+end
+
+function Addon:ShowCounts()
+    return self.db.profile.showCounts
+end
+
+-- border
+function Addon:SetShowEquippedItemBorders(enable)
+    enable = enable and true
+
+    self.db.profile.showEquippedItemBorders = enable
+    self.Frame:ForAll('SetShowEquippedItemBorders', enable)
+end
+
+function Addon:ShowEquippedItemBorders()
+    return self.db.profile.showEquippedItemBorders
 end
 
 -- right click selfcast
@@ -571,36 +617,6 @@ end
 
 function Addon:GetRightClickUnit()
     return self.db.profile.ab.rightClickUnit
-end
-
--- binding text
-function Addon:SetShowBindingText(enable)
-    self.db.profile.showBindingText = enable or false
-    self.Frame:ForAll('ForButtons', 'UpdateHotkeys')
-end
-
-function Addon:ShowBindingText()
-    return self.db.profile.showBindingText
-end
-
--- macro text
-function Addon:SetShowMacroText(enable)
-    self.db.profile.showMacroText = enable or false
-    self.Frame:ForAll('ForButtons', 'SetShowMacroText', enable)
-end
-
-function Addon:ShowMacroText()
-    return self.db.profile.showMacroText
-end
-
--- border
-function Addon:SetShowEquippedItemBorders(enable)
-    self.db.profile.showEquippedItemBorders = enable or false
-    self.Frame:ForAll('ForButtons', 'SetShowEquippedItemBorders', enable)
-end
-
-function Addon:ShowEquippedItemBorders()
-    return self.db.profile.showEquippedItemBorders
 end
 
 -- override ui
@@ -718,16 +734,6 @@ end
 
 function Addon:IsLinkedOpacityEnabled()
     return self.db.profile.linkedOpacity
-end
-
--- show counts toggle
-function Addon:ShowCounts()
-    return self.db.profile.showCounts
-end
-
-function Addon:SetShowCounts(enable)
-    self.db.profile.showCounts = enable or false
-    self.Frame:ForAll('ForButtons', 'SetShowCountText', enable)
 end
 
 -- alignment grid

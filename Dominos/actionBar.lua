@@ -10,9 +10,17 @@ local ACTION_BUTTON_COUNT = 120
 
 local ActionBar = Addon:CreateClass('Frame', Addon.ButtonBar)
 
+ActionBar.ButtonProps = {
+    'BindingText',
+    'Counts',
+    'EmptyButtons',
+    'EquippedItemBorders',
+    'MacroText',
+}
+
 ActionBar.class = UnitClassBase('player')
 
--- Metatable magic.  Basically this says, 'create a new table for this index'
+-- Metatable magic. Basically this says, "create a new table for this index"
 -- I do this so that I only create page tables for classes the user is actually
 -- playing
 ActionBar.defaultOffsets = {
@@ -45,6 +53,16 @@ ActionBar.mainbarOffsets = {
         elseif i == 'ROGUE' then
             pages.stealth = 6
             pages.shadowdance = 6
+        elseif i == 'WARRIOR' and not Addon:IsBuild('retail') then
+            pages.battle = 6
+            pages.defensive = 7
+            pages.berserker = 8
+        elseif i == 'PRIEST' and not Addon:IsBuild('retail') then
+            pages.shadowform = 6
+        end
+
+        if Addon:IsBuild("retail") then
+            pages.dragonriding = 10
         end
 
         t[i] = pages
@@ -71,7 +89,7 @@ ActionBar:Extend('OnAcquire', function(self)
     self:UpdateStateDriver()
     self:SetUnit(self:GetUnit())
     self:SetRightClickUnit(self:GetRightClickUnit())
-    self:UpdateGrid()
+    self:SetShowEmptyButtons(self:ShowingEmptyButtons())
     self:UpdateTransparent(true)
     self:UpdateFlyoutDirection()
 end)
@@ -81,16 +99,16 @@ function ActionBar:GetDefaults()
     return {
         point = 'BOTTOM',
         x = 0,
-        y = 40 * (self.id - 1),
+        y = 14 + (ActionButton1:GetHeight() + 4) * (self.id - 1),
         pages = {},
+        spacing = 2,
+        padW = 2,
+        padH = 2,
         numButtons = self:MaxLength(),
+        showEmptyButtons = false,
         unit = "none",
         rightClickUnit = "none"
     }
-end
-
-function ActionBar:GetDisplayName()
-    return L.ActionBarDisplayName:format(self.id)
 end
 
 -- returns the maximum possible size for a given bar
@@ -100,7 +118,8 @@ end
 
 function ActionBar:AcquireButton(index)
     local id = index + (self.id - 1) * self:MaxLength()
-    local button = Addon.ActionButton:GetOrCreateActionButton(id, self)
+
+    local button = Addon.ActionButtons:GetOrCreateActionButton(id, self)
 
     button:SetAttributeNoHandler('index', index)
 
@@ -108,24 +127,60 @@ function ActionBar:AcquireButton(index)
 end
 
 function ActionBar:ReleaseButton(button)
-    button:SetAlpha(0)
+    button:SetAttribute('statehidden', true)
+    button:Hide()
 end
 
 function ActionBar:OnAttachButton(button)
     button:SetAttribute("action", button:GetAttribute("index") + (self:GetAttribute("actionOffset") or 0))
+    button:SetFlyoutDirectionInsecure(self:GetFlyoutDirection())
 
-    button:SetFlyoutDirection(self:GetFlyoutDirection())
-    button:SetShowMacroText(Addon:ShowMacroText())
-
-    if button:HasAction() then
-        button:SetAlpha(1)
+    for _, prop in pairs(self.ButtonProps) do
+        button['SetShow' .. prop](button, self['Showing' .. prop](self))
     end
+
+    button:SetShowCooldowns(self:GetAlpha() > 0)
+    button:SetAttributeNoHandler("statehidden", (button:GetAttribute("index") > self:NumButtons()) or nil)
+    button:UpdateShown()
 
     Addon:GetModule('Tooltips'):Register(button)
 end
 
 function ActionBar:OnDetachButton(button)
     Addon:GetModule('Tooltips'):Unregister(button)
+end
+
+-- sizing
+function ActionBar:ReloadButtons()
+    local oldNumButtons = #self.buttons
+    for i = 1, oldNumButtons do
+        self:DetachButton(i)
+    end
+
+    local newNumButtons = self:MaxLength()
+    for i = 1, newNumButtons do
+        self:AttachButton(i)
+    end
+
+    self:Layout()
+end
+
+function ActionBar:UpdateNumButtons()
+    local numVisible = self:NumButtons()
+
+    for i, button in pairs(self.buttons) do
+        if i > numVisible then
+            if not button:GetAttribute("statehidden") then
+                button:SetAttribute("statehidden", true)
+                button:Hide()
+            end
+        elseif button:GetAttribute("statehidden") then
+            button:SetAttribute("statehidden", nil)
+            button:UpdateShown()
+        end
+    end
+
+    self:Layout()
 end
 
 -- paging
@@ -215,49 +270,7 @@ function ActionBar:IsOverrideBar()
     return Addon.db.profile.possessBar == self.id
 end
 
---Empty button display
-function ActionBar:ShowGrid()
-    for _,b in pairs(self.buttons) do
-        if b:IsShown() then
-            b:SetAlpha(1)
-        end
-    end
-end
-
-function ActionBar:HideGrid()
-    for _,b in pairs(self.buttons) do
-        if b:IsShown() and not b:HasAction() and not Addon:ShowGrid() then
-            b:SetAlpha(0)
-        end
-    end
-end
-
-function ActionBar:UpdateGrid()
-    if Addon:ShowGrid() then
-        self:ShowGrid()
-    else
-        self:HideGrid()
-    end
-end
-
-function ActionBar:UpdateSlot()
-    for _,b in pairs(self.buttons) do
-        if b:IsShown() and b:HasAction() then
-            b:SetAlpha(1)
-        end
-    end
-end
-
--- keybound support
-function ActionBar:KEYBOUND_ENABLED()
-    self:ShowGrid()
-end
-
-function ActionBar:KEYBOUND_DISABLED()
-    self:HideGrid()
-end
-
--- right click targeting support
+-- unit
 function ActionBar:SetUnit(unit)
     unit = unit or 'none'
 
@@ -274,6 +287,7 @@ function ActionBar:GetUnit()
     return self.sets.unit or 'none'
 end
 
+-- right click unit
 function ActionBar:SetRightClickUnit(unit)
     unit = unit or 'none'
 
@@ -296,6 +310,7 @@ function ActionBar:GetRightClickUnit()
     return Addon:GetRightClickUnit() or "none"
 end
 
+-- opacity
 function ActionBar:OnSetAlpha(_alpha)
     self:UpdateTransparent()
 end
@@ -303,14 +318,23 @@ end
 function ActionBar:UpdateTransparent(force)
     local isTransparent = self:GetAlpha() == 0
 
-    if self.__transparent ~= isTransparent or force then
-        self.__transparent = isTransparent
-
+    if (self.transparent ~= isTransparent) or force then
+        self.transparent = isTransparent
         self:ForButtons('SetShowCooldowns', not isTransparent)
     end
 end
 
 -- flyout direction calculations
+function ActionBar:SetFlyoutDirection(direction)
+    local oldDirection = self.sets.flyoutDirection or 'auto'
+    local newDirection = direction or 'auto'
+
+    if oldDirection ~= newDirection then
+        self.sets.flyoutDirection = newDirection
+        self:UpdateFlyoutDirection()
+    end
+end
+
 function ActionBar:GetFlyoutDirection()
     local direction = self.sets.flyoutDirection or 'auto'
 
@@ -339,23 +363,39 @@ function ActionBar:GetCalculatedFlyoutDirection()
     return 'UP'
 end
 
-function ActionBar:SetFlyoutDirection(direction)
-    local oldDirection = self.sets.flyoutDirection or 'auto'
-    local newDirection = direction or 'auto'
-
-    if oldDirection ~= newDirection then
-        self.sets.flyoutDirection = newDirection
-        self:UpdateFlyoutDirection()
-    end
-end
-
 function ActionBar:UpdateFlyoutDirection()
-    self:ForButtons('SetFlyoutDirection', self:GetFlyoutDirection())
+    self:ForButtons('SetFlyoutDirectionInsecure', self:GetFlyoutDirection())
 end
 
 ActionBar:Extend("Layout", ActionBar.UpdateFlyoutDirection)
 ActionBar:Extend("Stick", ActionBar.UpdateFlyoutDirection)
 
+-- button property visibility toggles
+for _, prop in pairs(ActionBar.ButtonProps) do
+    local setterName = 'SetShow' .. prop
+    local getterName = 'Showing' .. prop
+    local settingKey = 'show' .. prop
+
+    ActionBar[setterName] = function(self, show, ...)
+        show = show and true
+
+        if show == Addon.db.profile[settingKey] then
+            self.sets[settingKey] = nil
+        else
+            self.sets[settingKey] = show
+        end
+
+        self:ForButtons(setterName, show, ...)
+    end
+
+    ActionBar[getterName] = function(self)
+        local result = self.sets[settingKey]
+        if result == nil then
+            result = Addon.db.profile[settingKey]
+        end
+        return result
+    end
+end
 
 function ActionBar:OnCreateMenu(menu)
     local L = LibStub('AceLocale-3.0'):GetLocale('Dominos-Config')
@@ -385,13 +425,7 @@ function ActionBar:OnCreateMenu(menu)
     end
 
     local function addStateGroup(panel, categoryName, stateType)
-        local states =
-            Addon.BarStates:map(
-            function(s)
-                return s.type == stateType
-            end
-        )
-
+        local states = Addon.BarStates:map(function(s) return s.type == stateType end)
         if #states == 0 then
             return
         end
@@ -411,11 +445,14 @@ function ActionBar:OnCreateMenu(menu)
                 name = name,
                 items = getDropdownItems,
                 get = function()
-                    local offset = panel.owner:GetOffset(state.id) or -1
-                    if offset > -1 then
-                        return (panel.owner.id + offset - 1) % Addon:NumBars() + 1
+                    local owner = panel.owner
+                    if owner then
+                        local offset = owner:GetOffset(state.id) or -1
+                        if offset > -1 then
+                            return (owner.id + offset - 1) % Addon:NumBars() + 1
+                        end
+                        return offset
                     end
-                    return offset
                 end,
                 set = function(_, value)
                     local offset
@@ -459,6 +496,23 @@ function ActionBar:OnCreateMenu(menu)
         return panel
     end
 
+    local function addButtonPanel()
+        local panel = menu:NewPanel(L.Buttons)
+
+        for _, prop in ipairs(self.ButtonProps) do
+            panel:NewCheckButton {
+                -- a hack to work around naming consistency on my part
+                name = L[(prop == "Counts" and "ShowCountText") or ("Show" .. prop)],
+                get = function()
+                    return panel.owner["Showing" .. prop](panel.owner)
+                end,
+                set = function(_, enable)
+                    panel.owner["SetShow" .. prop](panel.owner, enable)
+                end
+            }
+        end
+    end
+
     local function addPagingPanel()
         local panel = menu:NewPanel(L.Paging)
 
@@ -472,6 +526,7 @@ function ActionBar:OnCreateMenu(menu)
 
     -- add panels
     addLayoutPanel()
+    addButtonPanel()
     addPagingPanel()
     menu:AddFadingPanel()
     menu:AddAdvancedPanel()
@@ -480,59 +535,21 @@ end
 local ActionBarsModule = Addon:NewModule('ActionBars', 'AceEvent-3.0')
 
 function ActionBarsModule:Load()
-    self:RegisterEvent('UPDATE_SHAPESHIFT_FORMS')
-    self:RegisterEvent('UPDATE_BONUS_ACTIONBAR', 'OnOverrideBarUpdated')
-
-    if _G.OverrideActionBar then
-        self:RegisterEvent('UPDATE_VEHICLE_ACTIONBAR', 'OnOverrideBarUpdated')
-        self:RegisterEvent('UPDATE_OVERRIDE_ACTIONBAR', 'OnOverrideBarUpdated')
-    end
-
-    self:RegisterEvent("ACTIONBAR_SHOWGRID")
-    self:RegisterEvent("ACTIONBAR_HIDEGRID")
-    self:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
-    self:RegisterEvent("SPELLS_CHANGED")
-
     self:SetBarCount(Addon:NumBars())
+
+    self:RegisterEvent('UPDATE_SHAPESHIFT_FORMS')
     Addon.RegisterCallback(self, "ACTIONBAR_COUNT_UPDATED")
 end
 
 function ActionBarsModule:Unload()
     self:UnregisterAllEvents()
-    self:ForAll('Free')
+    self:ForActive('Free')
     self.active = nil
 end
 
 -- events
-function ActionBarsModule:OnOverrideBarUpdated()
-    if InCombatLockdown() or not (Addon.OverrideController and Addon.OverrideController:OverrideBarActive()) then
-        return
-    end
-
-    local bar = Addon:GetOverrideBar()
-    if bar then
-        bar:ForButtons('Update')
-    end
-end
-
-function ActionBarsModule:ACTIONBAR_COUNT_UPDATED(event, count)
+function ActionBarsModule:ACTIONBAR_COUNT_UPDATED(_, count)
     self:SetBarCount(count)
-end
-
-function ActionBarsModule:ACTIONBAR_SHOWGRID()
-    self:ForAll('ShowGrid')
-end
-
-function ActionBarsModule:ACTIONBAR_HIDEGRID()
-    self:ForAll('HideGrid')
-end
-
-function ActionBarsModule:ACTIONBAR_SLOT_CHANGED()
-    self:ForAll('UpdateSlot')
-end
-
-function ActionBarsModule:SPELLS_CHANGED()
-    self:ForAll('UpdateGrid')
 end
 
 function ActionBarsModule:UPDATE_SHAPESHIFT_FORMS()
@@ -540,11 +557,11 @@ function ActionBarsModule:UPDATE_SHAPESHIFT_FORMS()
         return
     end
 
-    self:ForAll('UpdateStateDriver')
+    self:ForActive('UpdateStateDriver')
 end
 
 function ActionBarsModule:SetBarCount(count)
-    self:ForAll('Free')
+    self:ForActive('Free')
 
     if count > 0 then
         self.active = {}
@@ -557,7 +574,7 @@ function ActionBarsModule:SetBarCount(count)
     end
 end
 
-function ActionBarsModule:ForAll(method, ...)
+function ActionBarsModule:ForActive(method, ...)
     if self.active then
         for _, bar in pairs(self.active) do
             bar:CallMethod(method, ...)
