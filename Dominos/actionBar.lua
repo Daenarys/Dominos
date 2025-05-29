@@ -89,7 +89,7 @@ function ActionBar:GetDefaults()
     return {
         point = 'BOTTOM',
         x = 0,
-        y = 0 + (ActionButton1:GetHeight() + 4) * (self.id - 1),
+        y = 0 + (ActionButton1:GetHeight()) * (self.id - 1),
         pages = {},
         numButtons = self:MaxLength(),
         showEmptyButtons = false,
