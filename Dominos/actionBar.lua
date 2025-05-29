@@ -53,16 +53,6 @@ ActionBar.mainbarOffsets = {
         elseif i == 'ROGUE' then
             pages.stealth = 6
             pages.shadowdance = 6
-        elseif i == 'WARRIOR' and not Addon:IsBuild('retail') then
-            pages.battle = 6
-            pages.defensive = 7
-            pages.berserker = 8
-        elseif i == 'PRIEST' and not Addon:IsBuild('retail') then
-            pages.shadowform = 6
-        end
-
-        if Addon:IsBuild("retail") then
-            pages.dragonriding = 10
         end
 
         t[i] = pages
@@ -99,16 +89,17 @@ function ActionBar:GetDefaults()
     return {
         point = 'BOTTOM',
         x = 0,
-        y = 14 + (ActionButton1:GetHeight() + 4) * (self.id - 1),
+        y = 0 + (ActionButton1:GetHeight() + 4) * (self.id - 1),
         pages = {},
-        spacing = 2,
-        padW = 2,
-        padH = 2,
         numButtons = self:MaxLength(),
         showEmptyButtons = false,
         unit = "none",
         rightClickUnit = "none"
     }
+end
+
+function ActionBar:GetDisplayName()
+    return L.ActionBarDisplayName:format(self.id)
 end
 
 -- returns the maximum possible size for a given bar
