@@ -1,4 +1,4 @@
-﻿## Interface: 110107
+﻿## Interface: 110105
 ## IconTexture: Interface/AddOns/Dominos/icons/Dominos
 ## Title: Dominos Cast
 ## Notes: A movable casting bar, with timer

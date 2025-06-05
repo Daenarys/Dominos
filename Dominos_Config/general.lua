@@ -98,10 +98,10 @@ Addon:AddOptionsPanel(
             h(L.ActionButtonLookAndFeel),
             check(L.ShowEmptyButtons) {
                 get = function()
-                    return ParentAddon:ShowingEmptyButtons()
+                    return ParentAddon:ShowGrid()
                 end,
                 set = function(_, enable)
-                    ParentAddon:SetShowEmptyButtons(enable)
+                    ParentAddon:SetShowGrid(enable)
                 end,
                 width = 1.5,
             },
