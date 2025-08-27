@@ -101,7 +101,7 @@ function PetBar:UpdateOverrideBar()
 end
 
 function PetBar:GetDisplayConditions()
-    return '[@pet,exists,nopossessbar]show;hide'
+    return '[@pet,exists,novehicleui,nooverridebar,nopossessbar]show;hide'
 end
 
 function PetBar:GetDefaults()
