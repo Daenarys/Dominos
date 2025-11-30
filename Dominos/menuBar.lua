@@ -261,6 +261,13 @@ function MenuBarModule:OnInitialize()
         end
     end)
 
+    if FramerateFrame then
+        hooksecurefunc(FramerateFrame, "UpdatePosition", function()
+            FramerateFrame:ClearAllPoints()
+            FramerateFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 150)
+        end)
+    end
+
     if OverrideActionBar then
         local f = CreateFrame("Frame", nil, OverrideActionBar)
         f:SetScript("OnShow", layout)
