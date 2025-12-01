@@ -89,7 +89,7 @@ function ActionBar:GetDefaults()
     return {
         point = 'BOTTOM',
         x = 0,
-        y = 0 + (ActionButton1:GetHeight()) * (self.id - 1),
+        y = (ActionButton1:GetHeight()) * (self.id - 1),
         pages = {},
         numButtons = self:MaxLength(),
         showEmptyButtons = false,
@@ -109,7 +109,6 @@ end
 
 function ActionBar:AcquireButton(index)
     local id = index + (self.id - 1) * self:MaxLength()
-
     local button = Addon.ActionButtons:GetOrCreateActionButton(id, self)
 
     button:SetAttributeNoHandler('index', index)
