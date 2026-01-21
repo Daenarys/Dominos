@@ -807,7 +807,7 @@ function Addon:HideBlizzard()
     end
 
     apply(banish,
-        "MainMenuBar",
+        "MainActionBar",
         "MultiBarBottomLeft",
         "MultiBarBottomRight",
         "MultiBarLeft",
@@ -845,7 +845,7 @@ function Addon:HideBlizzard()
     )
 
     apply(disableActionButtons,
-        "MainMenuBar",
+        "MainActionBar",
         "MultiBarBottomLeft",
         "MultiBarBottomRight",
         "MultiBarLeft",
@@ -864,6 +864,9 @@ function Addon:HideBlizzard()
         "MultiBar6",
         "MultiBar7"
     )
+
+    _G.MultiActionBar_ShowAllGrids = function() end
+    _G.MultiActionBar_HideAllGrids = function() end
 end
 
 --------------------------------------------------------------------------------
