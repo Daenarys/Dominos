@@ -61,7 +61,7 @@ CastingBar = Dominos:CreateClass('StatusBar')
 
 function CastingBar:New(parent)
 	local f = self:Bind(CreateFrame('StatusBar', 'DominosCastingBar', parent, 'DominosCastingBarTemplate'))
-	f:SetPoint('CENTER', 0, 5)
+	f:SetPoint('CENTER', -1, -3)
 
 	return f
 end

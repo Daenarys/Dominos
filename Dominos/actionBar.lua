@@ -20,7 +20,7 @@ ActionBar.ButtonProps = {
 
 ActionBar.class = UnitClassBase('player')
 
--- Metatable magic. Basically this says, 'create a new table for this index'
+-- Metatable magic. Basically this says, 'create a new table for this index'.
 -- I do this so that I only create page tables for classes the user is actually
 -- playing
 ActionBar.defaultOffsets = {
@@ -31,7 +31,7 @@ ActionBar.defaultOffsets = {
 }
 
 -- Metatable magic. Basically this says, 'create a new table for this index,
--- with these defaults. I do this so that I only create page tables for classes
+-- with these defaults'. I do this so that I only create page tables for classes
 -- the user is actually playing
 ActionBar.mainbarOffsets = {
     __index = function(t, i)
@@ -89,8 +89,11 @@ function ActionBar:GetDefaults()
     return {
         point = 'BOTTOM',
         x = 0,
-        y = (ActionButton1:GetHeight()) * (self.id - 1),
+        y = 40 * (self.id - 1),
         pages = {},
+        spacing = 4,
+        padW = 2,
+        padH = 2,
         numButtons = self:MaxLength(),
         showEmptyButtons = false,
         unit = "none",
