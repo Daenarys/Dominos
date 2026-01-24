@@ -8,7 +8,7 @@ localization.xml
 config.lua
 main.lua
 progressBar.lua
-xpBar.lua
-reputationBar.lua
-honorBar.lua
-goldBar.lua
+data/xp.lua
+data/reputation.lua
+data/honor.lua
+data/gold.lua
