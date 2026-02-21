@@ -1,4 +1,4 @@
-## Interface: 120000
+## Interface: 120001
 ## IconTexture: Interface/AddOns/Dominos/icons/Dominos
 ## Title: Dominos Progress
 ## Notes: Progress bars of all sorts
@@ -8,7 +8,7 @@ localization.xml
 config.lua
 main.lua
 progressBar.lua
-data/xp.lua
-data/reputation.lua
-data/honor.lua
-data/gold.lua
+xpBar.lua
+reputationBar.lua
+honorBar.lua
+goldBar.lua

@@ -163,36 +163,15 @@ function CastingBarFrame_OnEvent(self, event, ...)
 		if ( self.Text ) then
 			self.Text:SetText(text);
 		end
-		if ( self.Icon ) then
-			self.Icon:SetTexture(texture);
-			if ( self.iconWhenNoninterruptible ) then
-				self.Icon:SetShown(not notInterruptible);
-			end
-		end
 		CastingBarFrame_ApplyAlpha(self, 1.0);
 		self.holdTime = 0;
 		self.casting = true;
 		self.castID = castID;
 		self.channeling = nil;
 		self.fadeOut = nil;
-
-		if ( self.BorderShield ) then
-			if ( self.showShield and notInterruptible ) then
-				self.BorderShield:Show();
-				if ( self.BarBorder ) then
-					self.BarBorder:Hide();
-				end
-			else
-				self.BorderShield:Hide();
-				if ( self.BarBorder ) then
-					self.BarBorder:Show();
-				end
-			end
-		end
 		if ( self.showCastbar ) then
 			self:Show();
 		end
-
 	elseif ( event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_CHANNEL_STOP") then
 		if ( not self:IsVisible() ) then
 			self:Hide();
@@ -287,9 +266,6 @@ function CastingBarFrame_OnEvent(self, event, ...)
 		if ( self.Text ) then
 			self.Text:SetText(text);
 		end
-		if ( self.Icon ) then
-			self.Icon:SetTexture(texture);
-		end
 		if ( self.Spark ) then
 			self.Spark:Hide();
 		end
@@ -298,19 +274,6 @@ function CastingBarFrame_OnEvent(self, event, ...)
 		self.casting = nil;
 		self.channeling = true;
 		self.fadeOut = nil;
-		if ( self.BorderShield ) then
-			if ( self.showShield and notInterruptible ) then
-				self.BorderShield:Show();
-				if ( self.BarBorder ) then
-					self.BarBorder:Hide();
-				end
-			else
-				self.BorderShield:Hide();
-				if ( self.BarBorder ) then
-					self.BarBorder:Show();
-				end
-			end
-		end
 		if ( self.showCastbar ) then
 			self:Show();
 		end
@@ -339,24 +302,6 @@ function CastingBarFrame_UpdateInterruptibleState(self, notInterruptible)
 
 		if self.flashColorSameAsStart then
 			self.Flash:SetVertexColor(startColor:GetRGB());
-		end
-
-		if ( self.BorderShield ) then
-			if ( self.showShield and notInterruptible ) then
-				self.BorderShield:Show();
-				if ( self.BarBorder ) then
-					self.BarBorder:Hide();
-				end
-			else
-				self.BorderShield:Hide();
-				if ( self.BarBorder ) then
-					self.BarBorder:Show();
-				end
-			end
-		end
-
-		if ( self.Icon and self.iconWhenNoninterruptible ) then
-			self.Icon:SetShown(not notInterruptible);
 		end
 	end
 end
@@ -417,11 +362,6 @@ end
 
 function CastingBarFrame_ApplyAlpha(self, alpha)
 	self:SetAlpha(alpha);
-	if self.additionalFadeWidgets then
-		for widget in pairs(self.additionalFadeWidgets) do
-			widget:SetAlpha(alpha);
-		end
-	end
 end
 
 function CastingBarFrame_FinishSpell(self)
