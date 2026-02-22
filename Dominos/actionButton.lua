@@ -93,23 +93,15 @@ function ActionButtonMixin:SetShowBindingText(show)
 end
 
 function ActionButtonMixin:SetShowCountText(show)
-    if show then
-        self.Count:Show()
-    else
-        self.Count:Hide()
-    end
+    self.Count:SetAlpha(show and 1 or 0)
 end
 
 function ActionButtonMixin:SetShowMacroText(show)
-    self.Name:SetShown(show and true)
+    self.Name:SetAlpha(show and 1 or 0)
 end
 
 function ActionButtonMixin:SetShowEquippedItemBorders(show)
-    if show then
-        self.Border:SetParent(self)
-    else
-        self.Border:SetParent(Addon.ShadowUIParent)
-    end
+    self.Border:SetAlpha(show and 1 or 0)
 end
 
 -- exports

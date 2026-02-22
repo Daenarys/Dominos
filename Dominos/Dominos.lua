@@ -576,11 +576,21 @@ end
 -- binding text
 function Addon:SetShowBindingText(enable)
     self.db.profile.showBindingText = enable or false
-    self.Frame:ForAll('ForButtons', 'UpdateHotkeys')
+    self.Frame:ForAll('ForButtons', 'SetShowBindingText', enable)
 end
 
 function Addon:ShowBindingText()
     return self.db.profile.showBindingText
+end
+
+-- count text
+function Addon:SetShowCounts(enable)
+    self.db.profile.showCounts = enable or false
+    self.Frame:ForAll('ForButtons', 'SetShowCountText', enable)
+end
+
+function Addon:ShowCounts()
+    return self.db.profile.showCounts
 end
 
 -- macro text
@@ -718,16 +728,6 @@ end
 
 function Addon:IsLinkedOpacityEnabled()
     return self.db.profile.linkedOpacity
-end
-
--- show counts toggle
-function Addon:ShowCounts()
-    return self.db.profile.showCounts
-end
-
-function Addon:SetShowCounts(enable)
-    self.db.profile.showCounts = enable or false
-    self.Frame:ForAll('ForButtons', 'SetShowCountText', enable)
 end
 
 -- alignment grid
