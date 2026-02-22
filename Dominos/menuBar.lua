@@ -17,6 +17,11 @@ if MicroMenu then
         -- always reparent the button in retail
         button:SetParent(Addon.ShadowUIParent)
 
+        -- hide the housing button
+        if button == HousingMicroButton then
+        button:Hide()
+        end
+
         if button:IsShown() then
             MicroButtons[#MicroButtons + 1] = button
         end
