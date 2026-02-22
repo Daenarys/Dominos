@@ -36,6 +36,7 @@ end
 function ActionButtonMixin:OnCreate(id)
     -- initialize secure state
     self:SetAttributeNoHandler("action", 0)
+    self:SetAttributeNoHandler("showgrid", Addon:ShowGrid())
     self:SetAttributeNoHandler("commandName", GetActionButtonCommand(id) or self:GetName())
     self:SetAttributeNoHandler("useparent-checkfocuscast", true)
     self:SetAttributeNoHandler("useparent-checkmouseovercast", true)
@@ -60,9 +61,11 @@ function ActionButtonMixin:OnCreate(id)
         local show = (HasAction(self:GetAttribute("action")))
             and not self:GetAttribute("statehidden")
 
+        local showgrid = self:GetAttribute("showgrid")
+
         if show then
             self:SetAlpha(1)
-        else
+        elseif not showgrid then
             self:SetAlpha(0)
         end
     ]])
