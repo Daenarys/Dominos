@@ -42,13 +42,13 @@ function Config:GetDefaults()
 		profile = {
 			one_bar = true,
 			skip_inactive_modes = false,
-			gold_goal = 0,
+                gold_goal = 0,
 			colors = {
 				xp = {0.58, 0, 0.55, 1},
 				xp_bonus = {0, 0.39, 0.88},
 				honor = {1.0, 0.24, 0, 1},
-				gold = {1, .8431, 0, 1},
-				gold_realm = {1, .9451, .7294, 1}
+                    gold = {1, .8431, 0, 1},
+                    gold_realm = {1, .9451, .7294, 1}
 			}
 		},
 

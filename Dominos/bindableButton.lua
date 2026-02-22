@@ -1,22 +1,15 @@
 -- Binding code that's shared between the various flavors of action buttons
 local AddonName, Addon = ...
 local KeyBound = LibStub('LibKeyBound-1.0')
-local COMMAND_TEMPLATE = 'CLICK %s:HOTKEY'
 
 -- binding method definitions
 -- returns the binding action associated with the button
-
--- we use a virtual button (arbitrarily named HOTKEY)
--- to enable cast on key press support
 local function getButtonBindingAction(button)
     return button:GetAttribute("commandName")
-        or COMMAND_TEMPLATE:format(button:GetName())
 end
 
-local function getButtonBindingActionName(button)
-    return button:GetAttribute("displayName")
-        or _G["BINDING_NAME_" .. getButtonBindingAction(button)]
-        or button:GetName()
+local function getButtonActionName(button)
+    return button:GetName()
 end
 
 local function getButtonBindings(button)
@@ -82,7 +75,7 @@ function BindableButtonProxy:ClearBindings()
 end
 
 function BindableButtonProxy:GetActionName()
-    return whenExists(self:GetParent(), getButtonBindingActionName) or UNKNOWN
+    return whenExists(self:GetParent(), getButtonActionName) or UNKNOWN
 end
 
 BindableButtonProxy:SetScript('OnLeave', function(self)
@@ -113,17 +106,6 @@ function BindableButton:UpdateHotkeys()
 
     hotkey:SetText(key)
     hotkey:SetShown(key ~= '')
-
-    if key ~= '' and Addon:ShowBindingText() and self.buttonType == 'BONUSACTIONBUTTON' then
-        hotkey:ClearAllPoints()
-        hotkey:SetPoint("TOPLEFT", -2, -3)
-    elseif key ~= '' and Addon:ShowBindingText() and self.buttonType == 'SHAPESHIFTBUTTON' then
-        hotkey:ClearAllPoints()
-        hotkey:SetPoint("TOPLEFT", -2, -3)
-    elseif key ~= '' and Addon:ShowBindingText() then
-        hotkey:ClearAllPoints()
-        hotkey:SetPoint("TOPLEFT", 3, -3)
-    end
 end
 
 function BindableButton:OnEnter()

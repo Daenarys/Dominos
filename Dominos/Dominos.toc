@@ -10,6 +10,7 @@ embeds.xml
 localization.xml
 Dominos.lua
 barStates.lua
+shadowUIParent.lua
 frame.lua
 buttonBar.lua
 bindableButton.lua
