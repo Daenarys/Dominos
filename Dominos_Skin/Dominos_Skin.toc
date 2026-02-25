@@ -43,3 +43,4 @@ skins\WorkOrders.lua
 skins\WorldMap.lua
 skins\unitframes\CastBar.lua
 skins\unitframes\PartyFrame.lua
+skins\unitframes\PlayerFrame.lua
