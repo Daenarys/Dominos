@@ -1,7 +1,7 @@
 local CASTBAR_STAGE_INVALID = -1;
 local CASTBAR_STAGE_DURATION_INVALID = -1;
 
-CASTING_BAR_TYPES = {
+DOMINOS_CASTING_BAR_TYPES = {
 	applyingcrafting = { 
 		filling = "ui-castingbar-filling-applyingcrafting",
 		full = "ui-castingbar-full-applyingcrafting",
@@ -64,34 +64,12 @@ function DominosCastingBarMixin:OnLoad(unit, showTradeSkills, showShield)
 end
 
 function DominosCastingBarMixin:UpdateShownState(desiredShow)
-	if (self == PlayerCastingBarFrame) and not GameRulesUtil.ShouldShowPlayerCastBar() then
-		desiredShow = false;
-	end
-
-	self:UpdateCastTimeTextShown();
-
-	if self.isInEditMode then
-		-- If we are in edit mode then override and just show
-		self:StopFinishAnims();
-		self:ApplyAlpha(1.0);
-		self:Show();
-		return;
-	end
-
 	if desiredShow ~= nil then
 		self:SetShown(desiredShow);
 		return;
 	end
 
 	self:SetShown(self.casting and self:ShouldShowCastBar());
-end
-
--- Fades additional widgets along with the cast bar, in case these widgets are not parented or use ignoreParentAlpha
-function DominosCastingBarMixin:AddWidgetForFade(widget)
-	if not self.additionalFadeWidgets then
-		self.additionalFadeWidgets = {};
-	end
-	self.additionalFadeWidgets[widget] = true;
 end
 
 function DominosCastingBarMixin:SetUnit(unit, showTradeSkills, showShield)
@@ -181,7 +159,7 @@ function DominosCastingBarMixin:GetTypeInfo(barType)
 	if not barType then
 		barType = "standard";
 	end
-	return CASTING_BAR_TYPES[barType];
+	return DOMINOS_CASTING_BAR_TYPES[barType];
 end
 
 
@@ -239,7 +217,6 @@ function DominosCastingBarMixin:HandleCastStop(event, ...)
 		end
 		if not self.reverseChanneling and not self.channeling then
 			self:SetValue(self.maxValue);
-			self:UpdateCastTimeText();
 		end
 
 		self:PlayFadeAnim();
@@ -298,15 +275,8 @@ function DominosCastingBarMixin:OnEvent(event, ...)
 		self.maxValue = (endTime - startTime) / 1000;
 		self:SetMinMaxValues(0, self.maxValue);
 		self:SetValue(self.value);
-		self:UpdateCastTimeText();
 		if ( self.Text ) then
 			self.Text:SetText(text);
-		end
-		if ( self.Icon ) then
-			self.Icon:SetTexture(texture);
-			if ( self.iconWhenNoninterruptible ) then
-				self.Icon:SetShown(not notInterruptible);
-			end
 		end
 		self.casting = true;
 		self.castID = castID;
@@ -315,21 +285,6 @@ function DominosCastingBarMixin:OnEvent(event, ...)
 		
 		self:StopAnims();
 		self:ApplyAlpha(1.0);
-
-		if ( self.BorderShield ) then
-			if ( self.showShield and notInterruptible ) then
-				self.BorderShield:Show();
-				if ( self.BarBorder ) then
-					self.BarBorder:Hide();
-				end
-			else
-				self.BorderShield:Hide();
-				if ( self.BarBorder ) then
-					self.BarBorder:Show();
-				end
-			end
-		end
-
 		self:UpdateShownState(self:ShouldShowCastBar());
 	elseif ( event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_CHANNEL_STOP" or event == "UNIT_SPELLCAST_EMPOWER_STOP") then
 		self:HandleCastStop(event, ...);
@@ -400,12 +355,8 @@ function DominosCastingBarMixin:OnEvent(event, ...)
 
 		self:SetMinMaxValues(0, self.maxValue);
 		self:SetValue(self.value);
-		self:UpdateCastTimeText();
 		if ( self.Text ) then
 			self.Text:SetText(text);
-		end
-		if ( self.Icon ) then
-			self.Icon:SetTexture(texture);
 		end
 		if (isChargeSpell) then
 			self.reverseChanneling = true;
@@ -419,21 +370,6 @@ function DominosCastingBarMixin:OnEvent(event, ...)
 		
 		self:StopAnims();
 		self:ApplyAlpha(1.0);
-
-		if ( self.BorderShield ) then
-			if ( self.showShield and notInterruptible ) then
-				self.BorderShield:Show();
-				if ( self.BarBorder ) then
-					self.BarBorder:Hide();
-				end
-			else
-				self.BorderShield:Hide();
-				if ( self.BarBorder ) then
-					self.BarBorder:Show();
-				end
-			end
-		end
-
 		self:UpdateShownState(self:ShouldShowCastBar());
 
 		-- AddStages after Show so that the layout is valid
@@ -453,7 +389,6 @@ function DominosCastingBarMixin:OnEvent(event, ...)
 			self.maxValue = (endTime - startTime) / 1000;
 			self:SetMinMaxValues(0, self.maxValue);
 			self:SetValue(self.value);
-			self:UpdateCastTimeText();
 		end
 	elseif ( event == "UNIT_SPELLCAST_INTERRUPTIBLE" or event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE" ) then
 		self:UpdateInterruptibleState(event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE");
@@ -465,24 +400,6 @@ function DominosCastingBarMixin:UpdateInterruptibleState(notInterruptible)
 		local _, _, _, _, _, isTradeSkill = UnitCastingInfo(self.unit);
 		self.barType = self:GetEffectiveType(false, notInterruptible, isTradeSkill, false);
 		self:SetStatusBarTexture(self:GetTypeInfo(self.barType).filling);
-
-		if ( self.BorderShield ) then
-			if ( self.showShield and notInterruptible ) then
-				self.BorderShield:Show();
-				if ( self.BarBorder ) then
-					self.BarBorder:Hide();
-				end
-			else
-				self.BorderShield:Hide();
-				if ( self.BarBorder ) then
-					self.BarBorder:Show();
-				end
-			end
-		end
-
-		if ( self.Icon and self.iconWhenNoninterruptible ) then
-			self.Icon:SetShown(not notInterruptible);
-		end
 	end
 end
 
@@ -494,7 +411,6 @@ function DominosCastingBarMixin:OnUpdate(elapsed)
 		end
 		if ( self.value >= self.maxValue ) then
 			self:SetValue(self.maxValue);
-			self:UpdateCastTimeText();
 			if (not self.reverseChanneling) then
 				self:FinishSpell();
 			else
@@ -507,7 +423,6 @@ function DominosCastingBarMixin:OnUpdate(elapsed)
 			return;
 		end
 		self:SetValue(self.value);
-		self:UpdateCastTimeText();
 		if ( self.Flash ) then
 			self.Flash:Hide();
 		end
@@ -518,7 +433,6 @@ function DominosCastingBarMixin:OnUpdate(elapsed)
 			return;
 		end
 		self:SetValue(self.value);
-		self:UpdateCastTimeText();
 		if ( self.Flash ) then
 			self.Flash:Hide();
 		end
@@ -534,17 +448,11 @@ end
 
 function DominosCastingBarMixin:ApplyAlpha(alpha)
 	self:SetAlpha(alpha);
-	if self.additionalFadeWidgets then
-		for widget in pairs(self.additionalFadeWidgets) do
-			widget:SetAlpha(alpha);
-		end
-	end
 end
 
 function DominosCastingBarMixin:FinishSpell()
 	if self.maxValue and not self.reverseChanneling and not self.channeling then
 		self:SetValue(self.maxValue);
-		self:UpdateCastTimeText();
 	end
 	local barTypeInfo = self:GetTypeInfo(self.barType);
 	self:SetStatusBarTexture(barTypeInfo.full);
@@ -583,7 +491,7 @@ function DominosCastingBarMixin:ShowSpark()
 		self.Spark.offsetY = 0;
 	end
 
-	for barType, barTypeInfo in pairs(CASTING_BAR_TYPES) do
+	for barType, barTypeInfo in pairs(DOMINOS_CASTING_BAR_TYPES) do
 		local sparkFx = barTypeInfo.sparkFx and self[barTypeInfo.sparkFx];
 		if sparkFx then
 			sparkFx:SetShown(self.playCastFX and barType == currentBarType);
@@ -596,7 +504,7 @@ function DominosCastingBarMixin:HideSpark()
 		self.Spark:Hide();
 	end
 
-	for barType, barTypeInfo in pairs(CASTING_BAR_TYPES) do
+	for barType, barTypeInfo in pairs(DOMINOS_CASTING_BAR_TYPES) do
 		local sparkFx = barTypeInfo.sparkFx and self[barTypeInfo.sparkFx];
 		if sparkFx then
 			sparkFx:Hide();
@@ -651,7 +559,7 @@ function DominosCastingBarMixin:PlayFadeAnim()
 	if self.FadeOutAnim and self:GetAlpha() > 0 and self:IsVisible() then
 		if self.reverseChanneling and self.CurrSpellStage < self.NumStages then
 			self.HoldFadeOutAnim:Play();
-		elseif not self.isInEditMode then
+		else
 			self.FadeOutAnim:Play();
 		end
 	end
@@ -691,7 +599,7 @@ function DominosCastingBarMixin:StopFinishAnims()
 		self.FadeOutAnim:Stop();
 	end
 
-	for _, barTypeInfo in pairs(CASTING_BAR_TYPES) do
+	for _, barTypeInfo in pairs(DOMINOS_CASTING_BAR_TYPES) do
 		local finishAnim = barTypeInfo.finishAnim and self[barTypeInfo.finishAnim];
 		if finishAnim then
 			finishAnim:Stop();
@@ -704,144 +612,8 @@ function DominosCastingBarMixin:StopAnims()
 	self:StopFinishAnims();
 end
 
-function DominosCastingBarMixin:UpdateIsShown()
-	if ( self.casting and self:ShouldShowCastBar() ) then
-		self:OnEvent("PLAYER_ENTERING_WORLD")
-	else
-		local desiredShowFalse = false;
-		self:UpdateShownState(desiredShowFalse);
-	end
-end
-
-function DominosCastingBarMixin:SetCastTimeTextShown(showCastTime)
-	self.showCastTimeSetting = showCastTime;
-	self:UpdateCastTimeTextShown();
-end
-
-function DominosCastingBarMixin:UpdateCastTimeTextShown()
-	if not self.CastTimeText then
-		return;
-	end
-
-	local showCastTime = self.showCastTimeSetting and (self.casting or self.channeling or self.isInEditMode);
-	self.CastTimeText:SetShown(showCastTime);
-	if showCastTime and self.isInEditMode and not self.CastTimeText.text then
-		self:UpdateCastTimeText();
-	end
-end
-
-function DominosCastingBarMixin:UpdateCastTimeText()
-	if not self.CastTimeText then
-		return;
-	end
-
-	local seconds = 0;
-	if self.casting or self.channeling then
-		local min, max = self:GetMinMaxValues();
-		if self.casting then
-			seconds = math.max(min, max - self:GetValue());
-		else
-			seconds = math.max(min, self:GetValue());
-		end
-	elseif self.isInEditMode then
-		seconds = 10;
-	end
-
-	local text = string.format(CAST_BAR_CAST_TIME, seconds);
-	self.CastTimeText:SetText(text);
-end
-
 function DominosCastingBarMixin:ShouldShowCastBar()
 	return self.showCastbar and (self.unit ~= nil);
-end
-
-function DominosCastingBarMixin:SetAndUpdateShowCastbar(showCastbar)
-	self.showCastbar = showCastbar;
-	self:UpdateIsShown();
-end
-
-function DominosCastingBarMixin:SetLook(look)
-	if ( look == "CLASSIC" ) then
-		self.playCastFX = true;
-		self:SetWidth(208);
-		self:SetHeight(11);
-		-- bordershield
-		self.BorderShield:ClearAllPoints();
-		self.BorderShield:SetWidth(256);
-		self.BorderShield:SetHeight(64);
-		self.BorderShield:SetPoint("TOP", 0, 28);
-		-- text
-		self.Text:Show();
-		self.Text:ClearAllPoints();
-		self.Text:SetWidth(185);
-		self.Text:SetHeight(16);
-		self.Text:SetPoint("TOP", 0, -10);
-		self.Text:SetFontObject("GameFontHighlightSmall");
-		-- text border
-		if self.TextBorder then
-			self.TextBorder:Show();
-		end
-		-- icon
-		self.Icon:Hide();
-		-- drop shadow
-		if self.DropShadow then
-			self.DropShadow:Hide();
-		end
-	elseif ( look == "UNITFRAME" ) then
-		self.playCastFX = false;
-		self:SetWidth(150);
-		self:SetHeight(10);
-		-- bordershield
-		self.BorderShield:ClearAllPoints();
-		self.BorderShield:SetWidth(0);
-		self.BorderShield:SetHeight(49);
-		self.BorderShield:SetPoint("TOPLEFT", -28, 20);
-		self.BorderShield:SetPoint("TOPRIGHT", 18, 20);
-		-- text
-		self.Text:Show();
-		self.Text:ClearAllPoints();
-		self.Text:SetWidth(0);
-		self.Text:SetHeight(16);
-		self.Text:SetPoint("TOPLEFT", 0, 3);
-		self.Text:SetPoint("TOPRIGHT", 0, 3);
-		self.Text:SetFontObject("SystemFont_Shadow_Small");
-		-- text border
-		if self.TextBorder then
-			self.TextBorder:Hide();
-		end
-		-- icon
-		self.Icon:Show();
-		-- drop shadow
-		if self.DropShadow then
-			self.DropShadow:Hide();
-		end
-	elseif ( look == "OVERLAY" ) then
-		self.playCastFX = true;
-		self:SetWidth(208);
-		self:SetHeight(11);
-		-- bordershield
-		self.BorderShield:ClearAllPoints();
-		self.BorderShield:SetWidth(256);
-		self.BorderShield:SetHeight(64);
-		self.BorderShield:SetPoint("TOP", 0, 28);
-		-- text
-		self.Text:Show();
-		self.Text:ClearAllPoints();
-		self.Text:SetWidth(300);
-		self.Text:SetHeight(20);
-		self.Text:SetPoint("TOP", 0, 30);
-		self.Text:SetFontObject("GameFontNormalLarge");
-		-- text border
-		if self.TextBorder then
-			self.TextBorder:Hide();
-		end
-		-- icon
-		self.Icon:Hide();
-		-- drop shadow
-		if self.DropShadow then
-			self.DropShadow:Show();
-		end
-	end
 end
 
 function DominosCastingBarMixin:AddStages(numStages)
@@ -992,7 +764,6 @@ function DominosCastingBarMixin:UpdateStage()
 end
 
 function DominosCastingBarMixin:ClearStages()
-
 	if self.ChargeGlow then
 		self.ChargeGlow:SetShown(false);
 	end
