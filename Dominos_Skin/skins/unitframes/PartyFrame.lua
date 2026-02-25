@@ -208,5 +208,113 @@ hooksecurefunc("CompactRaidGroup_UpdateLayout", function(frame)
 	end
 end)
 
+------The default setup function
+local texCoords = {
+	["Raid-AggroFrame"] = {  0.00781250, 0.55468750, 0.00781250, 0.27343750 },
+	["Raid-TargetFrame"] = { 0.00781250, 0.55468750, 0.28906250, 0.55468750 },
+}
+
+hooksecurefunc("DefaultCompactUnitFrameSetup", function(frame)
+	local displayBorder = EditModeManagerFrame:ShouldRaidFrameDisplayBorder(frame.groupType)
+	local isPowerBarShowing = frame.powerBar and frame.powerBar:IsShown()
+	local powerBarUsedHeight = isPowerBarShowing and 8 or 0
+
+	frame.healthBar:SetStatusBarTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Fill")
+	frame.healthBar:GetStatusBarTexture():SetDrawLayer("BORDER")
+
+	frame.aggroHighlight:SetTexture("Interface\\RaidFrame\\Raid-FrameHighlights");
+	frame.aggroHighlight:SetTexCoord(unpack(texCoords["Raid-AggroFrame"]));
+	frame.aggroHighlight:SetAllPoints(frame);
+
+	if (frame.horizTopBorder == nil) then
+		frame.horizTopBorder = frame:CreateTexture(nil, "BORDER")
+		frame.horizTopBorder:ClearAllPoints()
+		frame.horizTopBorder:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0, -7)
+		frame.horizTopBorder:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 0, -7)
+		frame.horizTopBorder:SetTexture("Interface\\RaidFrame\\Raid-HSeparator")
+		frame.horizTopBorder:SetHorizTile(true)
+		frame.horizTopBorder:SetHeight(8)
+	end
+
+	if (frame.horizBottomBorder == nil) then
+		frame.horizBottomBorder = frame:CreateTexture(nil, "BORDER")
+		frame.horizBottomBorder:ClearAllPoints()
+		frame.horizBottomBorder:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, 1)
+		frame.horizBottomBorder:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, 1)
+		frame.horizBottomBorder:SetTexture("Interface\\RaidFrame\\Raid-HSeparator")
+		frame.horizBottomBorder:SetHorizTile(true)
+		frame.horizBottomBorder:SetHeight(8)
+	end
+
+	if (frame.vertLeftBorder == nil) then
+		frame.vertLeftBorder = frame:CreateTexture(nil, "BORDER")
+		frame.vertLeftBorder:ClearAllPoints()
+		frame.vertLeftBorder:SetPoint("TOPRIGHT", frame, "TOPLEFT", 7, 0)
+		frame.vertLeftBorder:SetPoint("BOTTOMRIGHT", frame, "BOTTOMLEFT", 7, 0)
+		frame.vertLeftBorder:SetTexture("Interface\\RaidFrame\\Raid-VSeparator")
+		frame.vertLeftBorder:SetVertTile(true)
+		frame.vertLeftBorder:SetWidth(8)
+	end
+
+	if (frame.vertRightBorder == nil) then
+		frame.vertRightBorder = frame:CreateTexture(nil, "BORDER")
+		frame.vertRightBorder:ClearAllPoints()
+		frame.vertRightBorder:SetPoint("TOPLEFT", frame, "TOPRIGHT", -1, 0)
+		frame.vertRightBorder:SetPoint("BOTTOMLEFT", frame, "BOTTOMRIGHT", -1, 0)
+		frame.vertRightBorder:SetTexture("Interface\\RaidFrame\\Raid-VSeparator")
+		frame.vertRightBorder:SetVertTile(true)
+		frame.vertRightBorder:SetWidth(8)
+	end
+
+	if (frame.horizDivider == nil) then
+		frame.horizDivider = frame:CreateTexture(nil, "BORDER")
+		frame.horizDivider:ClearAllPoints()
+		frame.horizDivider:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, 1 + powerBarUsedHeight)
+		frame.horizDivider:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, 1 + powerBarUsedHeight)
+		frame.horizDivider:SetTexture("Interface\\RaidFrame\\Raid-HSeparator")
+		frame.horizDivider:SetHorizTile(true)
+		frame.horizDivider:SetHeight(8)
+	end
+
+	if ( displayBorder ) then
+		frame.horizTopBorder:Show()
+		frame.horizBottomBorder:Show()
+		frame.vertLeftBorder:Show()
+		frame.vertRightBorder:Show()
+		frame.horizDivider:Show()
+		if ( isPowerBarShowing ) then
+			frame.horizDivider:Show()
+		else
+			frame.horizDivider:Hide()
+		end
+	else
+		frame.horizTopBorder:Hide()
+		frame.horizBottomBorder:Hide()
+		frame.vertLeftBorder:Hide()
+		frame.vertRightBorder:Hide()
+		frame.horizDivider:Hide()
+	end
+end)
+
+hooksecurefunc("CompactUnitFrame_UpdateHealthColor", function(frame)
+	if frame.background then
+		frame.background:SetTexture("Interface\\RaidFrame\\Raid-Bar-Hp-Bg")
+		frame.background:SetTexCoord(0, 1, 0, 0.53125)
+	end
+end)
+
+hooksecurefunc("CompactUnitFrame_UpdateRoleIcon", function(frame)
+	if not frame.roleIcon then
+		return
+	end
+
+	local role = UnitGroupRolesAssigned(frame.unit);
+	if ( frame.optionTable.displayRoleIcon and (role == "TANK" or role == "HEALER" or role == "DAMAGER") ) then
+		frame.roleIcon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES")
+		frame.roleIcon:SetTexCoord(GetTexCoordsForOldRoleSmallCircle(role))
+		frame.roleIcon:SetSize(12, 12)
+	end
+end)
+
 ApplyDropDown(CompactRaidFrameManagerDisplayFrameModeControlDropdown)
 ApplyDropDown(CompactRaidFrameManagerDisplayFrameRestrictPingsDropdown)
