@@ -19,7 +19,7 @@ if MicroMenu then
 
         -- hide the housing button
         if button == HousingMicroButton then
-        button:Hide()
+            button:Hide()
         end
 
         if button:IsShown() then
