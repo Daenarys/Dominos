@@ -202,8 +202,8 @@ hooksecurefunc("CompactUnitFrame_UpdateCenterStatusIcon", function(frame)
 			frame.centerStatusIcon.border:SetAllPoints(frame.centerStatusIcon)
 		end
 		if ( frame.optionTable.displayInOtherGroup and UnitInOtherParty(frame.unit) ) then
-			frame.centerStatusIcon.texture:SetTexture("Interface\\LFGFrame\\LFG-Eye")
-			frame.centerStatusIcon.texture:SetTexCoord(0.125, 0.25, 0.25, 0.5)
+			frame.centerStatusIcon.texture:SetAtlas("groupfinder-eye-single", true)
+			frame.centerStatusIcon.texture:SetTexCoord(0, 1, 0, 1)
 			frame.centerStatusIcon.border:SetTexture("Interface\\Common\\RingBorder")
 			frame.centerStatusIcon.border:Show()
 		elseif ( frame.optionTable.displayIncomingResurrect and UnitHasIncomingResurrection(frame.unit) ) then
