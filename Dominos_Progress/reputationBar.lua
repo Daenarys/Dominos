@@ -10,20 +10,6 @@ if not GetFriendshipReputation then
     end
 end
 
-local IsFactionParagon = C_Reputation and C_Reputation.IsFactionParagon
-if not IsFactionParagon then
-    IsFactionParagon = function()
-        return false
-    end
-end
-
-local IsMajorFaction = C_Reputation and C_Reputation.IsMajorFaction
-if not IsMajorFaction then
-    IsMajorFaction = function()
-        return false
-    end
-end
-
 local GetWatchedFactionInfo = GetWatchedFactionInfo
 if not GetWatchedFactionInfo then
     GetWatchedFactionInfo = function()
@@ -70,9 +56,9 @@ function ReputationBar:Update()
         max = 1
         value = 0
 
-        factionStandingText = REPUTATION
         color = FACTION_BAR_COLORS[1]
-    elseif IsFactionParagon(factionID) then
+        factionStandingText = REPUTATION
+    elseif C_Reputation.IsFactionParagonForCurrentPlayer(factionID) then
         local currentValue, threshold = C_Reputation.GetFactionParagonInfo(factionID)
 
         min = 0
@@ -81,6 +67,16 @@ function ReputationBar:Update()
 
         color = FACTION_BAR_COLORS[PARAGON_FACTION_COLOR_INDEX]
         factionStandingText = GetText("FACTION_STANDING_LABEL" .. reaction, UnitSex("player"))
+    elseif C_Reputation.IsMajorFaction(factionID) then
+        local info = C_MajorFactions.GetMajorFactionData(factionID)
+
+        capped  = C_MajorFactions.HasMaximumRenown(factionID)
+        min = 0
+        max = info.renownLevelThreshold
+        value = capped and info.renownLevelThreshold or info.renownReputationEarned or 0;
+
+        color = BLUE_FONT_COLOR
+        factionStandingText = RENOWN_LEVEL_LABEL:format(info.renownLevel)
     elseif IsFriendshipFaction(factionID) then
         local info = C_GossipInfo.GetFriendshipReputation(factionID)
 
@@ -97,16 +93,6 @@ function ReputationBar:Update()
 
         color = FACTION_BAR_COLORS[reaction]
         factionStandingText = info.reaction
-    elseif IsMajorFaction(factionID) then
-        local info = C_MajorFactions.GetMajorFactionData(factionID)
-
-        capped  = C_MajorFactions.HasMaximumRenown(factionID)
-        min = 0
-        max = info.renownLevelThreshold
-        value = capped and info.renownLevelThreshold or info.renownReputationEarned or 0;
-
-        color = BLUE_FONT_COLOR
-        factionStandingText = RENOWN_LEVEL_LABEL:format(info.renownLevel)
     else
         if reaction == MAX_REPUTATION_REACTION then
             min = 0
