@@ -33,11 +33,64 @@ local function GetActionButtonCommand(id)
     end
 end
 
+local function skinActionButton(self)
+    self.icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
+    self.NormalTexture:SetTexture([[Interface\Buttons\UI-Quickslot2]])
+    self.NormalTexture:ClearAllPoints()
+    self.NormalTexture:SetPoint("TOPLEFT", -15, 15)
+    self.NormalTexture:SetPoint("BOTTOMRIGHT", 15, -15)
+    self.NormalTexture:SetVertexColor(1, 1, 1, 0.5)
+    self.PushedTexture:SetTexture([[Interface\Buttons\UI-Quickslot-Depress]])
+    self.PushedTexture:ClearAllPoints()
+    self.PushedTexture:SetAllPoints()
+    self.HighlightTexture:SetTexture([[Interface\Buttons\ButtonHilight-Square]])
+    self.HighlightTexture:ClearAllPoints()
+    self.HighlightTexture:SetAllPoints()
+    self.HighlightTexture:SetBlendMode("ADD")
+    self.CheckedTexture:SetTexture([[Interface\Buttons\CheckButtonHilight]])
+    self.CheckedTexture:ClearAllPoints()
+    self.CheckedTexture:SetAllPoints()
+    self.CheckedTexture:SetBlendMode("ADD")
+    self.NewActionTexture:SetSize(44, 44)
+    self.NewActionTexture:SetAtlas("bags-newitem")
+    self.NewActionTexture:ClearAllPoints()
+    self.NewActionTexture:SetPoint("CENTER")
+    self.NewActionTexture:SetBlendMode("ADD")
+    self.SpellHighlightTexture:SetSize(44, 44)
+    self.SpellHighlightTexture:SetAtlas("bags-newitem")
+    self.SpellHighlightTexture:ClearAllPoints()
+    self.SpellHighlightTexture:SetPoint("CENTER")
+    self.SpellHighlightTexture:SetBlendMode("ADD")
+    self.Border:SetTexture([[Interface\Buttons\UI-ActionButton-Border]])
+    self.Border:SetSize(62, 62)
+    self.Border:ClearAllPoints()
+    self.Border:SetPoint("CENTER")
+    self.Border:SetBlendMode("ADD")
+    self.cooldown:ClearAllPoints()
+    self.cooldown:SetAllPoints()
+    self.chargeCooldown:ClearAllPoints()
+    self.chargeCooldown:SetAllPoints()
+    self.lossOfControlCooldown:ClearAllPoints()
+    self.lossOfControlCooldown:SetAllPoints()
+    self.Flash:SetTexture([[Interface\Buttons\UI-QuickslotRed]])
+    self.Flash:ClearAllPoints()
+    self.Flash:SetAllPoints()
+    self.Count:ClearAllPoints()
+    self.Count:SetPoint("BOTTOMRIGHT", -2, 2)
+    self.Count:SetDrawLayer("ARTWORK", 2)
+    if self.IconMask then
+        self.IconMask:Hide()
+    end
+    if self.SlotBackground then
+        self.SlotBackground:Hide()
+    end
+end
+
 function ActionButtonMixin:OnCreate(id)
     -- initialize secure state
     self:SetAttributeNoHandler("action", 0)
-    self:SetAttributeNoHandler("showgrid", Addon:ShowGrid())
     self:SetAttributeNoHandler("commandName", GetActionButtonCommand(id) or self:GetName())
+    self:SetAttributeNoHandler("showgrid", Addon:ShowGrid())
     self:SetAttributeNoHandler("useparent-checkfocuscast", true)
     self:SetAttributeNoHandler("useparent-checkmouseovercast", true)
     self:SetAttributeNoHandler("useparent-checkselfcast", true)
@@ -72,6 +125,15 @@ function ActionButtonMixin:OnCreate(id)
 
     -- apply hooks for quick binding
     Addon.BindableButton:AddQuickBindingSupport(self)
+
+    -- use pre 10.x button size
+    self:SetSize(36, 36)
+
+    -- apply button skin
+    skinActionButton(self)
+
+    -- enable cooldown bling
+    self.cooldown:SetDrawBling(true)
 end
 
 function ActionButtonMixin:UpdateOverrideBindings()
@@ -258,6 +320,22 @@ function ActionButton:AddCastOnKeyPressSupport(button)
 
     button.bind = bind
     button:UpdateOverrideBindings()
+end
+
+-- disable new animations
+if (ActionBarActionEventsFrame) then
+    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_START")
+    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_STOP")
+    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
+    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_RETICLE_TARGET")
+    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_RETICLE_CLEAR")
+    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_START")
+    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_SENT")
+    ActionBarActionEventsFrame:UnregisterEvent("UNIT_SPELLCAST_FAILED")
 end
 
 -- exports
