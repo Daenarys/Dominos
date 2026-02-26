@@ -10,20 +10,6 @@ if not GetFriendshipReputation then
     end
 end
 
-local IsFactionParagon = C_Reputation and C_Reputation.IsFactionParagon
-if not IsFactionParagon then
-    IsFactionParagon = function()
-        return false
-    end
-end
-
-local IsMajorFaction = C_Reputation and C_Reputation.IsMajorFaction
-if not IsMajorFaction then
-    IsMajorFaction = function()
-        return false
-    end
-end
-
 local GetWatchedFactionInfo = GetWatchedFactionInfo
 if not GetWatchedFactionInfo then
     GetWatchedFactionInfo = function()
@@ -72,7 +58,7 @@ function ReputationBar:Update()
 
         factionStandingText = REPUTATION
         color = FACTION_BAR_COLORS[1]
-    elseif IsFactionParagon(factionID) then
+    elseif C_Reputation.IsFactionParagonForCurrentPlayer(factionID) then
         local currentValue, threshold = C_Reputation.GetFactionParagonInfo(factionID)
 
         min = 0
@@ -97,7 +83,7 @@ function ReputationBar:Update()
 
         color = FACTION_BAR_COLORS[reaction]
         factionStandingText = info.reaction
-    elseif IsMajorFaction(factionID) then
+    elseif C_Reputation.IsMajorFaction(factionID) then
         local info = C_MajorFactions.GetMajorFactionData(factionID)
 
         capped  = C_MajorFactions.HasMaximumRenown(factionID)
