@@ -153,10 +153,6 @@ function ActionButtonMixin:SetFlyoutDirection(direction)
     self:UpdateFlyout()
 end
 
-function ActionButtonMixin:SetShowBindingText(show)
-    self.HotKey:SetAlpha(show and 1 or 0)
-end
-
 function ActionButtonMixin:SetShowCountText(show)
     self.Count:SetAlpha(show and 1 or 0)
 end

@@ -118,7 +118,6 @@ function ActionBar:OnAttachButton(button)
     button:SetAttribute("action", button:GetAttribute("index") + (self:GetAttribute("actionOffset") or 0))
 
     button:SetFlyoutDirection(self:GetFlyoutDirection())
-    button:SetShowBindingText(Addon:ShowBindingText())
     button:SetShowCountText(Addon:ShowCounts())
     button:SetShowMacroText(Addon:ShowMacroText())
     button:SetShowEquippedItemBorders(Addon:ShowEquippedItemBorders())

@@ -576,7 +576,7 @@ end
 -- binding text
 function Addon:SetShowBindingText(enable)
     self.db.profile.showBindingText = enable or false
-    self.Frame:ForAll('ForButtons', 'SetShowBindingText', enable)
+    self.Frame:ForAll('ForButtons', 'UpdateHotkeys')
 end
 
 function Addon:ShowBindingText()
