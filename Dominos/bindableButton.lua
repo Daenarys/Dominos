@@ -105,7 +105,18 @@ function BindableButton:UpdateHotkeys()
     local hotkey = self.HotKey
 
     hotkey:SetText(key)
-    hotkey:SetShown(key ~= '')
+    hotkey:SetShown(key ~= '' and Addon:ShowBindingText())
+
+    if key ~= '' and self.buttonType == 'BONUSACTIONBUTTON' then
+        hotkey:ClearAllPoints()
+        hotkey:SetPoint("TOPLEFT", -2, -3)
+    elseif key ~= '' and self.buttonType == 'SHAPESHIFTBUTTON' then
+        hotkey:ClearAllPoints()
+        hotkey:SetPoint("TOPLEFT", -2, -3)
+    elseif key ~= '' then
+        hotkey:ClearAllPoints()
+        hotkey:SetPoint("TOPLEFT", 3, -3)
+    end
 end
 
 function BindableButton:OnEnter()
