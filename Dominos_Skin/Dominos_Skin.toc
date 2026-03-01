@@ -21,7 +21,6 @@ skins\Delves.lua
 skins\DressingRoom.lua
 skins\EditMode.lua
 skins\EncounterJournal.lua
-skins\ExpansionLandingPage.lua
 skins\Friends.lua
 skins\GameMenu.lua
 skins\GroupLoot.lua
