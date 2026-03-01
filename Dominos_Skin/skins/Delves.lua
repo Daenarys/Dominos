@@ -8,4 +8,5 @@ end)
 
 if DelvesCompanionAbilityListFrame then
 	ApplyDropDown(DelvesCompanionAbilityListFrame.DelvesCompanionRoleDropdown)
+	DelvesCompanionAbilityListFrame.DelvesCompanionRoleDropdown.Text:SetJustifyH("RIGHT")
 end
