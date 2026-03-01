@@ -106,6 +106,9 @@ function BindableButton:UpdateHotkeys()
 
     hotkey:SetText(key)
     hotkey:SetShown(key ~= '' and Addon:ShowBindingText())
+    hotkey:SetDrawLayer("ARTWORK", 2)
+
+    self.TextOverlayContainer:SetFrameLevel(2)
 
     if key ~= '' and self.buttonType == 'BONUSACTIONBUTTON' then
         hotkey:ClearAllPoints()
