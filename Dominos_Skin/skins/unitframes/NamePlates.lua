@@ -13,12 +13,6 @@ hooksecurefunc(NamePlateAurasMixin, "RefreshList", function(self)
     end
 end)
 
-local castbarColors = {}
-castbarColors.Standard = CreateColor(1.0, 0.7, 0.0, 1)
-castbarColors.Channel = CreateColor(0.0, 1.0, 0.0, 1)
-castbarColors.Uninterruptable = CreateColor(0.7, 0.7, 0.7, 1)
-castbarColors.Interrupted = CreateColor(1, 0, 0, 1)
-
 local function SkinCastbar(self)
     if self:IsForbidden() then return end
 
