@@ -60,12 +60,11 @@ function ActionButtonMixin:OnCreate(id)
     self:SetAttributeNoHandler("UpdateShown", [[
         local show = (HasAction(self:GetAttribute("action")))
             and not self:GetAttribute("statehidden")
-
         local showgrid = self:GetAttribute("showgrid")
 
-        if show then
+        if show or showgrid then
             self:SetAlpha(1)
-        elseif not showgrid then
+        else
             self:SetAlpha(0)
         end
     ]])
