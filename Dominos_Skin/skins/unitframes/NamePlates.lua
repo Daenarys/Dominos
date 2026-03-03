@@ -1,4 +1,6 @@
 hooksecurefunc(NamePlateAurasMixin, "RefreshList", function(self)
+    if self:IsForbidden() then return end
+
     if self.BuffListFrame then
         self.BuffListFrame:SetAlpha(0)
     end
