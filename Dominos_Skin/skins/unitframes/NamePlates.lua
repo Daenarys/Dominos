@@ -67,27 +67,27 @@ local function SkinHealthBar(frame)
         frame.background:SetColorTexture(0.2, 0.2, 0.2, 0.85)
     end
 
-    if not frame.border then
-        frame.border = CreateFrame("Frame", nil, frame, "CpBorderTemplate")
+    if not frame.CpBorder then
+        frame.CpBorder = CreateFrame("Frame", nil, frame, "CpBorderTemplate")
 
-        PixelUtil.SetWidth(frame.border.Left, 1, 2)
-        PixelUtil.SetPoint(frame.border.Left, "TOPRIGHT", frame.border, "TOPLEFT", 0, 1, 0, 2)
-        PixelUtil.SetPoint(frame.border.Left, "BOTTOMRIGHT", frame.border, "BOTTOMLEFT", 0, -1, 0, 2)
+        PixelUtil.SetWidth(frame.CpBorder.Left, 1, 2)
+        PixelUtil.SetPoint(frame.CpBorder.Left, "TOPRIGHT", frame.CpBorder, "TOPLEFT", 0, 1, 0, 2)
+        PixelUtil.SetPoint(frame.CpBorder.Left, "BOTTOMRIGHT", frame.CpBorder, "BOTTOMLEFT", 0, -1, 0, 2)
 
-        PixelUtil.SetWidth(frame.border.Right, 1, 2)
-        PixelUtil.SetPoint(frame.border.Right, "TOPLEFT", frame.border, "TOPRIGHT", 0, 1, 0, 2)
-        PixelUtil.SetPoint(frame.border.Right, "BOTTOMLEFT", frame.border, "BOTTOMRIGHT", 0, -1, 0, 2)
+        PixelUtil.SetWidth(frame.CpBorder.Right, 1, 2)
+        PixelUtil.SetPoint(frame.CpBorder.Right, "TOPLEFT", frame.CpBorder, "TOPRIGHT", 0, 1, 0, 2)
+        PixelUtil.SetPoint(frame.CpBorder.Right, "BOTTOMLEFT", frame.CpBorder, "BOTTOMRIGHT", 0, -1, 0, 2)
 
-        PixelUtil.SetHeight(frame.border.Bottom, 1, 2)
-        PixelUtil.SetPoint(frame.border.Bottom, "TOPLEFT", frame.border, "BOTTOMLEFT", 0, 0)
-        PixelUtil.SetPoint(frame.border.Bottom, "TOPRIGHT", frame.border, "BOTTOMRIGHT", 0, 0)
+        PixelUtil.SetHeight(frame.CpBorder.Bottom, 1, 2)
+        PixelUtil.SetPoint(frame.CpBorder.Bottom, "TOPLEFT", frame.CpBorder, "BOTTOMLEFT", 0, 0)
+        PixelUtil.SetPoint(frame.CpBorder.Bottom, "TOPRIGHT", frame.CpBorder, "BOTTOMRIGHT", 0, 0)
 
-        PixelUtil.SetHeight(frame.border.Top, 1, 2)
-        PixelUtil.SetPoint(frame.border.Top, "BOTTOMLEFT", frame.border, "TOPLEFT", 0, 0)
-        PixelUtil.SetPoint(frame.border.Top, "BOTTOMRIGHT", frame.border, "TOPRIGHT", 0, 0)
+        PixelUtil.SetHeight(frame.CpBorder.Top, 1, 2)
+        PixelUtil.SetPoint(frame.CpBorder.Top, "BOTTOMLEFT", frame.CpBorder, "TOPLEFT", 0, 0)
+        PixelUtil.SetPoint(frame.CpBorder.Top, "BOTTOMRIGHT", frame.CpBorder, "TOPRIGHT", 0, 0)
     end
 
-    for i, texture in ipairs(frame.border.Textures) do
+    for i, texture in ipairs(frame.CpBorder.Textures) do
         if isTarget then
             texture:SetColorTexture(1, 1, 1, 0.9)
         else
@@ -98,7 +98,7 @@ local function SkinHealthBar(frame)
     hooksecurefunc(frame.healthBar, "UpdateSelectionBorder", function()
         local isTarget = frame.healthBar:IsTarget()
 
-        for i, texture in ipairs(frame.border.Textures) do
+        for i, texture in ipairs(frame.CpBorder.Textures) do
             if isTarget then
                 texture:SetColorTexture(1, 1, 1, 0.9)
             else
@@ -112,8 +112,8 @@ local function ShowBorder(frame)
     if frame.background then
         frame.background:Show()
     end
-    if frame.border then
-        frame.border:Show()
+    if frame.CpBorder then
+        frame.CpBorder:Show()
     end
 end
 
@@ -121,8 +121,8 @@ local function HideBorder(frame)
     if frame.background then
         frame.background:Hide()
     end
-    if frame.border then
-        frame.border:Hide()
+    if frame.CpBorder then
+        frame.CpBorder:Hide()
     end
 end
 
