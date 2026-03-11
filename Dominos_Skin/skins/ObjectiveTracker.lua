@@ -20,21 +20,6 @@ local function SetCollapsedModule(self, collapsed)
 	end
 end
 
-if ObjectiveTrackerFrame.Header then
-	ObjectiveTrackerFrame.Header.Background:Hide()
-	ObjectiveTrackerFrame.Header.Text:Hide()
-	ObjectiveTrackerFrame.Header.MinimizeButton:SetSize(15, 14)
-	ObjectiveTrackerFrame.Header.MinimizeButton:SetPoint("RIGHT", -10, 3)
-
-	local title = ObjectiveTrackerFrame.Header:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-	ObjectiveTrackerFrame.Header.Title = title
-	title:SetText(OBJECTIVES_TRACKER_LABEL)
-	title:SetPoint("RIGHT", ObjectiveTrackerFrame.Header.MinimizeButton, "LEFT", -3, 0)
-
-	SetCollapsedHeader(ObjectiveTrackerFrame.Header, _G.ObjectiveTrackerFrame.isCollapsed)
-	hooksecurefunc(ObjectiveTrackerFrame.Header, 'SetCollapsed', SetCollapsedHeader)
-end
-
 local function HandleQuestIcons(_, block)
 	if not block.ItemButton then return end
 
@@ -56,6 +41,21 @@ local function HandleQuestIcons(_, block)
 
 		block.ItemButton.IsSkinned = true
 	end
+end
+
+if ObjectiveTrackerFrame.Header then
+	ObjectiveTrackerFrame.Header.Background:Hide()
+	ObjectiveTrackerFrame.Header.Text:Hide()
+	ObjectiveTrackerFrame.Header.MinimizeButton:SetSize(15, 14)
+	ObjectiveTrackerFrame.Header.MinimizeButton:SetPoint("RIGHT", -10, 3)
+
+	local title = ObjectiveTrackerFrame.Header:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+	ObjectiveTrackerFrame.Header.Title = title
+	title:SetText(OBJECTIVES_TRACKER_LABEL)
+	title:SetPoint("RIGHT", ObjectiveTrackerFrame.Header.MinimizeButton, "LEFT", -3, 0)
+
+	SetCollapsedHeader(ObjectiveTrackerFrame.Header, _G.ObjectiveTrackerFrame.isCollapsed)
+	hooksecurefunc(ObjectiveTrackerFrame.Header, 'SetCollapsed', SetCollapsedHeader)
 end
 
 local trackers = {
