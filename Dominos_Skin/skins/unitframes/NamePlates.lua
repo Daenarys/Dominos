@@ -167,7 +167,7 @@ local function HandleNamePlateAdded(unit)
     end
 
     hooksecurefunc(frame, "UpdateAnchors", function()
-        frame.castBar:SetHeight(20)
+        frame.castBar:SetHeight(22)
         frame.castBar:ClearAllPoints()
         PixelUtil.SetPoint(frame.castBar, "BOTTOMLEFT", frame, "BOTTOMLEFT", 0, 0)
         PixelUtil.SetPoint(frame.castBar, "BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 0)
