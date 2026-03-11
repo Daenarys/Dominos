@@ -14,6 +14,11 @@ hooksecurefunc(NamePlateAurasMixin, "RefreshList", function(self)
         if auraItemFrame.Cooldown then
             auraItemFrame.Cooldown:SetHideCountdownNumbers(true)
         end
+        auraItemFrame:HookScript("OnEnter", function()
+            local tooltip = GetAppropriateTooltip()
+            tooltip:SetOwner(auraItemFrame, "ANCHOR_LEFT")
+            auraItemFrame:RefreshTooltip()
+        end)
     end
 end)
 
@@ -22,7 +27,7 @@ local function SkinCastbar(self)
 
     if self.Text then
         self.Text:ClearAllPoints()
-        self.Text:SetPoint("TOPLEFT", 0, -1)
+        self.Text:SetPoint("TOPLEFT")
         self.Text:SetPoint("BOTTOMRIGHT")
     end
 
@@ -61,33 +66,33 @@ local function SkinHealthBar(frame)
     frame.healthBar.selectedBorder:SetAlpha(0)
     frame.healthBar.deselectedOverlay:SetAlpha(0)
 
-    if not frame.background then
-        frame.background = frame:CreateTexture(nil, "BACKGROUND")
-        frame.background:SetAllPoints(frame)
-        frame.background:SetColorTexture(0.2, 0.2, 0.2, 0.85)
+    if not frame.healthBar.background then
+        frame.healthBar.background = frame.healthBar:CreateTexture(nil, "BACKGROUND")
+        frame.healthBar.background:SetAllPoints(frame.healthBar)
+        frame.healthBar.background:SetColorTexture(0.2, 0.2, 0.2, 0.85)
     end
 
-    if not frame.CpBorder then
-        frame.CpBorder = CreateFrame("Frame", nil, frame, "CpBorderTemplate")
+    if not frame.healthBar.border then
+        frame.healthBar.border = CreateFrame("Frame", nil, frame.healthBar, "CpBorderTemplate")
 
-        PixelUtil.SetWidth(frame.CpBorder.Left, 1, 2)
-        PixelUtil.SetPoint(frame.CpBorder.Left, "TOPRIGHT", frame.CpBorder, "TOPLEFT", 0, 1, 0, 2)
-        PixelUtil.SetPoint(frame.CpBorder.Left, "BOTTOMRIGHT", frame.CpBorder, "BOTTOMLEFT", 0, -1, 0, 2)
+        PixelUtil.SetWidth(frame.healthBar.border.Left, 1, 2)
+        PixelUtil.SetPoint(frame.healthBar.border.Left, "TOPRIGHT", frame.healthBar.border, "TOPLEFT", 0, 1, 0, 2)
+        PixelUtil.SetPoint(frame.healthBar.border.Left, "BOTTOMRIGHT", frame.healthBar.border, "BOTTOMLEFT", 0, -1, 0, 2)
 
-        PixelUtil.SetWidth(frame.CpBorder.Right, 1, 2)
-        PixelUtil.SetPoint(frame.CpBorder.Right, "TOPLEFT", frame.CpBorder, "TOPRIGHT", 0, 1, 0, 2)
-        PixelUtil.SetPoint(frame.CpBorder.Right, "BOTTOMLEFT", frame.CpBorder, "BOTTOMRIGHT", 0, -1, 0, 2)
+        PixelUtil.SetWidth(frame.healthBar.border.Right, 1, 2)
+        PixelUtil.SetPoint(frame.healthBar.border.Right, "TOPLEFT", frame.healthBar.border, "TOPRIGHT", 0, 1, 0, 2)
+        PixelUtil.SetPoint(frame.healthBar.border.Right, "BOTTOMLEFT", frame.healthBar.border, "BOTTOMRIGHT", 0, -1, 0, 2)
 
-        PixelUtil.SetHeight(frame.CpBorder.Bottom, 1, 2)
-        PixelUtil.SetPoint(frame.CpBorder.Bottom, "TOPLEFT", frame.CpBorder, "BOTTOMLEFT", 0, 0)
-        PixelUtil.SetPoint(frame.CpBorder.Bottom, "TOPRIGHT", frame.CpBorder, "BOTTOMRIGHT", 0, 0)
+        PixelUtil.SetHeight(frame.healthBar.border.Bottom, 1, 2)
+        PixelUtil.SetPoint(frame.healthBar.border.Bottom, "TOPLEFT", frame.healthBar.border, "BOTTOMLEFT", 0, 0)
+        PixelUtil.SetPoint(frame.healthBar.border.Bottom, "TOPRIGHT", frame.healthBar.border, "BOTTOMRIGHT", 0, 0)
 
-        PixelUtil.SetHeight(frame.CpBorder.Top, 1, 2)
-        PixelUtil.SetPoint(frame.CpBorder.Top, "BOTTOMLEFT", frame.CpBorder, "TOPLEFT", 0, 0)
-        PixelUtil.SetPoint(frame.CpBorder.Top, "BOTTOMRIGHT", frame.CpBorder, "TOPRIGHT", 0, 0)
+        PixelUtil.SetHeight(frame.healthBar.border.Top, 1, 2)
+        PixelUtil.SetPoint(frame.healthBar.border.Top, "BOTTOMLEFT", frame.healthBar.border, "TOPLEFT", 0, 0)
+        PixelUtil.SetPoint(frame.healthBar.border.Top, "BOTTOMRIGHT", frame.healthBar.border, "TOPRIGHT", 0, 0)
     end
 
-    for i, texture in ipairs(frame.CpBorder.Textures) do
+    for i, texture in ipairs(frame.healthBar.border.Textures) do
         if isTarget then
             texture:SetColorTexture(1, 1, 1, 0.9)
         else
@@ -98,7 +103,7 @@ local function SkinHealthBar(frame)
     hooksecurefunc(frame.healthBar, "UpdateSelectionBorder", function()
         local isTarget = frame.healthBar:IsTarget()
 
-        for i, texture in ipairs(frame.CpBorder.Textures) do
+        for i, texture in ipairs(frame.healthBar.border.Textures) do
             if isTarget then
                 texture:SetColorTexture(1, 1, 1, 0.9)
             else
@@ -109,20 +114,20 @@ local function SkinHealthBar(frame)
 end
 
 local function ShowBorder(frame)
-    if frame.background then
-        frame.background:Show()
+    if frame.healthBar.background then
+        frame.healthBar.background:Show()
     end
-    if frame.CpBorder then
-        frame.CpBorder:Show()
+    if frame.healthBar.border then
+        frame.healthBar.border:Show()
     end
 end
 
 local function HideBorder(frame)
-    if frame.background then
-        frame.background:Hide()
+    if frame.healthBar.background then
+        frame.healthBar.background:Hide()
     end
-    if frame.CpBorder then
-        frame.CpBorder:Hide()
+    if frame.healthBar.border then
+        frame.healthBar.border:Hide()
     end
 end
 
@@ -164,19 +169,19 @@ local function HandleNamePlateAdded(unit)
     hooksecurefunc(frame, "UpdateAnchors", function()
         frame.castBar:SetHeight(20)
         frame.castBar:ClearAllPoints()
-        frame.castBar:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT")
-        frame.castBar:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT")
+        PixelUtil.SetPoint(frame.castBar, "BOTTOMLEFT", frame, "BOTTOMLEFT", 0, 0)
+        PixelUtil.SetPoint(frame.castBar, "BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 0)
         frame.castBar.BorderShield:SetSize(16, 18)
         frame.castBar.Icon:SetSize(18, 18)
         frame.castBar.Icon:ClearAllPoints()
-        frame.castBar.Icon:SetPoint("CENTER", frame.castBar, "LEFT")
+        PixelUtil.SetPoint(frame.castBar.Icon, "CENTER", frame.castBar, "LEFT", 0, 0)
         frame.castBar.Text:SetTextHeight(14)
         frame.ClassificationFrame:ClearAllPoints()
         frame.ClassificationFrame:SetPoint("RIGHT", frame.HealthBarsContainer, "LEFT", -4, 0)
         if (frame.ClassificationFrame.classificationIndicator) then
             frame.ClassificationFrame.classificationIndicator:SetScale(1.4)
         end
-        PixelUtil.SetHeight(frame.HealthBarsContainer, 12)
+        PixelUtil.SetHeight(frame.HealthBarsContainer, 15)
         frame.name:SetFontObject("CpSystemFont_LargeNamePlate")
         frame.name:SetIgnoreParentScale(true)
         frame.name:SetJustifyH("CENTER")
@@ -187,6 +192,7 @@ local function HandleNamePlateAdded(unit)
         else
             frame.AurasFrame.DebuffListFrame:SetPoint("BOTTOM", frame.name, "TOP", 0, -18)
         end
+        frame.AurasFrame.CrowdControlListFrame:SetPoint("LEFT", frame.AurasFrame.DebuffListFrame, "RIGHT")
     end)
 end
 
