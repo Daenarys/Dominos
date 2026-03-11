@@ -1,16 +1,10 @@
 if not _G.ObjectiveTrackerFrame then return end
 
 local function SetCollapsedHeader(self, collapsed)
-	self.MinimizeButton:SetNormalTexture("Interface\\Buttons\\QuestTrackerButtons")
-	self.MinimizeButton:SetPushedTexture("Interface\\Buttons\\QuestTrackerButtons")
 	if collapsed then
 		self.Title:Show()
-		self.MinimizeButton:GetNormalTexture():SetTexCoord(0.273438, 0.390625, 0.765625, 0.984375)
-		self.MinimizeButton:GetPushedTexture():SetTexCoord(0.273438, 0.390625, 0.515625, 0.734375)
 	else
 		self.Title:Hide()
-		self.MinimizeButton:GetNormalTexture():SetTexCoord(0.140625, 0.257812, 0.546875, 0.765625)
-		self.MinimizeButton:GetPushedTexture():SetTexCoord(0.0078125, 0.125, 0.546875, 0.765625)
 	end
 end
 
@@ -31,7 +25,6 @@ if ObjectiveTrackerFrame.Header then
 	ObjectiveTrackerFrame.Header.Text:Hide()
 	ObjectiveTrackerFrame.Header.MinimizeButton:SetSize(15, 14)
 	ObjectiveTrackerFrame.Header.MinimizeButton:SetPoint("RIGHT", -10, 3)
-	ObjectiveTrackerFrame.Header.MinimizeButton:SetHighlightAtlas("UI-QuestTrackerButton-Red-Highlight", "ADD")
 
 	local title = ObjectiveTrackerFrame.Header:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 	ObjectiveTrackerFrame.Header.Title = title
