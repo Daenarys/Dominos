@@ -143,9 +143,9 @@ end)
 hooksecurefunc(ScenarioObjectiveTracker.StageBlock, "UpdateStageBlock", function(block, _, _, _, _, flags)
 	if (block.NormalBG:GetAtlas() == "evergreen-scenario-trackerheader") then
 		block.NormalBG:SetAtlas("ScenarioTrackerToast", true)
-	elseif (block.NormalBG:GetAtlas() == "thewarwithin-scenario-trackerheader") then
-		block.NormalBG:SetAtlas("dragonflight-scenario-TrackerHeader", true)
 	elseif (block.NormalBG:GetAtlas() == "delves-scenario-TrackerHeader") then
+		block.NormalBG:SetAtlas("dragonflight-scenario-TrackerHeader", true)
+	elseif (block.NormalBG:GetAtlas() == "thewarwithin-scenario-trackerheader") then
 		block.NormalBG:SetAtlas("dragonflight-scenario-TrackerHeader", true)
 	elseif (block.NormalBG:GetAtlas() == "midnight-scenario-trackerheader") then
 		block.NormalBG:SetAtlas("dragonflight-scenario-TrackerHeader", true)
@@ -173,12 +173,12 @@ hooksecurefunc(ScenarioObjectiveTracker.StageBlock, "UpdateWidgetRegistration", 
 			if widgetFrame.Frame then
 				if (widgetFrame.Frame:GetAtlas() == "evergreen-scenario-frame") then
 					block.WidgetContainer:SetPoint("TOPLEFT", -2, 0)
+				elseif (widgetFrame.Frame:GetAtlas() == "delves-scenario-frame") then
+					block.WidgetContainer:SetPoint("TOPLEFT", -7, 2)
 				elseif (widgetFrame.Frame:GetAtlas() == "thewarwithin-scenario-frame") then
 					block.WidgetContainer:SetPoint("TOPLEFT", -7, 2)
 				elseif (widgetFrame.Frame:GetAtlas() == "midnight-scenario-frame") then
 					block.WidgetContainer:SetPoint("TOPLEFT", 0, -2)
-				elseif (widgetFrame.Frame:GetAtlas() == "delves-scenario-frame") then
-					block.WidgetContainer:SetPoint("TOPLEFT", -7, 2)
 				else
 					block.WidgetContainer:SetPoint("TOPLEFT", 0, -1)
 				end
