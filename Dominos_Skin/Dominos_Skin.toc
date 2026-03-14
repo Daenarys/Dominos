@@ -27,6 +27,7 @@ skins\GroupLoot.lua
 skins\ItemUpgrade.lua
 skins\LFG.lua
 skins\Macro.lua
+skins\Menu.lua
 skins\Merchant.lua
 skins\ObjectiveTracker.lua
 skins\Professions.lua
