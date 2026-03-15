@@ -87,6 +87,8 @@ end
 local BagBarModule = Addon:NewModule('BagBar')
 
 function BagBarModule:OnInitialize()
+    self:RegisterButton('CharacterReagentBag0Slot')
+
     for slot = (NUM_BAG_SLOTS - 1), 0, -1 do
         self:RegisterButton(('CharacterBag%dSlot'):format(slot))
     end
@@ -117,10 +119,6 @@ function BagBarModule:OnInitialize()
 
     if BagBarExpandToggle then
         BagBarExpandToggle:Hide()
-    end
-
-    if CharacterReagentBag0Slot then
-        CharacterReagentBag0Slot:Hide()
     end
 end
 
