@@ -17,11 +17,6 @@ if MicroMenu then
         -- always reparent the button in retail
         button:SetParent(Addon.ShadowUIParent)
 
-        -- hide the housing button
-        if button == HousingMicroButton then
-            button:Hide()
-        end
-
         if button:IsShown() then
             MicroButtons[#MicroButtons + 1] = button
         end
@@ -62,36 +57,9 @@ function MenuBar:Skin(button)
 
     button:SetSize(28, 36)
 
-    local buttons = {
-        {button = ProfessionMicroButton, name = "SpellbookAbilities"}
-    }
-
-    local function replaceAtlases(self, name)
-        local prefix = "UI-HUD-MicroMenu-"
-        self:SetNormalAtlas(prefix..name.."-Up")
-        self:SetPushedAtlas(prefix..name.."-Down")
-        self:SetDisabledAtlas(prefix..name.."-Disabled")
-
-        self:HookScript("OnUpdate", function()
-            if(self:GetButtonState() == "NORMAL") then 
-                self:SetHighlightAtlas(prefix..name.."-Mouseover", "BLEND")
-            else 
-                self:SetHighlightAtlas(prefix..name.."-Down", "ADD")
-            end 
-        end)
-    end
-
-    local function replaceAllAtlases()
-        for _, data in pairs(buttons) do
-            replaceAtlases(data.button, data.name)
-        end
-    end
-    replaceAllAtlases()
-
     hooksecurefunc("HelpOpenWebTicketButton_OnUpdate", function(self)
-        self:SetParent(MainMenuMicroButton)
         self:ClearAllPoints()
-        self:SetPoint("CENTER", MainMenuMicroButton, "TOPRIGHT", -3, -26)
+        self:SetPoint("CENTER", CharacterMicroButton, "CENTER", 0, 20)
     end)
 
     button.skinned = true

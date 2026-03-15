@@ -106,10 +106,6 @@ function BindableButton:UpdateHotkeys()
 
     hotkey:SetText(key)
     hotkey:SetShown(key ~= '' and Addon:ShowBindingText())
-
-    self.TextOverlayContainer:SetFrameLevel(2)
-    self.TextOverlayContainer.Count:SetDrawLayer("ARTWORK", 2)
-    self.TextOverlayContainer.HotKey:SetDrawLayer("ARTWORK", 2)
 end
 
 function BindableButton:OnEnter()
