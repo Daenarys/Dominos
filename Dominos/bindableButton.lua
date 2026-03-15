@@ -106,6 +106,21 @@ function BindableButton:UpdateHotkeys()
 
     hotkey:SetText(key)
     hotkey:SetShown(key ~= '' and Addon:ShowBindingText())
+
+    if key ~= '' and self.buttonType == 'BONUSACTIONBUTTON' then
+        hotkey:ClearAllPoints()
+        hotkey:SetPoint("TOPLEFT", -2, -3)
+    elseif key ~= '' and self.buttonType == 'SHAPESHIFTBUTTON' then
+        hotkey:ClearAllPoints()
+        hotkey:SetPoint("TOPLEFT", -2, -3)
+    elseif key ~= '' then
+        hotkey:ClearAllPoints()
+        hotkey:SetPoint("TOPLEFT", 3, -3)
+    end
+
+    self.TextOverlayContainer:SetFrameLevel(2)
+    self.TextOverlayContainer.Count:SetDrawLayer("ARTWORK", 2)
+    self.TextOverlayContainer.HotKey:SetDrawLayer("ARTWORK", 2)
 end
 
 function BindableButton:OnEnter()

@@ -87,8 +87,6 @@ end
 local BagBarModule = Addon:NewModule('BagBar')
 
 function BagBarModule:OnInitialize()
-    self:RegisterButton('CharacterReagentBag0Slot')
-
     for slot = (NUM_BAG_SLOTS - 1), 0, -1 do
         self:RegisterButton(('CharacterBag%dSlot'):format(slot))
     end
@@ -142,8 +140,39 @@ function BagBarModule:RegisterButton(name)
     button:Hide()
     button:SetSize(36, 36)
 
+    if button.CircleMask then
+        button.CircleMask:Hide()
+    end
+
+    if button.IconBorder then
+        button.IconBorder:SetSize(37, 37)
+    end
+
+    if button.IconOverlay ~= nil then
+        button.IconOverlay:SetSize(37, 37)
+    end
+
+    local function updateTextures(self)
+        self:GetNormalTexture():SetSize(64, 64)
+        self:GetNormalTexture():SetTexture("Interface\\Buttons\\UI-Quickslot2")
+        self:GetNormalTexture():ClearAllPoints()
+        self:GetNormalTexture():SetPoint("TOPLEFT", -15, 15)
+        self:GetNormalTexture():SetPoint("BOTTOMRIGHT", 15, -15)
+        self:GetPushedTexture():SetTexture("Interface\\Buttons\\UI-Quickslot-Depress")
+        self:GetHighlightTexture():SetTexture("Interface\\Buttons\\ButtonHilight-Square")
+        self:GetHighlightTexture():SetAlpha(1)
+        self.icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
+        self.SlotHighlightTexture:SetTexture("Interface\\Buttons\\CheckButtonHilight")
+        self.SlotHighlightTexture:SetBlendMode("ADD")
+    end
+
+    hooksecurefunc(button, "SetItemButtonQuality", ItemButtonMixin.SetItemButtonQuality)
+    hooksecurefunc(button, "UpdateTextures", updateTextures)
+
+    updateTextures(button)
+    MainMenuBarBackpackButtonIconTexture:SetTexture("Interface\\Buttons\\Button-Backpack-Up")
     MainMenuBarBackpackButtonCount:ClearAllPoints()
-    MainMenuBarBackpackButtonCount:SetPoint("CENTER", 0, -7)
+    MainMenuBarBackpackButtonCount:SetPoint("CENTER", 0, -10)
 
     tinsert(BagButtons, button)
 end
