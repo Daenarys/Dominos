@@ -140,7 +140,7 @@ function MenuBar:Skin(button)
             self.HighlightEmblem:Hide()
         end
         if self.NotificationOverlay then
-            self.NotificationOverlay:SetPoint("TOPLEFT", 0, -18)
+            self.NotificationOverlay:SetPoint("TOPLEFT", 0, -20)
         end
         self:SetHighlightTexture("Interface\\Buttons\\UI-MicroButton-Hilight")
     end)
