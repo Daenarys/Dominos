@@ -170,7 +170,7 @@ function BagBarModule:RegisterButton(name)
     hooksecurefunc(button, "UpdateTextures", updateTextures)
 
     updateTextures(button)
-    MainMenuBarBackpackButtonIconTexture:SetTexture("Interface\\Buttons\\Button-Backpack-Up")
+    MainMenuBarBackpackButtonIconTexture:SetAtlas("hud-backpack", false)
     MainMenuBarBackpackButtonCount:ClearAllPoints()
     MainMenuBarBackpackButtonCount:SetPoint("CENTER", 0, -10)
 
