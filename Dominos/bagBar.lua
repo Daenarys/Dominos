@@ -139,11 +139,12 @@ function BagBarModule:RegisterButton(name)
         return
     end
 
+    button:SetSize(MainMenuBarBackpackButton:GetSize())
     button:Hide()
-    button:SetSize(36, 36)
 
-    MainMenuBarBackpackButtonCount:ClearAllPoints()
-    MainMenuBarBackpackButtonCount:SetPoint("CENTER", 0, -7)
+    if button.SetBarExpanded then
+        button.SetBarExpanded = function() end
+    end
 
     tinsert(BagButtons, button)
 end
