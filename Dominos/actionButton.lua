@@ -34,7 +34,6 @@ local function GetActionButtonCommand(id)
 end
 
 local function skinActionButton(self)
-    self.icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
     self.NormalTexture:SetTexture([[Interface\Buttons\UI-Quickslot2]])
     self.NormalTexture:ClearAllPoints()
     self.NormalTexture:SetPoint("TOPLEFT", -15, 15)
