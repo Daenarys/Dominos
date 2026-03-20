@@ -51,36 +51,9 @@ local function skinActionButton(self)
     self.CheckedTexture:ClearAllPoints()
     self.CheckedTexture:SetAllPoints()
     self.CheckedTexture:SetBlendMode("ADD")
-    self.NewActionTexture:SetSize(44, 44)
-    self.NewActionTexture:SetAtlas("bags-newitem")
-    self.NewActionTexture:ClearAllPoints()
-    self.NewActionTexture:SetPoint("CENTER")
-    self.NewActionTexture:SetBlendMode("ADD")
-    self.SpellHighlightTexture:SetSize(44, 44)
-    self.SpellHighlightTexture:SetAtlas("bags-newitem")
-    self.SpellHighlightTexture:ClearAllPoints()
-    self.SpellHighlightTexture:SetPoint("CENTER")
-    self.SpellHighlightTexture:SetBlendMode("ADD")
-    self.Border:SetTexture([[Interface\Buttons\UI-ActionButton-Border]])
-    self.Border:SetSize(62, 62)
-    self.Border:ClearAllPoints()
-    self.Border:SetPoint("CENTER")
-    self.Border:SetBlendMode("ADD")
-    self.cooldown:ClearAllPoints()
-    self.cooldown:SetAllPoints()
-    self.chargeCooldown:ClearAllPoints()
-    self.chargeCooldown:SetAllPoints()
-    self.lossOfControlCooldown:ClearAllPoints()
-    self.lossOfControlCooldown:SetAllPoints()
     self.Flash:SetTexture([[Interface\Buttons\UI-QuickslotRed]])
     self.Flash:ClearAllPoints()
     self.Flash:SetAllPoints()
-    self.Count:ClearAllPoints()
-    self.Count:SetPoint("BOTTOMRIGHT", -2, 2)
-    self.Count:SetDrawLayer("ARTWORK", 2)
-    if self.IconMask then
-        self.IconMask:Hide()
-    end
     if self.SlotBackground then
         self.SlotBackground:Hide()
     end
@@ -124,9 +97,6 @@ function ActionButtonMixin:OnCreate(id)
 
     -- apply hooks for quick binding
     Addon.BindableButton:AddQuickBindingSupport(self)
-
-    -- use pre 10.x button size
-    self:SetSize(36, 36)
 
     -- apply button skin
     skinActionButton(self)
