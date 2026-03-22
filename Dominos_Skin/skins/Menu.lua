@@ -52,6 +52,7 @@ local function SkinMenu(manager, owner, menuDescription)
         DialogSkin:SetPoint("BOTTOMRIGHT", menu, "BOTTOMRIGHT", 0, 2)
         DialogSkin:SetFrameLevel(menu:GetFrameLevel())
         DialogSkin:Show()
+        menu:SetPoint("TOPLEFT", owner, "BOTTOMLEFT", 0, -4)
     else
         DialogSkin:Hide()
         TooltipSkin:SetParent(menu)
