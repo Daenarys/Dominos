@@ -55,7 +55,7 @@ local function SkinMenu(manager, owner, menuDescription)
         DialogSkin:SetParent(menu)
         DialogSkin:ClearAllPoints()
         DialogSkin:SetPoint("TOPLEFT", menu, "TOPLEFT", -10, 5)
-        DialogSkin:SetPoint("BOTTOMRIGHT", menu, "BOTTOMRIGHT", 0, 2)
+        DialogSkin:SetPoint("BOTTOMRIGHT", menu, "BOTTOMRIGHT", 10, 2)
         DialogSkin:SetFrameLevel(menu:GetFrameLevel())
         DialogSkin:Show()
     else
