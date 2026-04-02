@@ -16,37 +16,59 @@ local function IsDialogMenu(owner)
         or (owner == FriendsFrameStatusDropdown)
         or (owner == WhoFrameDropdown)
         or (owner == DressUpFrameCustomSetDropdown)
+        or (owner == CompactRaidFrameManagerDisplayFrameModeControlDropdown)
+        or (owner == CompactRaidFrameManagerDisplayFrameRestrictPingsDropdown)
         or (owner == AddonList.Dropdown)
+        or (owner == ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
+        or (owner == ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
+        or (owner == ClubFinderCommunityAndGuildFinderFrame.OptionsList.ClubFilterDropdown)
+        or (owner == ClubFinderCommunityAndGuildFinderFrame.OptionsList.SortByDropdown)
+        or (owner == CooldownViewerSettings.LayoutDropdown)
         or (owner == DelvesCompanionAbilityListFrame.DelvesCompanionRoleDropdown)
         or (owner == EditModeManagerFrame.LayoutDropdown)
+        or (owner == GearManagerPopupFrame.BorderBox.IconTypeDropdown)
         or (owner == GroupLootHistoryFrame.EncounterDropdown)
         or (owner == MerchantFrame.FilterDropdown)
+        or (owner == ReportFrame.ReportingMajorCategoryDropdown)
         or (owner == TimeManagerAlarmTimeFrame.HourDropdown)
         or (owner == TimeManagerAlarmTimeFrame.MinuteDropdown)
         or (owner == TimeManagerAlarmTimeFrame.AMPMDropdown)
         or (AuctionHouseFrame and owner == AuctionHouseFrame.CommoditiesSellFrame.Duration.Dropdown)
         or (AuctionHouseFrame and owner == AuctionHouseFrame.ItemSellFrame.Duration.Dropdown)
+        or (CalendarCreateEventFrame and owner == CalendarCreateEventFrame.EventTypeDropdown)
+        or (CalendarCreateEventFrame and owner == CalendarCreateEventFrame.HourDropdown)
+        or (CalendarCreateEventFrame and owner == CalendarCreateEventFrame.MinuteDropdown)
+        or (CalendarCreateEventFrame and owner == CalendarCreateEventFrame.AMPMDropdown)
         or (DelvesDifficultyPickerFrame and owner == DelvesDifficultyPickerFrame.Dropdown)
         or (EncounterJournalInstanceSelect and owner == EncounterJournalInstanceSelect.ExpansionDropdown)
         or (HeirloomsJournal and owner == HeirloomsJournal.ClassDropdown)
         or (ItemUpgradeFrame and owner == ItemUpgradeFrame.ItemInfo.Dropdown)
+        or (MacroPopupFrame and owner == MacroPopupFrame.BorderBox.IconTypeDropdown)
         or (PlayerSpellsFrame and owner == PlayerSpellsFrame.TalentsFrame.LoadSystem.Dropdown)
-        or (WardrobeCollectionFrame and owner == WardrobeCollectionFrame.ClassDropdown)
         or (WardrobeCollectionFrame and owner == WardrobeCollectionFrame.ItemsCollectionFrame.WeaponDropdown)
 end
 
 local DialogSkin = CreateFrame("Frame", nil, UIParent, "DialogBorderDarkTemplate")
 DialogSkin:Hide()
 
+local SubDialogSkin = CreateFrame("Frame", nil, UIParent, "DialogBorderDarkTemplate")
+SubDialogSkin:Hide()
+
 local TooltipSkin = CreateFrame("Frame", nil, UIParent, "TooltipBackdropTemplate")
 TooltipSkin:Hide()
 
-local SubMenuSkin = CreateFrame("Frame", nil, UIParent, "TooltipBackdropTemplate")
-SubMenuSkin:Hide()
+local SubTooltipSkin = CreateFrame("Frame", nil, UIParent, "TooltipBackdropTemplate")
+SubTooltipSkin:Hide()
 
 local function SkinMenu(manager, owner, menuDescription)
     local menu = manager:GetOpenMenu()
     if not menu then return end
+
+    if select(1, menu:GetRegions()):GetAtlas() == "common-dropdown-c-bg" then
+        DialogSkin:Hide()
+        TooltipSkin:Hide()
+        return
+    end
 
     select(1, menu:GetRegions()):SetAlpha(0)
 
@@ -70,12 +92,23 @@ local function SkinMenu(manager, owner, menuDescription)
 
     menuDescription:AddMenuAcquiredCallback(function(self)
         select(1, self:GetRegions()):SetAlpha(0)
-        SubMenuSkin:SetParent(self)
-        SubMenuSkin:ClearAllPoints()
-        SubMenuSkin:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 3)
-        SubMenuSkin:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 4)
-        SubMenuSkin:SetFrameLevel(self:GetFrameLevel())
-        SubMenuSkin:Show()
+        if IsDialogMenu(owner) then
+            SubTooltipSkin:Hide()
+            SubDialogSkin:SetParent(self)
+            SubDialogSkin:ClearAllPoints()
+            SubDialogSkin:SetPoint("TOPLEFT", self, "TOPLEFT", -10, 5)
+            SubDialogSkin:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 5, 2)
+            SubDialogSkin:SetFrameLevel(self:GetFrameLevel())
+            SubDialogSkin:Show()
+        else
+            SubDialogSkin:Hide()
+            SubTooltipSkin:SetParent(self)
+            SubTooltipSkin:ClearAllPoints()
+            SubTooltipSkin:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 3)
+            SubTooltipSkin:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 4)
+            SubTooltipSkin:SetFrameLevel(self:GetFrameLevel())
+            SubTooltipSkin:Show()
+        end
     end)
 end
 

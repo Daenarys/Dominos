@@ -9,6 +9,13 @@ f:SetScript("OnEvent", function(self, event, name)
 		ApplyDropDown(HeirloomsJournal.ClassDropdown)
 		ApplyDropDown(WardrobeCollectionFrame.ItemsCollectionFrame.WeaponDropdown)
 
+		HeirloomsJournal.ClassDropdown:SetWidth(155)
+		HeirloomsJournal.ClassDropdown:SetPoint("TOPLEFT", 72, -31)
+		HeirloomsJournal.ClassDropdown.Text:SetJustifyH("RIGHT")
+		HeirloomsJournal.ClassDropdown.Text:SetPoint("TOPLEFT", 9, -8)
+		WardrobeCollectionFrame.ItemsCollectionFrame.WeaponDropdown:SetWidth(155)
+		WardrobeCollectionFrame.ItemsCollectionFrame.WeaponDropdown.Text:SetJustifyH("RIGHT")
+
 		ApplyFilterDropDown(MountJournal.FilterDropdown)
 		ApplyFilterDropDown(PetJournal.FilterDropdown)
 		ApplyFilterDropDown(ToyBox.FilterDropdown)
@@ -17,12 +24,6 @@ f:SetScript("OnEvent", function(self, event, name)
 
 		ApplyStretchButton(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.VariantSetsDropdown)
 
-		HeirloomsJournal.ClassDropdown:SetWidth(155)
-		HeirloomsJournal.ClassDropdown:SetPoint("TOPLEFT", 72, -31)
-		HeirloomsJournal.ClassDropdown.Text:SetJustifyH("RIGHT")
-		HeirloomsJournal.ClassDropdown.Text:SetPoint("TOPLEFT", 9, -8)
-		WardrobeCollectionFrame.ItemsCollectionFrame.WeaponDropdown:SetWidth(155)
-		WardrobeCollectionFrame.ItemsCollectionFrame.WeaponDropdown.Text:SetJustifyH("RIGHT")
 		WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.VariantSetsDropdown:SetWidth(108)
 
 		hooksecurefunc(WardrobeCollectionFrame, "SetTab", function(self, tabID)
