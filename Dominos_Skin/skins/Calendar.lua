@@ -7,5 +7,6 @@ f:SetScript("OnEvent", function(self, event, name)
 		ApplyDropDown(CalendarCreateEventFrame.MinuteDropdown)
 		ApplyDropDown(CalendarCreateEventFrame.AMPMDropdown)
 		ApplyFilterDropDown(CalendarFrame.FilterButton)
+		CalendarCreateEventFrame.EventTypeDropdown.Text:SetJustifyH("RIGHT")
 	end
 end)

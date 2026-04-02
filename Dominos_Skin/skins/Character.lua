@@ -18,6 +18,7 @@ if (ReputationFrame.StandingLabel == nil) then
 end
 
 ApplyDropDown(GearManagerPopupFrame.BorderBox.IconTypeDropdown)
+GearManagerPopupFrame.BorderBox.IconTypeDropdown.Text:SetJustifyH("RIGHT")
 
 hooksecurefunc(CharacterFrame, "UpdatePortrait", function(self)
 	self:SetPortraitToSpecIcon()
