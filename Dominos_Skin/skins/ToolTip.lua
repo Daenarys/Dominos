@@ -30,7 +30,7 @@ TooltipDataProcessor.AddTooltipPreCall(Enum.TooltipDataType.Item, function(self)
 	end
 end)
 
-hooksecurefunc(TooltipComparisonManager, "CompareItem", function(self)
+hooksecurefunc(TooltipComparisonManager, "SetItemTooltip", function(self)
 	for _, tooltip in pairs(self.tooltip.shoppingTooltips) do
 		if tooltip.CompareHeader then
 			tooltip.CompareHeader:SetAlpha(0)
