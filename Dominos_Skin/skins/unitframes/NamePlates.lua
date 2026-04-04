@@ -22,10 +22,10 @@ hooksecurefunc(NamePlateClassificationFrameMixin, "UpdateClassificationIndicator
     if (self.classificationIndicator) then
         local classification = self:GetClassification()
         if classification == "elite" or classification == "worldboss" then
-            self.classificationIndicator:SetTexture("Interface\\AddOns\\ClassicPlates\\icons\\nameplates")
+            self.classificationIndicator:SetTexture("Interface\\AddOns\\Dominos_Skin\\icons\\nameplates")
             self.classificationIndicator:SetTexCoord(0.00390625, 0.148438, 0.234375, 0.507812)
         elseif classification == "rareelite" then
-            self.classificationIndicator:SetTexture("Interface\\AddOns\\ClassicPlates\\icons\\nameplates")
+            self.classificationIndicator:SetTexture("Interface\\AddOns\\Dominos_Skin\\icons\\nameplates")
             self.classificationIndicator:SetTexCoord(0.00390625, 0.148438, 0.523438, 0.796875)
         end
     end
