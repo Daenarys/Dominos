@@ -97,13 +97,11 @@ function BagBarModule:OnInitialize()
 
     if not self.frame then
         local noopFunc = function() end
-
         CharacterReagentBag0Slot.SetBarExpanded = noopFunc
         CharacterBag3Slot.SetBarExpanded = noopFunc
         CharacterBag2Slot.SetBarExpanded = noopFunc
         CharacterBag1Slot.SetBarExpanded = noopFunc
         CharacterBag0Slot.SetBarExpanded = noopFunc
-        BagsBar.Layout = noopFunc
     end
 
     if BagsBar and BagsBar.Layout then
@@ -141,10 +139,6 @@ function BagBarModule:RegisterButton(name)
 
     button:SetSize(MainMenuBarBackpackButton:GetSize())
     button:Hide()
-
-    if button.SetBarExpanded then
-        button.SetBarExpanded = function() end
-    end
 
     tinsert(BagButtons, button)
 end

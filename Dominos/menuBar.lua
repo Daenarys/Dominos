@@ -60,8 +60,6 @@ end
 function MenuBar:Skin(button)
     if button.skinned then return end
 
-    button:SetSize(28, 36)
-
     local buttons = {
         {button = ProfessionMicroButton, name = "SpellbookAbilities"}
     }
