@@ -102,16 +102,10 @@ function BagBarModule:OnInitialize()
         CharacterBag2Slot.SetBarExpanded = noopFunc
         CharacterBag1Slot.SetBarExpanded = noopFunc
         CharacterBag0Slot.SetBarExpanded = noopFunc
+        BagsBar.Layout = noopFunc
     end
 
-    if BagsBar and BagsBar.Layout then
-        hooksecurefunc(BagsBar, "Layout", function()
-            if InCombatLockdown() then return end
-
-            if self.frame then
-                self.frame:Layout()
-            end
-        end)
+    if BagsBar then
         EventRegistry:UnregisterCallback("MainMenuBarManager.OnExpandChanged", BagsBar)
     end
 
