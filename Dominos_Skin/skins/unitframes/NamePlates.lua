@@ -158,11 +158,7 @@ local function HandleNamePlateAdded(unit)
             end
         end
         if frame.AurasFrame.CrowdControlListFrame then
-            if frame.AurasFrame.DebuffListFrame:GetNumChildren() > 0  then
-                frame.AurasFrame.CrowdControlListFrame:SetPoint("LEFT", frame.AurasFrame.DebuffListFrame, "RIGHT")
-            else
-                frame.AurasFrame.CrowdControlListFrame:SetPoint("LEFT", frame.AurasFrame.DebuffListFrame, "RIGHT", 0, 10)
-            end
+            frame.AurasFrame.CrowdControlListFrame:SetPoint("LEFT", frame.AurasFrame.DebuffListFrame, "RIGHT")
         end
     end)
 
