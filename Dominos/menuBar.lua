@@ -115,12 +115,6 @@ function MenuBar:NumButtons()
     return #self.activeButtons
 end
 
-function MenuBar:GetButtonInsets()
-    local l, r, t, b = MenuBar.proto.GetButtonInsets(self)
-
-    return l, r + 1, t + 3, b
-end
-
 function MenuBar:UpdateActiveButtons()
     wipe(self.activeButtons)
 
@@ -173,20 +167,19 @@ function MenuBar:Layout()
         button:Hide()
     end
 
-    self:UpdateActiveButtons()
-
     if OverrideActionBar and OverrideActionBar:IsVisible() then
-        local l, r, t, b = self:GetButtonInsets()
-
         for i, button in pairs(MicroButtons) do
             button:ClearAllPoints()
             button:SetParent(OverrideActionBar)
+            button:SetScale(0.8)
+
             if i == 1 then
-                button:SetPoint('BOTTOMLEFT', 543, 40)
+                local x, y = OverrideActionBar:GetMicroButtonAnchor()
+                button:SetPoint('BOTTOMLEFT', x + button:GetWidth(), y + button:GetHeight())
             elseif i == 7 then
-                button:SetPoint('TOPLEFT', MicroButtons[1], 'BOTTOMLEFT', 0, (t - b) + 3)
+                button:SetPoint('TOPLEFT', MicroButtons[1], 'BOTTOMLEFT', 0, 0)
             else
-                button:SetPoint('BOTTOMLEFT', MicroButtons[i - 1], 'BOTTOMRIGHT', (l - r) - 1, 0)
+                button:SetPoint('BOTTOMLEFT', MicroButtons[i - 1], 'BOTTOMRIGHT', 0, 0)
             end
 
             button:Show()
@@ -209,6 +202,7 @@ function MenuBar:Layout()
         end
     else
         for _, button in pairs(self.buttons) do
+            button:SetScale(1)
             button:Show()
         end
 
