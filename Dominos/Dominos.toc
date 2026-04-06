@@ -34,6 +34,7 @@ bars\bagBar.lua
 bars\menuBar.lua
 bars\petBar.lua
 bars\possessBar.lua
+bars\queueStatusBar.lua [AllowLoadGameType mainline]
 bars\stanceBar.lua
 # stuff you should be able to comment out and still have Dominos work
 plugins\slashCommands.lua

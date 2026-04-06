@@ -8,5 +8,3 @@ localization.xml
 DominosTimerBarTemplate.xml
 castBar.lua
 castBarModule.lua
-mirrorTimer.lua
-mirrorTimerModule.lua
