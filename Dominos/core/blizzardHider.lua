@@ -8,13 +8,9 @@ local framesToHide = {
     "MultiBarBottomLeft",
     "MultiBarBottomRight",
     "MultiBarLeft",
-    "MultiBarRight"
+    "MultiBarRight",
+    "PlayerCastingBarFrame"
 }
-
-if not Addon:IsBuild("retail") then
-    framesToHide[#framesToHide + 1] = "MainMenuBar"
-    framesToHide[#framesToHide + 1] = "MainMenuBarArtFrame"
-end
 
 local keepEvents = {
     MainActionBar = true
