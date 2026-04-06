@@ -120,8 +120,8 @@ function MenuBar:UpdateActiveButtons()
 
     for _, button in ipairs(MicroButtons) do
         if self:IsMenuButtonEnabled(button) then
-            self:Skin(button)
             self.activeButtons[#self.activeButtons + 1] = button
+            self:Skin(button)
         end
     end
 end

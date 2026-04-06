@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
---	Bag Bar - A bar for holding bag buttons
+-- Bag Bar - A bar for holding bag buttons
 --------------------------------------------------------------------------------
 
 local AddonName, Addon = ...
@@ -81,7 +81,7 @@ function BagBar:OnCreateMenu(menu)
 end
 
 --------------------------------------------------------------------------------
---	module
+-- module
 --------------------------------------------------------------------------------
 
 local BagBarModule = Addon:NewModule('BagBar')
@@ -105,7 +105,13 @@ function BagBarModule:OnInitialize()
         BagsBar.Layout = noopFunc
     end
 
-    if BagsBar then
+    if BagsBar and BagsBar.Layout then
+        hooksecurefunc(BagsBar, "Layout", function()
+            if InCombatLockdown() then return end
+            if self.frame then
+                self.frame:Layout()
+            end
+        end)
         EventRegistry:UnregisterCallback("MainMenuBarManager.OnExpandChanged", BagsBar)
     end
 
