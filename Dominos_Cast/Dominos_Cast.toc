@@ -1,11 +1,9 @@
-## Interface: 120001, 120000, 110207, 50503, 20505, 11508
-## Title: Dominos Cast
-## Title-zhCN: Dominos 施法条模块
-## Notes: A movable casting bar, with timer
-## Notes-zhCN: 一个可移动的带计时器的施法条
-## Author: Tuller
-## Dependencies: Dominos
+## Interface: 120001
 ## IconTexture: Interface/AddOns/Dominos/Dominos
+## Title: Dominos Cast
+## Notes: A movable casting bar, with timer
+## Author: Daenarys
+## Dependencies: Dominos
 localization.xml
 DominosTimerBarTemplate.xml
 castBar.lua

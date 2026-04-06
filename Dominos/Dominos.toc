@@ -1,13 +1,11 @@
-## Interface: 120001, 120000, 110207, 50503, 20505, 11508
+## Interface: 120001
+## IconTexture: Interface/AddOns/Dominos/Dominos
 ## Title: Dominos
 ## Notes: A main actionbar replacement
-## Notes-zhCN: 一种动作条替换方案
-## Author: Tuller
-## Category: Action Bars
-## Version: 11.2.20
+## Author: Daenarys
+## Version: 1.00
 ## SavedVariables: DominosDB
-## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, Masque, FlyPaper, LibDualSpec-1.0
-## IconTexture: Interface/AddOns/Dominos/Dominos
+## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, FlyPaper, LibDualSpec-1.0
 # stuff required for the addon to work
 embeds.xml
 localization.xml
@@ -24,29 +22,20 @@ core\fadeManager.lua
 core\overrideController.lua [AllowLoadGameType mainline, mists, cata, wrath, tbc]
 core\tooltipController.lua
 core\blizzardHider.lua [AllowLoadGameType mainline, tbc]
-core\blizzardHider.classic.lua [AllowLoadGameType mists, cata, wrath, vanilla]
 # builtin bars
 bars\actionBar\bindings.lua [AllowLoadGameType mainline]
 bars\actionBar\flyout.lua [AllowLoadGameType mainline]
 bars\actionBar\button.lua [AllowLoadGameType mainline, tbc]
-bars\actionBar\button.classic.lua [AllowLoadGameType mists, cata, wrath, vanilla]
 bars\actionBar\buttons.lua [AllowLoadGameType mainline, tbc]
-bars\actionBar\buttons.classic.lua [AllowLoadGameType mists, cata, wrath, vanilla]
 bars\actionBar\bar.lua
 bars\actionBar\menu.lua
 bars\actionBar\bars.lua
 bars\bagBar.lua
-bars\extraAbilityBar.lua [AllowLoadGameType mainline, mists, cata, wrath, tbc]
-bars\encounterBar.lua [AllowLoadGameType mainline, mists, cata, wrath]
 bars\menuBar.lua
 bars\petBar.lua
 bars\possessBar.lua
-bars\queueStatusBar.lua [AllowLoadGameType mainline]
 bars\stanceBar.lua
-bars\talkingHeadBar.lua [AllowLoadGameType mainline]
-bars\totemBar.lua [AllowLoadGameType cata, wrath]
 # stuff you should be able to comment out and still have Dominos work
 plugins\slashCommands.lua
 plugins\launcher.lua
 plugins\buttonThemer.lua
-plugins\getActionReagentUses.lua [AllowLoadGameType vanilla]

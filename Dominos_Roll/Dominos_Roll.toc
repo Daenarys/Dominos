@@ -1,8 +1,7 @@
-## Interface: 120001, 120000, 110207, 50503, 20505, 11508
-## Title: Dominos Roll
-## Title-zhCN: Dominos Roll 窗口模块
-## Notes: Makes the set of frames for rolling on items when in a group movable
-## Author: Tuller
-## Dependencies: Dominos
+## Interface: 120001
 ## IconTexture: Interface/AddOns/Dominos/Dominos
+## Title: Dominos Roll
+## Notes: Makes the set of frames for rolling on items when in a group movable
+## Author: Daenarys
+## Dependencies: Dominos
 rollBar.lua
