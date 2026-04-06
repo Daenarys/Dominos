@@ -546,10 +546,8 @@ function Panel:AddAdvancedOptions(displayConditionsOnly)
 		self:NewClickThroughCheckbox()
 	end
 
-	if ParentAddon:IsBuild("retail") then
-		self:NewShowInOverrideUICheckbox()
-		self:NewShowInPetBattleUICheckbox()
-	end
+	self:NewShowInOverrideUICheckbox()
+	self:NewShowInPetBattleUICheckbox()
 
 	self.showStatesEditBox = self:NewTextInput{
 		name = L.ShowStates,

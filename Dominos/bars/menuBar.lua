@@ -15,17 +15,13 @@ if MicroMenu then
     -- post edit mode, grab all of the buttons in order
     for _, button in ipairs { MicroMenu:GetChildren() } do
         -- always reparent the button in retail
-        if Addon:IsBuild("retail") then
-            button:SetParent(Addon.ShadowUIParent)
+        button:SetParent(Addon.ShadowUIParent)
 
-            if button == HousingMicroButton then
-                button:Hide()
-            end
+        if button == HousingMicroButton then
+            button:Hide()
+        end
 
-            if button:IsShown() then
-                MicroButtons[#MicroButtons + 1] = button
-            end
-        else
+        if button:IsShown() then
             MicroButtons[#MicroButtons + 1] = button
         end
     end
@@ -97,33 +93,16 @@ MenuBar:Extend('OnCreate', function(self)
 end)
 
 function MenuBar:GetDefaults()
-    if Addon:IsBuild("retail") then
-        return {
-            displayLayer = 'LOW',
-            point = 'BOTTOMRIGHT',
-            x = 0,
-            y = 48
-        }
-    else
-        return {
-            displayLayer = 'LOW',
-            point = 'BOTTOMRIGHT',
-            x = 0,
-            y = 0
-        }
-    end
+    return {
+        displayLayer = 'LOW',
+        point = 'BOTTOMRIGHT',
+        x = 0,
+        y = 48
+    }
 end
 
 function MenuBar:AcquireButton(index)
     return self.activeButtons[index]
-end
-
--- 3.4.1 swaps the last two return values of get hit rect insts
--- so just hardcode for now
-if (select(4, GetBuildInfo()) == 30401) then
-    function MenuBar:GetButtonInsets()
-        return 0, 0, 18, 0
-    end
 end
 
 function MenuBar:NumButtons()
@@ -182,111 +161,56 @@ function MenuBar:IsMenuButtonEnabled(button)
 
     if buttonName == "StoreMicroButton" then
         return C_StorePublic.IsEnabled()
-    elseif buttonName == "GuildMicroButton" and not Addon:IsBuild("retail") then
-        return not C_CVar.GetCVarBool("useClassicGuildUI")
-    elseif buttonName == "SocialsMicroButton" and not Addon:IsBuild("retail") then
-        return C_CVar.GetCVarBool("useClassicGuildUI")
-    elseif buttonName == "HelpMicroButton" then
-        return not Addon:IsBuild("mists")
     else
         return true
     end
 end
 
-if Addon:IsBuild("retail", "tbc") then
-    function MenuBar:Layout()
-        for _, button in pairs(MicroButtons) do
-            button:Hide()
-        end
-
-        if OverrideActionBar and OverrideActionBar:IsVisible() then
-            for i, button in ipairs(MicroButtons) do
-                button:ClearAllPoints()
-                button:SetParent(OverrideActionBar)
-                button:SetScale(0.8)
-
-                if i == 1 then
-                    local x, y = OverrideActionBar:GetMicroButtonAnchor()
-                    button:SetPoint('BOTTOMLEFT', x + button:GetWidth(), y + button:GetHeight())
-                elseif i == 7 then
-                    button:SetPoint('TOPLEFT', MicroButtons[1], 'BOTTOMLEFT', 0, 0)
-                else
-                    button:SetPoint('BOTTOMLEFT', MicroButtons[i - 1], 'BOTTOMRIGHT', 0, 0)
-                end
-
-                button:Show()
-            end
-        elseif PetMicroButtonFrame and PetMicroButtonFrame:IsVisible() then
-            for i, button in ipairs(MicroButtons) do
-                button:ClearAllPoints()
-                button:SetParent(PetMicroButtonFrame)
-                button:SetScale(1)
-
-                if i == 1 then
-                    button:SetPoint('TOPLEFT', -17, 9)
-                elseif i == 7 then
-                    button:SetPoint('TOPLEFT', MicroButtons[1], 'BOTTOMLEFT', 0, 6)
-                else
-                    button:SetPoint('TOPLEFT', MicroButtons[i - 1], 'TOPRIGHT', -5, 0)
-                end
-
-                button:Show()
-            end
-        else
-            for _, button in pairs(self.buttons) do
-                button:SetScale(1)
-                button:Show()
-            end
-
-            MenuBar.proto.Layout(self)
-        end
+function MenuBar:Layout()
+    for _, button in pairs(MicroButtons) do
+        button:Hide()
     end
-else
-    function MenuBar:Layout()
-        for _, button in pairs(MicroButtons) do
-            button:Hide()
+
+    if OverrideActionBar and OverrideActionBar:IsVisible() then
+        for i, button in ipairs(MicroButtons) do
+            button:ClearAllPoints()
+            button:SetParent(OverrideActionBar)
+            button:SetScale(0.8)
+
+            if i == 1 then
+                local x, y = OverrideActionBar:GetMicroButtonAnchor()
+                button:SetPoint('BOTTOMLEFT', x + button:GetWidth(), y + button:GetHeight())
+            elseif i == 7 then
+                button:SetPoint('TOPLEFT', MicroButtons[1], 'BOTTOMLEFT', 0, 0)
+            else
+                button:SetPoint('BOTTOMLEFT', MicroButtons[i - 1], 'BOTTOMRIGHT', 0, 0)
+            end
+
+            button:Show()
         end
-        self:UpdateActiveButtons()
+    elseif PetMicroButtonFrame and PetMicroButtonFrame:IsVisible() then
+        for i, button in ipairs(MicroButtons) do
+            button:ClearAllPoints()
+            button:SetParent(PetMicroButtonFrame)
+            button:SetScale(1)
 
-        if OverrideActionBar and OverrideActionBar:IsVisible() then
-            local l, r, t, b = self:GetButtonInsets()
-
-            for i, button in pairs(self.activeButtons) do
-                if i > 1 then
-                    button:ClearAllPoints()
-
-                    if i == 7 then
-                        button:SetPoint('TOPLEFT', self.activeButtons[1], 'BOTTOMLEFT', 0, (t - b) + 3)
-                    else
-                        button:SetPoint('BOTTOMLEFT', self.activeButtons[i - 1], 'BOTTOMRIGHT', (l - r) - 1, 0)
-                    end
-                end
-
-                button:Show()
-            end
-        elseif PetMicroButtonFrame and PetMicroButtonFrame:IsVisible() then
-            local l, r, t, b = self:GetButtonInsets()
-
-            for i, button in pairs(self.activeButtons) do
-                if i > 1 then
-                    button:ClearAllPoints()
-
-                    if i == 7 then
-                        button:SetPoint('TOPLEFT', self.activeButtons[1], 'BOTTOMLEFT', 0, (t - b) + 3)
-                    else
-                        button:SetPoint('BOTTOMLEFT', self.activeButtons[i - 1], 'BOTTOMRIGHT', (l - r) - 1, 0)
-                    end
-                end
-
-                button:Show()
-            end
-        else
-            for _, button in pairs(self.activeButtons) do
-                button:Show()
+            if i == 1 then
+                button:SetPoint('TOPLEFT', -17, 9)
+            elseif i == 7 then
+                button:SetPoint('TOPLEFT', MicroButtons[1], 'BOTTOMLEFT', 0, 6)
+            else
+                button:SetPoint('TOPLEFT', MicroButtons[i - 1], 'TOPRIGHT', -5, 0)
             end
 
-            MenuBar.proto.Layout(self)
+            button:Show()
         end
+    else
+        for _, button in pairs(self.buttons) do
+            button:SetScale(1)
+            button:Show()
+        end
+
+        MenuBar.proto.Layout(self)
     end
 end
 
@@ -416,11 +340,5 @@ function MenuBarModule:OnFirstLoad()
         local f = CreateFrame("Frame", nil, PetMicroButtonFrame)
         f:SetScript("OnShow", layout)
         f:SetScript("OnHide", layout)
-    end
-
-    -- a consistent bug in classic era, AchievementFrameAchievements_OnEvent
-    -- tries to call a function that does not exist
-    if not (Addon:IsBuild('retail') or type(AchievementMicroButton_Update) == 'function') then
-        AchievementMicroButton_Update = function() end
     end
 end

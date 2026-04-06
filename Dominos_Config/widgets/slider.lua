@@ -66,11 +66,7 @@ do
 
 	function Slider:New(options)
 		local f
-		if Addon:IsBuild("tbc", "vanilla") then
-			f = self:Bind(CreateFrame('Slider', nextName(), options.parent, 'HorizontalSliderTemplate'))
-		else
-			f = self:Bind(CreateFrame('Slider', nextName(), options.parent, 'UISliderTemplate'))
-		end
+		f = self:Bind(CreateFrame('Slider', nextName(), options.parent, 'UISliderTemplate'))
 
 		f.min = options.min or 0
 		f.max = options.max or 100

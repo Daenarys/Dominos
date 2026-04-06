@@ -19,25 +19,12 @@ function BagBar:GetDisplayName()
 end
 
 function BagBar:GetDefaults()
-    if Addon:IsBuild("retail") then
-        return {
-            displayLayer = 'LOW',
-            point = 'BOTTOMRIGHT',
-            oneBag = false,
-            keyRing = false,
-            spacing = 2
-        }
-    else
-        return {
-            displayLayer = 'LOW',
-            point = 'BOTTOMRIGHT',
-            x = 0,
-            y = 40,
-            oneBag = false,
-            keyRing = GetCVarBool('showKeyring') or false,
-            spacing = 2
-        }
-    end
+    return {
+        displayLayer = 'LOW',
+        point = 'BOTTOMRIGHT',
+        oneBag = false,
+        spacing = 2
+    }
 end
 
 function BagBar:SetShowBags(enable)
@@ -48,16 +35,6 @@ end
 
 function BagBar:ShowBags()
     return not self.sets.oneBag
-end
-
-function BagBar:SetShowKeyRing(enable)
-    self.sets.keyRing = enable and true
-    self:UpdateBagSlots()
-    self:ReloadButtons()
-end
-
-function BagBar:ShowKeyRing()
-    return self.sets.keyRing and not Addon:IsBuild('retail', 'mists', 'cata')
 end
 
 -- Frame Overrides
@@ -88,10 +65,6 @@ do
 
         table.wipe(slots)
 
-        if self:ShowKeyRing() then
-            maybeAddBagSlot(slots, AddonName .. 'KeyRingButton')
-        end
-
         if self:ShowBags() then
             maybeAddBagSlot(slots, 'CharacterReagentBag0Slot')
 
@@ -116,13 +89,11 @@ function BagBar:NumButtons()
     return #self.bagSlots
 end
 
-if Addon:IsBuild("retail") then
-    function BagBar:GetButtonSize()
-        local w, h = MainMenuBarBackpackButton:GetSize()
-        local l, r, t, b = self:GetButtonInsets()
+function BagBar:GetButtonSize()
+    local w, h = MainMenuBarBackpackButton:GetSize()
+    local l, r, t, b = self:GetButtonInsets()
 
-        return w - (l + r), h - (t + b)
-    end
+    return w - (l + r), h - (t + b)
 end
 
 function BagBar:OnCreateMenu(menu)
@@ -141,20 +112,6 @@ function BagBar:OnCreateMenu(menu)
             layoutPanel.colsSlider:UpdateValue()
         end
     }
-
-    if not Addon:IsBuild('retail', 'mists', 'cata') then
-        layoutPanel:NewCheckButton {
-            name = L.BagBarShowKeyRing,
-            get = function()
-                return layoutPanel.owner:ShowKeyRing()
-            end,
-            set = function(_, enable)
-                layoutPanel.owner:SetShowKeyRing(enable)
-                layoutPanel.colsSlider:UpdateRange()
-                layoutPanel.colsSlider:UpdateValue()
-            end
-        }
-    end
 
     layoutPanel:AddLayoutOptions()
 
@@ -205,10 +162,8 @@ function BagBarModule:OnFirstLoad()
         self:RegisterButton(('CharacterBag%dSlot'):format(slot))
     end
 
-    self:RegisterKeyRingButton()
     self:RegisterButton('MainMenuBarBackpackButton')
 
-    self.RegisterKeyRingButton = nil
     self.RegisterButton = nil
 
     self:RegisterEvent("PLAYER_REGEN_ENABLED", "LayoutBagBar")
@@ -237,101 +192,18 @@ function BagBarModule:LayoutBagBar()
     self.needsUpdate = nil
 end
 
-if Addon:IsBuild("retail") then
-    function BagBarModule:RegisterButton(name)
-        local button = _G[name]
-        if not button then
-            return
-        end
-
-        button:SetSize(MainMenuBarBackpackButton:GetSize())
-        button:Hide()
-
-        if button.SetBarExpanded then
-            button.SetBarExpanded = function() end
-        end
-
-        BagButtons[#BagButtons + 1] = button
-    end
-elseif Addon:IsBuild("mists", "cata", "wrath") then
-    function BagBarModule:RegisterButton(name)
-        local button = _G[name]
-        if not button then
-            return
-        end
-
-        button:Hide()
-        button:SetSize(36, 36)
-        button.IconBorder:SetSize(37, 37)
-        button.IconOverlay:SetSize(37, 37)
-
-        _G[button:GetName() .. 'NormalTexture']:SetSize(64, 64)
-
-        BagButtons[#BagButtons + 1] = button
-    end
-else
-    function BagBarModule:RegisterButton(name)
-        local button = _G[name]
-        if not button then
-            return
-        end
-
-        button:Hide()
-        BagButtons[#BagButtons + 1] = button
-    end
-end
-
-function BagBarModule:RegisterKeyRingButton()
-    if not (Addon:IsBuild("vanilla", "tbc") and KeyRingButton) then
+function BagBarModule:RegisterButton(name)
+    local button = _G[name]
+    if not button then
         return
     end
 
-    -- force hide the old keyring button
-    KeyRingButton:Hide()
+    button:SetSize(MainMenuBarBackpackButton:GetSize())
+    button:Hide()
 
-    -- setup the dominos specific one
-    local keyring = CreateFrame('CheckButton', AddonName .. 'KeyRingButton', UIParent, 'ItemButtonTemplate')
+    if button.SetBarExpanded then
+        button.SetBarExpanded = function() end
+    end
 
-    keyring:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
-    keyring:SetID(KEYRING_CONTAINER)
-    keyring.icon:SetTexture([[Interface\Icons\INV_Misc_Bag_16]])
-
-    keyring:SetScript('OnClick', function()
-        if CursorHasItem() then
-            PutKeyInKeyRing()
-        else
-            ToggleBag(KEYRING_CONTAINER)
-        end
-    end)
-
-    keyring:SetScript('OnReceiveDrag', function()
-        if CursorHasItem() then
-            PutKeyInKeyRing()
-        end
-    end)
-
-    keyring:SetScript('OnEnter', function(frame)
-        GameTooltip:SetOwner(frame, 'ANCHOR_LEFT')
-
-        local color = HIGHLIGHT_FONT_COLOR
-        GameTooltip:SetText(KEYRING, color.r, color.g, color.b)
-        GameTooltip:AddLine()
-    end)
-
-    keyring:SetScript('OnLeave', function()
-        GameTooltip:Hide()
-    end)
-
-    MainMenuBarBackpackButton:HookScript('OnClick', function()
-        if IsControlKeyDown() then
-            ToggleBag(KEYRING_CONTAINER)
-        end
-    end)
-
-    -- prevent the button from coming back
-    hooksecurefunc('MainMenuBar_UpdateKeyRing', function()
-        KeyRingButton:Hide()
-    end)
-
-    self:RegisterButton(keyring:GetName())
+    BagButtons[#BagButtons + 1] = button
 end

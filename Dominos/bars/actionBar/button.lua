@@ -163,10 +163,6 @@ function ActionButton:SetShowCooldowns(show)
     if show then
         if self.cooldown:GetParent() ~= self then
             self.cooldown:SetParent(self)
-
-            if not Addon:IsAfterMidnight() then
-                ActionButton_UpdateCooldown(self)
-            end
         end
     else
         self.cooldown:SetParent(Addon.ShadowUIParent)

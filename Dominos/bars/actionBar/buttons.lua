@@ -422,23 +422,15 @@ function ActionButtons:AddCastOnKeyPressSupport(button)
     end
 
     -- translate HOTKEY button "clicks" into LeftButton
-    if Addon:IsAfterMidnight() then
-        self:WrapScript(bind, "OnClick", [[
-            if button == "HOTKEY" then
-                if GetActionInfo(self:GetEffectiveAttribute("action")) == "flyout" then
-                    return false
-                end
+    self:WrapScript(bind, "OnClick", [[
+        if button == "HOTKEY" then
+            if GetActionInfo(self:GetEffectiveAttribute("action")) == "flyout" then
+                return false
+            end
 
-                return "LeftButton"
-            end
-        ]])
-    else
-        self:WrapScript(bind, "OnClick", [[
-            if button == "HOTKEY" then
-                return "LeftButton"
-            end
-        ]])
-    end
+            return "LeftButton"
+        end
+    ]])
 
     button.bind = bind
     button:UpdateOverrideBindings()

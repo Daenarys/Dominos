@@ -4,11 +4,7 @@ local ProgressBarModule = Dominos:NewModule("ProgressBars", "AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Dominos-Progress")
 
 function ProgressBarModule:Load()
-	if not Dominos:IsBuild("retail") then
-		self.bars = {
-			Addon.ProgressBar:New("exp", {"xp", "reputation", "gold"})
-		}
-	elseif Addon.Config:OneBarMode() then
+	if Addon.Config:OneBarMode() then
 		self.bars = {
 			Addon.ProgressBar:New("exp", {"xp", "reputation", "honor", "artifact", "azerite", "gold"})
 		}

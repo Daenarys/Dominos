@@ -261,7 +261,7 @@ end
 function Addon:GetDatabaseDefaults()
     return {
         profile = {
-            possessBar = self:IsBuild("vanilla") and "pet" or 1,
+            possessBar = 1,
             -- if true, applies a default dominos skin to buttons
             -- when masque is not enabled
             applyButtonTheme = true,
@@ -276,7 +276,7 @@ function Addon:GetDatabaseDefaults()
             showTooltipsCombat = true,
             showSpellGlows = true,
             showSpellAnimations = true,
-            useOverrideUI = not self:IsBuild('vanilla', 'tbc'),
+            useOverrideUI = true,
 
             ab = {
                 count = self.ACTION_BUTTON_COUNT / NUM_ACTIONBAR_BUTTONS,
@@ -284,7 +284,7 @@ function Addon:GetDatabaseDefaults()
             },
 
             alignmentGrid = {
-                enabled = not self:IsBuild("retail"),
+                enabled = false,
                 size = 32
             },
 
@@ -777,7 +777,7 @@ function Addon:SetUseOverrideUI(enable)
 end
 
 function Addon:UsingOverrideUI()
-    return self.db.profile.useOverrideUI and not self:IsBuild('vanilla')
+    return self.db.profile.useOverrideUI
 end
 
 --------------------------------------------------------------------------------
@@ -881,23 +881,6 @@ end
 -- display the current addon build being used
 function Addon:PrintVersion()
     self:Printf('%s-%s', ADDON_VERSION, WOW_BUILD)
-end
-
--- check if we're running the addon on one of a given set of wow versions
-function Addon:IsBuild(...)
-    local build = WOW_BUILD
-
-    for i = 1, select('#', ...) do
-        if build == select(i, ...):lower() then
-            return true
-        end
-    end
-
-    return false
-end
-
-function Addon:IsAfterMidnight()
-    return select(4, GetBuildInfo()) >= 120000
 end
 
 function Addon.OnLaunch(_, button)

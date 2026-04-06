@@ -22,12 +22,6 @@ function Menu:New(parent)
 	local tr = CreateFrame('Frame', nil, menu, 'TitleDragAreaTemplate')
 	tr:SetAllPoints(_G[menu:GetName() .. 'TitleBG'])
 
-	-- reposition close button, as it is positioned poorly in vanilla
-	if not Addon:GetParent():IsBuild("retail") then
-		local cb = _G[menu:GetName() .. 'Close']
-		cb:SetPoint("TOPRIGHT", 2, 0)
-	end
-
 	-- panels
 	menu.panels = {}
 

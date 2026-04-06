@@ -96,19 +96,7 @@ end
 
 -- disable UpdateDisplayConditions as we're not using showstates for this
 function DominosPossessBar:GetDisplayConditions()
-    if Addon:IsBuild("retail") then
-        return '[canexitvehicle][possessbar]show;hide'
-    end
-
-    if Addon:IsBuild("tbc") then
-        local eye = C_Spell.GetSpellInfo(126)
-        if eye then
-            return ('[pet:%s][canexitvehicle][possessbar]show;hide'):format(eye.name)
-        end
-        return '[canexitvehicle][possessbar]show;hide'
-    end
-
-    return '[canexitvehicle][possessbar][bonusbar:5]show;hide'
+    return '[canexitvehicle][possessbar]show;hide'
 end
 
 function DominosPossessBar:GetDefaults()
@@ -180,12 +168,10 @@ function PossessBarModule:Load()
     self:RegisterEvent("PLAYER_ENTERING_WORLD", "Update")
     self:RegisterEvent("VEHICLE_UPDATE", "Update")
 
-    if not Addon:IsBuild("vanilla") then
-        self:RegisterEvent("UPDATE_MULTI_CAST_ACTIONBAR", "Update")
-        self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR", "Update")
-        self:RegisterEvent("UPDATE_POSSESS_BAR", "Update")
-        self:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR", "Update")
-    end
+    self:RegisterEvent("UPDATE_MULTI_CAST_ACTIONBAR", "Update")
+    self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR", "Update")
+    self:RegisterEvent("UPDATE_POSSESS_BAR", "Update")
+    self:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR", "Update")
 end
 
 function PossessBarModule:Unload()

@@ -114,7 +114,7 @@ Addon:AddOptionsPanelOptions("general", {
             type = "toggle",
             name = L.ShowOverrideUI,
             desc = L.ShowOverrideUIDesc,
-            hidden = ParentAddon:IsBuild("vanilla"),
+            hidden = false,
             get = function()
                 return ParentAddon:UsingOverrideUI()
             end,
@@ -133,10 +133,6 @@ Addon:AddOptionsPanelOptions("general", {
 
                 for i = 1, ParentAddon:NumBars() do
                     tinsert(items, L.ActionBarNumber:format(i))
-                end
-
-                if ParentAddon:IsBuild("tbc", "vanilla") then
-                    items.pet = ParentAddon.Frame:Get("pet"):GetDisplayName()
                 end
 
                 return items
@@ -216,7 +212,7 @@ Addon:AddOptionsPanelOptions("general", {
         {
             type = "toggle",
             name = L.ShowSpellAnimations,
-            hidden = not ParentAddon:IsBuild("retail"),
+            hidden = false,
             get = function()
                 return ParentAddon:ShowingSpellAnimations()
             end,
@@ -229,7 +225,7 @@ Addon:AddOptionsPanelOptions("general", {
         {
             type = "toggle",
             name = L.ShowSpellGlows,
-            hidden = not ParentAddon:IsBuild("retail"),
+            hidden = false,
             get = function()
                 return ParentAddon:ShowingSpellGlows()
             end,

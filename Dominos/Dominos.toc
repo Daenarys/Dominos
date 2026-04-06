@@ -24,7 +24,6 @@ core\tooltipController.lua
 core\blizzardHider.lua [AllowLoadGameType mainline, tbc]
 # builtin bars
 bars\actionBar\bindings.lua [AllowLoadGameType mainline]
-bars\actionBar\flyout.lua [AllowLoadGameType mainline]
 bars\actionBar\button.lua [AllowLoadGameType mainline, tbc]
 bars\actionBar\buttons.lua [AllowLoadGameType mainline, tbc]
 bars\actionBar\bar.lua
