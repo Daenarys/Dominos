@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 -- Alerts
--- A module for moving the Alerts and Group Loot frames
+-- A module for moving the Group Loot and Alerts frames
 --------------------------------------------------------------------------------
 
 local Dominos = LibStub("AceAddon-3.0"):GetAddon("Dominos")

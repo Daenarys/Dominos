@@ -6,7 +6,7 @@ local ProgressBar = Dominos:CreateClass('Frame', Dominos.ButtonBar)
 local function cleanupModes(modes)
 	for i = #modes, 1, -1 do
 		local mode = modes[i]
-		if not Addon.progressBarModes[mode] then
+		if not Addon.dataProviders[mode] then
 			tremove(modes, i)
 		end
 	end
@@ -79,7 +79,7 @@ end
 
 function ProgressBar:GetDefaults()
 	return {
-		point = 'TOP',
+		point = 'BOTTOM',
 		x = 0,
 		y = 0,
 		columns = 20,
@@ -125,6 +125,30 @@ end
 --[[ actions ]]--
 
 function ProgressBar:Update()
+	if not self.provider then return end
+
+	local value, max, bonus = self.provider:GetValues()
+	local label = self.provider:GetLabel()
+
+	self:SetValues(value, max, bonus)
+
+	if self.provider.GetColor then
+		self:SetColor(self.provider:GetColor())
+	end
+
+	if self.provider.GetBonusColor then
+		self:SetBonusColor(self.provider:GetBonusColor())
+	end
+
+	-- Handle special cases for text formatting
+	local bonusText = self.provider.GetBonusText and self.provider:GetBonusText()
+	local capped = self.provider.IsCapped and self.provider:IsCapped()
+
+	if bonusText then
+		self:UpdateText(label, value, max, bonusText, capped)
+	else
+		self:UpdateText(label, value, max, bonus, capped)
+	end
 end
 
 do
@@ -187,8 +211,8 @@ end
 function ProgressBar:GetMode()
 	local mode = Addon.Config:GetBarMode(self.id)
 
-	-- ensure the selected mode has a progress bar display
-	if mode and Addon.progressBarModes[mode] then
+	-- ensure the selected mode has a data provider
+	if mode and Addon.dataProviders[mode] then
 		return mode
 	end
 
@@ -208,10 +232,10 @@ function ProgressBar:GetModeIndex()
 end
 
 function ProgressBar:OnModeChanged(mode)
-	local newType = Addon.progressBarModes and Addon.progressBarModes[mode]
-	if newType then
-		newType:Bind(self)
-		self:Init()
+	local provider = Addon.dataProviders and Addon.dataProviders[mode]
+	if provider then
+		self.provider = provider
+		self:Update()
 	end
 end
 
@@ -227,6 +251,9 @@ function ProgressBar:UpdateMode()
 end
 
 function ProgressBar:IsModeActive()
+	if self.provider then
+		return self.provider:IsActive()
+	end
 	return false
 end
 
@@ -238,7 +265,8 @@ function ProgressBar:GetLastActiveMode()
 
 	for i = #modes, 2, -1 do
 		local mode = modes[i]
-		if Addon.progressBarModes[mode]:IsModeActive() then
+		local provider = Addon.dataProviders[mode]
+		if provider and provider:IsActive() then
 			return mode
 		end
 	end
@@ -270,8 +298,9 @@ function ProgressBar:GetNextActiveMode()
 	for offset = 1, #modes - 1 do
 		local index = Wrap(currentIndex + offset, #modes)
 		local mode = modes[index]
+		local provider = Addon.dataProviders[mode]
 
-		if Addon.progressBarModes[mode]:IsModeActive() then
+		if provider and provider:IsActive() then
 			return mode
 		end
 	end
@@ -294,6 +323,24 @@ function ProgressBar:UpdateLockMode()
 	self:UpdateMode()
 end
 
+function ProgressBar:SetHideAtMaxLevel(hide)
+	if self:HideAtMaxLevel() ~= hide then
+		self.sets.hideAtMaxLevel = hide
+		self:UpdateDisplayConditions()
+	end
+end
+
+function ProgressBar:HideAtMaxLevel()
+	return self.sets.hideAtMaxLevel or false
+end
+
+function ProgressBar:GetDisplayConditions()
+	if self.sets.hideAtMaxLevel then
+		if UnitLevel("player") == (GetMaxLevelForPlayerExpansion or GetMaxPlayerLevel)() then
+			return "hide"
+		end
+	end
+end
 
 --[[ value display ]]--
 
@@ -681,6 +728,7 @@ do
 
 		segment.bonus:SetStatusBarTexture(self:GetSegmentTexture())
 		segment.bonus:SetStatusBarColor(self:GetBonusColor())
+		segment:Show()
 
 		return segment
 	end
@@ -709,17 +757,20 @@ do
 
 		local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-Progress')
 
-		panel.segmentedCheckbox = panel:NewCheckButton{
-			name = l.Segmented,
+		panel.segmentCount = panel:NewSlider{
+			name = l.SegmentCount,
+
+			min = 1,
+
+			max = 100,
 
 			get = function()
-				return panel.owner:GetSegmentCount() > 1
+				return panel.owner:GetSegmentCount()
 			end,
 
-			set = function(_, enable)
-				local segmentCount = enable and 20 or 1
-				panel.owner:SetSegmentCount(segmentCount)
-			end
+			set = function(_, value)
+				panel.owner:SetSegmentCount(value)
+			end,
 		}
 
 		panel.widthSlider = panel:NewSlider{
@@ -766,6 +817,18 @@ do
 	function ProgressBar:AddTextPanel(menu)
 		local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-Progress')
 		local panel = menu:NewPanel(_G.DISPLAY)
+
+		panel:NewCheckButton{
+			name = l.HideAtMaxLevel,
+
+			get = function()
+				return panel.owner:HideAtMaxLevel()
+			end,
+
+			set = function(_, enable)
+				panel.owner:SetHideAtMaxLevel(enable)
+			end
+		}	
 
 		if #self.modes > 1 then
 			panel:NewCheckButton{
@@ -854,4 +917,4 @@ do
 end
 
 Addon.ProgressBar = ProgressBar
-Addon.progressBarModes = Addon.progressBarModes or {}
+Addon.dataProviders = Addon.dataProviders or {}
