@@ -167,6 +167,8 @@ function MenuBar:Layout()
         button:Hide()
     end
 
+    self:UpdateActiveButtons()
+
     if OverrideActionBar and OverrideActionBar:IsVisible() then
         for i, button in pairs(MicroButtons) do
             button:ClearAllPoints()
