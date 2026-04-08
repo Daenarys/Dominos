@@ -125,8 +125,8 @@ hooksecurefunc(TokenHeaderMixin, "Initialize", function(self)
 		if self.Middle then
 			self.Middle:SetSize(0, 16)
 			self.Middle:ClearAllPoints()
-			self.Middle:SetPoint("TOPLEFT", self.Left, "TOPRIGHT", -20, 0)
-			self.Middle:SetPoint("BOTTOMRIGHT", self.Right, "BOTTOMLEFT", 20, 0)
+			self.Middle:SetPoint("LEFT", self.Left, "RIGHT", -20, 0)
+			self.Middle:SetPoint("RIGHT", self.Right, "LEFT", 20, 0)
 			self.Middle:SetTexture("Interface\\Buttons\\CollapsibleHeader")
 			self.Middle:SetTexCoord(0.48046875, 0.98046875, 0.01562500, 0.26562500)
 		end
@@ -167,7 +167,6 @@ hooksecurefunc(TokenHeaderMixin, "Initialize", function(self)
 end)
 
 hooksecurefunc(TokenSubHeaderToggleCollapseButtonMixin, "RefreshIcon", function(self)
-	self:SetSize(16, 16)
 	if self:GetHeader():IsCollapsed() then
 		self:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up")
 		self:SetPushedTexture("Interface\\Buttons\\UI-PlusButton-Up")
