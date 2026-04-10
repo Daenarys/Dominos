@@ -248,14 +248,14 @@ function MenuBarModule:OnInitialize()
         end
     end)
 
-    -- layout the frame again after an UpdateMicroButtons call, as Blizzard
-    -- repositions the buttons at that point
-    hooksecurefunc("UpdateMicroButtons", function()
-        local f = self.frame
-        if f then
-            f:Layout()
+    local layout = Addon:Defer(function()
+        local frame = self.frame
+        if frame then
+            self.frame:Layout()
         end
     end)
+
+    hooksecurefunc("UpdateMicroButtons", layout)
 
     if OverrideActionBar then
         local f = CreateFrame("Frame", nil, OverrideActionBar)
