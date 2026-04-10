@@ -34,7 +34,6 @@ end
 function Addon:OnEnable()
     self:RegisterEvent('UPDATE_BINDINGS')
     self:HideBlizzard()
-    self:UpdateUseOverrideUI()
     self:CreateDataBrokerPlugin()
     self:Load()
 end
@@ -238,7 +237,7 @@ function Addon:GetDatabaseDefaults()
             showEquippedItemBorders = true,
             showTooltips = true,
             showTooltipsCombat = true,
-            useOverrideUI = false,
+            useOverrideUI = true,
 
             minimap = { hide = false },
 
@@ -613,35 +612,6 @@ function Addon:ShowEquippedItemBorders()
     return self.db.profile.showEquippedItemBorders
 end
 
--- override ui
-function Addon:SetUseOverrideUI(enable)
-    self.db.profile.useOverrideUI = enable and true or false
-    self:UpdateUseOverrideUI()
-end
-
-function Addon:UsingOverrideUI()
-    return self.db.profile.useOverrideUI
-end
-
-function Addon:UpdateUseOverrideUI()
-    if not self.OverrideController then return end
-
-    local useOverrideUi = self:UsingOverrideUI()
-
-    self.OverrideController:SetAttribute('state-useoverrideui', useOverrideUi)
-
-    local oab = _G.OverrideActionBar
-    if oab then
-        oab:ClearAllPoints()
-
-        if useOverrideUi then
-            oab:SetPoint('BOTTOM')
-        else
-            oab:SetPoint('LEFT', oab:GetParent(), 'RIGHT', 100, 0)
-        end
-    end
-end
-
 -- override action bar selection
 function Addon:SetOverrideBar(id)
     local prevBar = self:GetOverrideBar()
@@ -651,10 +621,22 @@ function Addon:SetOverrideBar(id)
 
     prevBar:UpdateOverrideBar()
     newBar:UpdateOverrideBar()
+
+    self.callbacks:Fire('OVERRIDE_BAR_UPDATED', newBar)
 end
 
 function Addon:GetOverrideBar()
     return self.Frame:Get(self.db.profile.possessBar)
+end
+
+-- override ui
+function Addon:SetUseOverrideUI(enable)
+    self.db.profile.useOverrideUI = enable and true or false
+    self.callbacks:Fire("USE_OVERRRIDE_UI_CHANGED", self:UsingOverrideUI())
+end
+
+function Addon:UsingOverrideUI()
+    return self.db.profile.useOverrideUI
 end
 
 -- action bar counts

@@ -270,7 +270,7 @@ function Frame:SetFrameScale(newScale, scaleAnchored)
     self.sets.scale = newScale
 
     FlyPaper.SetScale(self, newScale)
-    self:SaveRelativePostiion()
+    self:SaveRelativePosition()
 
     if scaleAnchored then
         self:ForAnchored('SetFrameScale', newScale, scaleAnchored)
@@ -410,63 +410,34 @@ end
 -- Focus Checking
 --------------------------------------------------------------------------------
 
-local function isDescendant(frame, ancestor)
+local function IsAncestor(frame, target)
     if frame == nil then
         return false
     end
 
-    if frame == ancestor then
+    if frame == target then
         return true
     end
 
-    if frame:IsForbidden() then
-        return false
-    end
-
-    return isDescendant(frame:GetParent(), ancestor)
-end
-
-local function isFlyoutFocus(flyout, owner)
-    if flyout and flyout:IsVisible() and flyout:IsMouseOver(1, -1, -1, 1) then
-        return isDescendant(flyout, owner)
-    end
-
-    return false
-end
-
-local function isFocus(frame)
-    if frame:IsForbidden() then
-        return false
-    end
-
-    for _, focus in ipairs(GetMouseFoci()) do
-        -- not focused on a particular frame, check to see if the mouse is over
-        -- either the frame itself, or a flyout owned by the frame
-        if focus == WorldFrame then
-            if frame:IsMouseOver(1, -1, -1, 1) then
-                return true
-            end
-
-            if isFlyoutFocus(_G.SpellFlyout, frame) then
-                return true
-            end
-
-            if isFlyoutFocus(Addon.SpellFlyout, frame) then
-                return true
-            end
-        end
-
-        if isDescendant(focus, frame) then
-            return true
-        end
-    end
-
-    return false
+    return IsAncestor(frame:GetParent(), target)
 end
 
 -- returns all frames docked to the given frame
 function Frame:IsFocus()
-    return isFocus(self) or (Addon:IsLinkedOpacityEnabled() and self:IfAnchored('IsFocus'))
+    if self:IsMouseOver(1, -1, -1, 1) then
+        local focus = _G.GetMouseFocus()
+        if focus == _G.WorldFrame or IsAncestor(focus, self) then
+            return true
+        end
+    end
+
+    local flyout = _G.SpellFlyout
+    if flyout and flyout:IsVisible() and flyout:IsMouseOver(1, -1, -1, 1) then
+        IsAncestor(flyout, self)
+        return true
+    end
+
+    return Addon:IsLinkedOpacityEnabled() and self:IfAnchored('IsFocus')
 end
 
 --------------------------------------------------------------------------------
@@ -674,7 +645,7 @@ function Frame:GetSavedPosition()
     return point, relPoint,x, y
 end
 
-function Frame:SaveRelativePostiion()
+function Frame:SaveRelativePosition()
     local point, relPoint, x, y = self:GetRelativePosition()
 
     self:SavePosition(point, relPoint, x, y)
@@ -855,7 +826,7 @@ function Frame:Stick()
     end
 
     self:ClearSavedAnchor()
-    self:SaveRelativePostiion()
+    self:SaveRelativePosition()
     return false
 end
 
@@ -867,7 +838,7 @@ function Frame:StickToFrame()
         self:ClearAllPoints()
         self:SetPoint(point, relFrame, relPoint)
         self:SaveAnchor(relFrame, point, relPoint)
-        self:SaveRelativePostiion()
+        self:SaveRelativePosition()
 
         return true
     end
@@ -895,7 +866,7 @@ function Frame:StickToGrid()
         self:ClearAllPoints()
         self:SetPoint(point, self:GetParent(), relPoint, x, y)
 
-        self:SaveRelativePostiion()
+        self:SaveRelativePosition()
         return true
     end
 
@@ -924,7 +895,7 @@ function Frame:StickToEdge()
             self:ClearAllPoints()
             self:SetPoint(point, self:GetParent(), relPoint, x, y)
 
-            self:SaveRelativePostiion()
+            self:SaveRelativePosition()
             return true
         end
     end
@@ -984,13 +955,13 @@ end
 
 function Frame:SetDisplayLayer(layer)
     self.sets.displayLayer = layer
-	self:UpdateDisplayLayer()
+    self:UpdateDisplayLayer()
 end
 
 function Frame:UpdateDisplayLayer()
     local layer = self:GetDisplayLayer()
 
-	self:SetFrameStrata(layer)
+    self:SetFrameStrata(layer)
 
     fireBarCallback(self, 'BAR_DISPLAY_LAYER_UPDATED', layer)
 end
@@ -1001,13 +972,13 @@ end
 
 function Frame:SetDisplayLevel(level)
     self.sets.displayLevel = tonumber(level) or 0
-	self:UpdateDisplayLevel()
+    self:UpdateDisplayLevel()
 end
 
 function Frame:UpdateDisplayLevel()
     local level = self:GetDisplayLevel()
 
-	self:SetFrameLevel(level)
+    self:SetFrameLevel(level)
 
     fireBarCallback(self, 'BAR_DISPLAY_LEVEL_UPDATED', level)
 end
