@@ -1,5 +1,5 @@
 ## Interface: 120001
-## IconTexture: Interface/AddOns/Dominos/icons/Dominos
+## IconTexture: Interface/AddOns/Dominos/Dominos
 ## Title: Dominos Config
 ## Notes: GUI based configuration for Dominos
 ## Author: Daenarys
@@ -8,20 +8,9 @@
 embeds.xml
 localization.xml
 main.lua
-panel.lua
-scrollableContainer.lua
-button.lua
-checkButton.lua
-colorPicker.lua
-slider.lua
-textInput.lua
-dropdown.lua
-textureSelector.lua
-fontSelector.lua
-menu.lua
-panelSelector.lua
-general.lua
-profiles.lua
-ui.lua
-dragFrame.lua
-help.lua
+widgets\include.xml
+options\general.lua
+options\profiles.lua
+overlay\ui.lua
+overlay\dragFrame.lua
+overlay\help.lua
