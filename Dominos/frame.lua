@@ -200,8 +200,6 @@ function Frame:LoadSettings()
     self.sets = Addon:GetFrameSets(self.id)
              or Addon:SetFrameSets(self.id, self:GetDefaults())
 
-    self:UpdateDisplayLayer()
-    self:UpdateDisplayLevel()
     self:RestorePosition()
     self:RestoreAnchor()
 
@@ -689,9 +687,6 @@ function Frame:RestorePosition()
     self:SetScale(scale)
     self:SetPoint(point, self:GetParent() or _G.UIParent, relPoint, x, y)
 
-    --adding this here, as it will be be called by all frames, and Tuller seems to be considering layering to be a form of position now. ~Goranaws
-    self:UpdateDisplayLevel()
-
     return true
 end
 
@@ -972,40 +967,6 @@ end
 
 function Frame:GetDescription()
     return
-end
-
-function Frame:GetDisplayLayer()
-    return self.sets.displayLayer or 'MEDIUM'
-end
-
-function Frame:SetDisplayLayer(layer)
-    self.sets.displayLayer = layer
-    self:UpdateDisplayLayer()
-end
-
-function Frame:UpdateDisplayLayer()
-    local layer = self:GetDisplayLayer()
-
-    self:SetFrameStrata(layer)
-
-    fireBarCallback(self, 'BAR_DISPLAY_LAYER_UPDATED', layer)
-end
-
-function Frame:GetDisplayLevel()
-    return self.sets.displayLevel or 1
-end
-
-function Frame:SetDisplayLevel(level)
-    self.sets.displayLevel = tonumber(level) or 0
-    self:UpdateDisplayLevel()
-end
-
-function Frame:UpdateDisplayLevel()
-    local level = self:GetDisplayLevel()
-
-    self:SetFrameLevel(level)
-
-    fireBarCallback(self, 'BAR_DISPLAY_LEVEL_UPDATED', level)
 end
 
 --------------------------------------------------------------------------------

@@ -42,6 +42,8 @@ end
 function ProgressBar:OnCreate(...)
 	ProgressBar.proto.OnCreate(self, ...)
 
+	self:SetFrameStrata('BACKGROUND')
+
 	self.colors = {
 		base = {0, 0, 0},
 		bonus = {0, 0, 0, 0},
@@ -95,7 +97,6 @@ function ProgressBar:GetDefaults()
 			max = true,
 			bonus = true
 		},
-		displayLayer = 'BACKGROUND',
 		alwaysShowText = true,
 		lockMode = true
 	}

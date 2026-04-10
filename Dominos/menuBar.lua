@@ -58,7 +58,6 @@ end)
 
 function MenuBar:GetDefaults()
     return {
-        displayLayer = 'LOW',
         point = 'BOTTOMRIGHT',
         x = 0,
         y = 48

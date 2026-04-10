@@ -584,8 +584,7 @@ function DragFrame:UpdateFrameLevel()
     if self:HasState(DRAG_FRAME_STATE.FOCUSED) then
         self.frame:SetFrameLevel(FRAME_STRATA_LEVELS.FOCUSED)
     else
-        local level = (FRAME_STRATA_LEVELS[owner:GetDisplayLayer()] or 0) + owner:GetDisplayLevel()
-        self.frame:SetFrameLevel(level)
+        self.frame:SetFrameLevel(0)
     end
 end
 

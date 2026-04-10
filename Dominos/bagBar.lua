@@ -20,7 +20,6 @@ end
 
 function BagBar:GetDefaults()
     return {
-        displayLayer = 'LOW',
         point = 'BOTTOMRIGHT',
         oneBag = false,
         spacing = 2

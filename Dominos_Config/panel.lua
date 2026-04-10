@@ -320,72 +320,6 @@ function Panel:NewColumnsSlider()
 	}
 end
 
-local DISPLAY_LAYER_OPTIONS = {"BACKGROUND", "LOW", "MEDIUM", "HIGH"}
-
-function Panel:NewDisplayLayerSlider(options)
-	local slider = self:NewSlider{
-		name = L.FrameStrata,
-
-		min = 1,
-
-		max = function()
-			return #DISPLAY_LAYER_OPTIONS
-		end,
-
-		get = function()
-			local value = self.owner:GetDisplayLayer()
-
-			for i, layer in pairs(DISPLAY_LAYER_OPTIONS) do
-				if layer == value then
-					return i
-				end
-			end
-
-			return 1
-		end,
-
-		set = function(_, value)
-			self.owner:SetDisplayLayer(DISPLAY_LAYER_OPTIONS[value])
-		end,
-
-		format = function(_, value)
-			local layer = DISPLAY_LAYER_OPTIONS[value]
-			return L["FrameStrata_" .. layer]
-		end
-	}
-
-	slider.valText:SetScript("OnTextChanged", nil)
-	slider.valText:SetScript("OnEditFocusGained", nil)
-	slider.valText:SetScript("OnEditFocusLost", nil)
-	slider.valText:SetScript("OnEscapePressed", nil)
-	slider.valText:SetScript("OnEnterPressed", nil)
-	slider.valText:SetScript("OnTabPressed", nil)
-	slider.valText:SetWidth(slider.valText:GetWidth() + 64)
-	slider.valText:Disable()
-
-	return slider
-end
-
-
-function Panel:NewDisplayLevelSlider(options)
-	return self:NewSlider{
-		name = L.FrameLevel,
-
-		min = 1,
-
-		max = 200,
-
-		get = function()
-			return self.owner:GetDisplayLevel() or 1
-		end,
-
-		set = function(_, value)
-			self.owner:SetDisplayLevel(value)
-		end
-	}
-end
-
-
 function Panel:NewLeftToRightCheckbox()
 	return self:NewCheckButton{
 		name = L.LeftToRight,
@@ -463,8 +397,6 @@ end
 function Panel:AddBasicLayoutOptions()
 	self.paddingSlider = self:NewPaddingSlider()
 	self.scaleSlider = self:NewScaleSlider()
-	self.displayLayerSlider = self:NewDisplayLayerSlider()
-	self.displayLevelSlider = self:NewDisplayLevelSlider()
 end
 
 function Panel:AddAdvancedOptions(displayConditionsOnly)
