@@ -509,7 +509,7 @@ function DragFrame:NudgeFrame(dx, dy)
     self.owner:ClearSavedAnchor()
     self.owner:ClearAllPoints()
     self.owner:SetPoint("BOTTOMLEFT", x, y)
-    self.owner:SaveRelativePostiion()
+    self.owner:SaveRelativePosition()
     self.owner:RestorePosition()
 
     self:ShowTemporaryText(0.5, "(%d, %d)", self.owner:GetRect())
