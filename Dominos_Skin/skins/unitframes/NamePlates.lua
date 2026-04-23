@@ -18,24 +18,6 @@ hooksecurefunc(NamePlateAurasMixin, "UpdateEnemyPlayerAuraFrames", function(self
     end
 end)
 
-hooksecurefunc(NamePlateClassificationFrameMixin, "UpdateClassificationIndicator", function(self)
-    if self:IsForbidden() then return end
-
-    if (self.classificationIndicator) then
-        local classification = self:GetClassification()
-        if classification == "elite" or classification == "worldboss" then
-            self.classificationIndicator:SetTexture("Interface\\AddOns\\Dominos\\icons\\nameplates")
-            self.classificationIndicator:SetTexCoord(0.00390625, 0.148438, 0.234375, 0.507812)
-        elseif classification == "rareelite" then
-            self.classificationIndicator:SetTexture("Interface\\AddOns\\Dominos\\icons\\nameplates")
-            self.classificationIndicator:SetTexCoord(0.00390625, 0.148438, 0.523438, 0.796875)
-        else
-            self.classificationIndicator:SetAtlas(self.classificationAtlasElement)
-        end
-    end
-end)
-
-
 local function SkinCastbar(self)
     if self:IsForbidden() then return end
 
@@ -153,11 +135,9 @@ local function HandleNamePlateAdded(unit)
         end
         frame.castBar.Icon:ClearAllPoints()
         PixelUtil.SetPoint(frame.castBar.Icon, "CENTER", frame.castBar, "LEFT", 0, 0)
-        frame.ClassificationFrame:SetScale(1.4)
-        frame.ClassificationFrame:SetSize(14, 13)
+        frame.ClassificationFrame:SetScale(1.2)
         frame.ClassificationFrame:ClearAllPoints()
         frame.ClassificationFrame:SetPoint("RIGHT", frame.HealthBarsContainer, "LEFT")
-        frame.ClassificationFrame.classificationIndicator:SetSize(14, 13)
         frame.HealthBarsContainer:ClearAllPoints()
         PixelUtil.SetPoint(frame.HealthBarsContainer, "BOTTOMLEFT", frame.castBar, "TOPLEFT", 0, 2.5)
         PixelUtil.SetPoint(frame.HealthBarsContainer, "BOTTOMRIGHT", frame.castBar, "TOPRIGHT", 0, 2.5)
