@@ -17,6 +17,11 @@ if MicroMenu then
         -- always reparent the button in retail
         button:SetParent(Addon.ShadowUIParent)
 
+        -- hide the housing button
+        if button == HousingMicroButton then
+            button:Hide()
+        end
+
         if button:IsShown() then
             MicroButtons[#MicroButtons + 1] = button
         end
@@ -52,6 +57,38 @@ function MenuBar:GetDisplayName()
     return L.MenuBarDisplayName
 end
 
+function MenuBar:Skin(button)
+    if button.skinned then return end
+
+    local buttons = {
+        {button = ProfessionMicroButton, name = "SpellbookAbilities"}
+    }
+
+    local function replaceAtlases(self, name)
+        local prefix = "UI-HUD-MicroMenu-"
+        self:SetNormalAtlas(prefix..name.."-Up")
+        self:SetPushedAtlas(prefix..name.."-Down")
+        self:SetDisabledAtlas(prefix..name.."-Disabled")
+
+        self:HookScript("OnUpdate", function()
+            if(self:GetButtonState() == "NORMAL") then 
+                self:SetHighlightAtlas(prefix..name.."-Mouseover", "BLEND")
+            else 
+                self:SetHighlightAtlas(prefix..name.."-Down", "ADD")
+            end 
+        end)
+    end
+
+    local function replaceAllAtlases()
+        for _, data in pairs(buttons) do
+            replaceAtlases(data.button, data.name)
+        end
+    end
+    replaceAllAtlases()
+
+    button.skinned = true
+end
+
 MenuBar:Extend('OnCreate', function(self)
     self.activeButtons = {}
 end)
@@ -78,6 +115,7 @@ function MenuBar:UpdateActiveButtons()
     for _, button in ipairs(MicroButtons) do
         if self:IsMenuButtonEnabled(button) then
             self.activeButtons[#self.activeButtons + 1] = button
+            self:Skin(button)
         end
     end
 end
