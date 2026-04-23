@@ -84,9 +84,6 @@ function Addon:CreateDataBrokerPlugin()
 end
 
 -- configuration events
-function Addon:OnUpgradeDatabase(oldVersion, newVersion)
-end
-
 function Addon:OnUpgradeAddon(oldVersion, newVersion)
     self:Printf(L.Updated, ADDON_VERSION)
 end
@@ -209,12 +206,6 @@ function Addon:CreateDatabase()
     local defaultProfileName = UnitClass('player')
     local db = LibStub('AceDB-3.0'):New(dbName, dbDefaults, defaultProfileName)
 
-    local LibDualSpec = LibStub('LibDualSpec-1.0', true)
-
-    if LibDualSpec then
-        LibDualSpec:EnhanceDatabase(db, dbName)
-    end
-
     db.RegisterCallback(self, 'OnNewProfile')
     db.RegisterCallback(self, 'OnProfileChanged')
     db.RegisterCallback(self, 'OnProfileCopied')
@@ -255,12 +246,6 @@ function Addon:GetDatabaseDefaults()
 end
 
 function Addon:UpgradeDatabase()
-    local configVerison = self.db.global.configVersion
-    if configVerison ~= CONFIG_VERSION then
-        self:OnUpgradeDatabase(configVerison, CONFIG_VERSION)
-        self.db.global.configVersion = CONFIG_VERSION
-    end
-
     local addonVersion = self.db.global.addonVersion
     if addonVersion ~= ADDON_VERSION then
         self:OnUpgradeAddon(addonVersion, ADDON_VERSION)

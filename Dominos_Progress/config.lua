@@ -1,18 +1,10 @@
 local _, Addon = ...
 local Dominos = LibStub("AceAddon-3.0"):GetAddon("Dominos")
-local ConfigVersion = 2
 
 local Config = {}
 
 function Config:Init()
 	local db = Dominos.db:RegisterNamespace("ProgressBars", self:GetDefaults())
-	local dbVersion = db.global.version or 1
-
-	if dbVersion ~= ConfigVersion then
-		self:Upgrade(db, dbVersion, ConfigVersion)
-
-		db.global.version = ConfigVersion
-	end
 
 	self.db = db
 end
