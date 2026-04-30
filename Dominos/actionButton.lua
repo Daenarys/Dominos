@@ -6,77 +6,77 @@ local AddonName, Addon = ...
 local ActionButtonMixin = {}
 
 local function GetActionButtonCommand(id)
-    -- 0
-    if id <= 0 then
-        return
-    -- 1
-    elseif id <= 12 then
-        return "ACTIONBUTTON" .. id
-    -- 2
-    elseif id <= 24 then
-        return
-    -- 3
-    elseif id <= 36 then
-        return "MULTIACTIONBAR3BUTTON" .. (id - 24)
-    -- 4
-    elseif id <= 48 then
-        return "MULTIACTIONBAR4BUTTON" .. (id - 36)
-    -- 5
-    elseif id <= 60 then
-        return "MULTIACTIONBAR2BUTTON" .. (id - 48)
-    -- 6
-    elseif id <= 72 then
-        return "MULTIACTIONBAR1BUTTON" .. (id - 60)
-    -- 7-10
-    elseif id <= 120 then
-        return
-    end
+	-- 0
+	if id <= 0 then
+		return
+	-- 1
+	elseif id <= 12 then
+		return "ACTIONBUTTON" .. id
+	-- 2
+	elseif id <= 24 then
+		return
+	-- 3
+	elseif id <= 36 then
+		return "MULTIACTIONBAR3BUTTON" .. (id - 24)
+	-- 4
+	elseif id <= 48 then
+		return "MULTIACTIONBAR4BUTTON" .. (id - 36)
+	-- 5
+	elseif id <= 60 then
+		return "MULTIACTIONBAR2BUTTON" .. (id - 48)
+	-- 6
+	elseif id <= 72 then
+		return "MULTIACTIONBAR1BUTTON" .. (id - 60)
+	-- 7-10
+	elseif id <= 120 then
+		return
+	end
 end
 
 function ActionButtonMixin:OnCreate(id)
-    -- initialize secure state
-    self:SetAttributeNoHandler("action", 0)
-    self:SetAttributeNoHandler("commandName", GetActionButtonCommand(id) or self:GetName())
-    self:SetAttributeNoHandler("showgrid", Addon:ShowGrid())
-    self:SetAttributeNoHandler("useparent-checkfocuscast", true)
-    self:SetAttributeNoHandler("useparent-checkmouseovercast", true)
-    self:SetAttributeNoHandler("useparent-checkselfcast", true)
+	-- initialize secure state
+	self:SetAttributeNoHandler("action", 0)
+	self:SetAttributeNoHandler("commandName", GetActionButtonCommand(id) or self:GetName())
+	self:SetAttributeNoHandler("showgrid", Addon:ShowGrid())
+	self:SetAttributeNoHandler("useparent-checkfocuscast", true)
+	self:SetAttributeNoHandler("useparent-checkmouseovercast", true)
+	self:SetAttributeNoHandler("useparent-checkselfcast", true)
 
-    -- register for clicks on all buttons, and enable mousewheel bindings
-    self:EnableMouseWheel()
-    self:RegisterForClicks("AnyUp", "AnyDown")
+	-- register for clicks on all buttons, and enable mousewheel bindings
+	self:EnableMouseWheel()
+	self:RegisterForClicks("AnyUp", "AnyDown")
 
-    -- secure handlers
-    self:SetAttributeNoHandler('_childupdate-offset', [[
-        local offset = message or 0
-        local id = self:GetAttribute('index') + offset
+	-- secure handlers
+	self:SetAttributeNoHandler('_childupdate-offset', [[
+		local offset = message or 0
+		local id = self:GetAttribute('index') + offset
 
-        if self:GetAttribute('action') ~= id then
-            self:SetAttribute('action', id)
-            self:RunAttribute("UpdateShown")
-        end
-    ]])
+		if self:GetAttribute('action') ~= id then
+			self:SetAttribute('action', id)
+			self:RunAttribute("UpdateShown")
+		end
+	]])
 
-    self:SetAttributeNoHandler("UpdateShown", [[
-        local show = (HasAction(self:GetAttribute("action")))
-            and not self:GetAttribute("statehidden")
-        local showgrid = self:GetAttribute("showgrid")
+	self:SetAttributeNoHandler("UpdateShown", [[
+		local show = (HasAction(self:GetAttribute("action")))
+			and not self:GetAttribute("statehidden")
+		local showgrid = self:GetAttribute("showgrid")
 
-        if show or showgrid then
-            self:SetAlpha(1)
-        else
-            self:SetAlpha(0)
-        end
-    ]])
+		if show or showgrid then
+			self:SetAlpha(1)
+		else
+			self:SetAlpha(0)
+		end
+	]])
 
-    -- apply hooks for quick binding
-    Addon.BindableButton:AddQuickBindingSupport(self)
+	-- apply hooks for quick binding
+	Addon.BindableButton:AddQuickBindingSupport(self)
 end
 
 function ActionButtonMixin:UpdateOverrideBindings()
-    if InCombatLockdown() then return end
+	if InCombatLockdown() then return end
 
-    self.bind:SetOverrideBindings(GetBindingKey(self:GetAttribute("commandName")))
+	self.bind:SetOverrideBindings(GetBindingKey(self:GetAttribute("commandName")))
 end
 
 --------------------------------------------------------------------------------
@@ -84,22 +84,22 @@ end
 --------------------------------------------------------------------------------
 
 function ActionButtonMixin:SetFlyoutDirection(direction)
-    if InCombatLockdown() then return end
+	if InCombatLockdown() then return end
 
-    self:SetAttribute("flyoutDirection", direction)
-    self:UpdateFlyout()
+	self:SetAttribute("flyoutDirection", direction)
+	self:UpdateFlyout()
 end
 
 function ActionButtonMixin:SetShowCountText(show)
-    self.Count:SetAlpha(show and 1 or 0)
+	self.Count:SetAlpha(show and 1 or 0)
 end
 
 function ActionButtonMixin:SetShowMacroText(show)
-    self.Name:SetAlpha(show and 1 or 0)
+	self.Name:SetAlpha(show and 1 or 0)
 end
 
 function ActionButtonMixin:SetShowEquippedItemBorders(show)
-    self.Border:SetAlpha(show and 1 or 0)
+	self.Border:SetAlpha(show and 1 or 0)
 end
 
 -- exports
@@ -117,7 +117,7 @@ local ACTION_BUTTON_NAME_TEMPLATE = AddonName .. "ActionButton%d"
 ActionButton.buttons = {}
 
 ActionButton:Execute([[
-    ActionButton = table.new()
+	ActionButton = table.new()
 ]])
 
 --------------------------------------------------------------------------------
@@ -125,134 +125,134 @@ ActionButton:Execute([[
 --------------------------------------------------------------------------------
 
 local function GetActionButtonName(id)
-    if id <= 0 then
-        return
-    else
-        return ACTION_BUTTON_NAME_TEMPLATE:format(id)
-    end
+	if id <= 0 then
+		return
+	else
+		return ACTION_BUTTON_NAME_TEMPLATE:format(id)
+	end
 end
 
 local function SafeMixin(button, trait)
-    for k, v in pairs(trait) do
-        if rawget(button, k) ~= nil then
-            error(("%s[%q] has alrady been set"):format(button:GetName(), k), 2)
-        end
+	for k, v in pairs(trait) do
+		if rawget(button, k) ~= nil then
+			error(("%s[%q] has alrady been set"):format(button:GetName(), k), 2)
+		end
 
-        button[k] = v
-    end
+		button[k] = v
+	end
 end
 
 function ActionButton:GetOrCreateActionButton(id, parent)
-    local name = GetActionButtonName(id)
-    if name == nil then
-        error(("Invalid Action ID %q"):format(id))
-    end
+	local name = GetActionButtonName(id)
+	if name == nil then
+		error(("Invalid Action ID %q"):format(id))
+	end
 
-    local button = _G[name]
-    local created = false
+	local button = _G[name]
+	local created = false
 
-    -- button not found, create a new one
-    if button == nil then
-        button = CreateFrame("CheckButton", name, parent, "ActionBarButtonTemplate")
+	-- button not found, create a new one
+	if button == nil then
+		button = CreateFrame("CheckButton", name, parent, "ActionBarButtonTemplate")
 
-        -- add custom methods
-        SafeMixin(button, Addon.ActionButtonMixin)
+		-- add custom methods
+		SafeMixin(button, Addon.ActionButtonMixin)
 
-        -- initialize the button
-        button:OnCreate(id)
-        created = true
-    -- button found, but not yet registered, reuse
-    elseif self.buttons[button] == nil then
-        -- add custom methods
-        SafeMixin(button, Addon.ActionButtonMixin)
+		-- initialize the button
+		button:OnCreate(id)
+		created = true
+	-- button found, but not yet registered, reuse
+	elseif self.buttons[button] == nil then
+		-- add custom methods
+		SafeMixin(button, Addon.ActionButtonMixin)
 
-        -- reset the id of a button to zero to avoid triggering the paging
-        -- logic of the standard UI
-        button:SetParent(parent)
-        button:SetID(0)
+		-- reset the id of a button to zero to avoid triggering the paging
+		-- logic of the standard UI
+		button:SetParent(parent)
+		button:SetID(0)
 
-        -- drop the reference to the bar's original parent, which would otherwise
-        -- call thing we do not want
-        button.Bar = nil
+		-- drop the reference to the bar's original parent, which would otherwise
+		-- call thing we do not want
+		button.Bar = nil
 
-        -- initialize the button
-        button:OnCreate(id)
-        created = true
-    end
+		-- initialize the button
+		button:OnCreate(id)
+		created = true
+	end
 
-    if created then
-        -- add secure handlers
-        self:AddCastOnKeyPressSupport(button)
+	if created then
+		-- add secure handlers
+		self:AddCastOnKeyPressSupport(button)
 
-        -- register the button with the controller
-        self:SetFrameRef("add", button)
+		-- register the button with the controller
+		self:SetFrameRef("add", button)
 
-        self:Execute([[
-            local b = self:GetFrameRef("add")
-            ActionButton[b] = b:GetAttribute("action") or 0
-        ]])
+		self:Execute([[
+			local b = self:GetFrameRef("add")
+			ActionButton[b] = b:GetAttribute("action") or 0
+		]])
 
-        self.buttons[button] = 0
-    end
+		self.buttons[button] = 0
+	end
 
-    return button
+	return button
 end
 
 -- update the pushed state of our parent button when pressing and releasing
 -- the button's hotkey
 local function bindButton_PreClick(self, _, down)
-    local owner = self:GetParent()
+	local owner = self:GetParent()
 
-    if down then
-        if owner:GetButtonState() == "NORMAL" then
-            owner:SetButtonState("PUSHED")
-        end
-    else
-        if owner:GetButtonState() == "PUSHED" then
-            owner:SetButtonState("NORMAL")
-        end
-    end
+	if down then
+		if owner:GetButtonState() == "NORMAL" then
+			owner:SetButtonState("PUSHED")
+		end
+	else
+		if owner:GetButtonState() == "PUSHED" then
+			owner:SetButtonState("NORMAL")
+		end
+	end
 end
 
 local function bindButton_SetOverrideBindings(self, ...)
-    ClearOverrideBindings(self)
+	ClearOverrideBindings(self)
 
-    local name = self:GetName()
-    for i = 1, select("#", ...) do
-        SetOverrideBindingClick(self, false, select(i, ...), name, "HOTKEY")
-    end
+	local name = self:GetName()
+	for i = 1, select("#", ...) do
+		SetOverrideBindingClick(self, false, select(i, ...), name, "HOTKEY")
+	end
 end
 
 function ActionButton:AddCastOnKeyPressSupport(button)
-    local bind = CreateFrame("Button", "$parentHotkey", button, "SecureActionButtonTemplate")
+	local bind = CreateFrame("Button", "$parentHotkey", button, "SecureActionButtonTemplate")
 
-    bind:SetAttributeNoHandler("type", "action")
-    bind:SetAttributeNoHandler("typerelease", "actionrelease")
-    bind:SetAttributeNoHandler("useparent-action", true)
-    bind:SetAttributeNoHandler("useparent-checkfocuscast", true)
-    bind:SetAttributeNoHandler("useparent-checkmouseovercast", true)
-    bind:SetAttributeNoHandler("useparent-checkselfcast", true)
-    bind:SetAttributeNoHandler("useparent-flyoutDirection", true)
-    bind:SetAttributeNoHandler("useparent-pressAndHoldAction", true)
-    bind:SetAttributeNoHandler("useparent-unit", true)
-    SecureHandlerSetFrameRef(bind, "owner", button)
+	bind:SetAttributeNoHandler("type", "action")
+	bind:SetAttributeNoHandler("typerelease", "actionrelease")
+	bind:SetAttributeNoHandler("useparent-action", true)
+	bind:SetAttributeNoHandler("useparent-checkfocuscast", true)
+	bind:SetAttributeNoHandler("useparent-checkmouseovercast", true)
+	bind:SetAttributeNoHandler("useparent-checkselfcast", true)
+	bind:SetAttributeNoHandler("useparent-flyoutDirection", true)
+	bind:SetAttributeNoHandler("useparent-pressAndHoldAction", true)
+	bind:SetAttributeNoHandler("useparent-unit", true)
+	SecureHandlerSetFrameRef(bind, "owner", button)
 
-    bind:EnableMouseWheel()
-    bind:RegisterForClicks("AnyUp", "AnyDown")
+	bind:EnableMouseWheel()
+	bind:RegisterForClicks("AnyUp", "AnyDown")
 
-    bind:SetScript("PreClick", bindButton_PreClick)
+	bind:SetScript("PreClick", bindButton_PreClick)
 
-    bind.SetOverrideBindings = bindButton_SetOverrideBindings
+	bind.SetOverrideBindings = bindButton_SetOverrideBindings
 
-    -- translate HOTKEY button "clicks" into LeftButton
-    self:WrapScript(bind, "OnClick", [[
-        if button == "HOTKEY" then
-            return "LeftButton"
-        end
-    ]])
+	-- translate HOTKEY button "clicks" into LeftButton
+	self:WrapScript(bind, "OnClick", [[
+		if button == "HOTKEY" then
+			return "LeftButton"
+		end
+	]])
 
-    button.bind = bind
-    button:UpdateOverrideBindings()
+	button.bind = bind
+	button:UpdateOverrideBindings()
 end
 
 -- exports

@@ -361,31 +361,31 @@ function Panel:NewShowInPetBattleUICheckbox()
 end
 
 function Panel:NewFadeDelaySlider(smoothType)
-    return self:NewSlider({
+	return self:NewSlider({
 		name = L.Delay,
 		min = 0,
 		max = 10,
 		step = 0.1,
 		format = "%.1f",
-        get = smoothType == "IN" and function() return self.owner:GetFadeInDelay() end or
-            function() return self.owner:GetFadeOutDelay() end,
-        set = smoothType == "IN" and function(_, value) self.owner:SetFadeInDelay(value) end or
-            function(_, value) self.owner:SetFadeOutDelay(value) end,
-    })
+		get = smoothType == "IN" and function() return self.owner:GetFadeInDelay() end or
+			function() return self.owner:GetFadeOutDelay() end,
+		set = smoothType == "IN" and function(_, value) self.owner:SetFadeInDelay(value) end or
+			function(_, value) self.owner:SetFadeOutDelay(value) end,
+	})
 end
 
 function Panel:NewFadeDurationSlider(smoothType)
-    return self:NewSlider({
-        name = L.Duration,
+	return self:NewSlider({
+		name = L.Duration,
 		min = 0.1,
 		max = 10,
 		step = 0.1,
 		format = "%.1f",
-        get = smoothType == "IN" and function() return self.owner:GetFadeInDuration() end or
-            function() return self.owner:GetFadeOutDuration() end,
-        set = smoothType == "IN" and function(_, value) self.owner:SetFadeInDuration(value) end or
-            function(_, value) self.owner:SetFadeOutDuration(value) end,
-    })
+		get = smoothType == "IN" and function() return self.owner:GetFadeInDuration() end or
+			function() return self.owner:GetFadeOutDuration() end,
+		set = smoothType == "IN" and function(_, value) self.owner:SetFadeInDuration(value) end or
+			function(_, value) self.owner:SetFadeOutDuration(value) end,
+	})
 end
 
 function Panel:AddLayoutOptions()
@@ -425,8 +425,8 @@ function Panel:AddFadingOptions()
 	self:NewFadeDelaySlider("IN")
 	self:NewFadeDurationSlider("IN")
 
-    self:NewHeader(L.FadeOut)
-    self:NewFadeSlider()
+	self:NewHeader(L.FadeOut)
+	self:NewFadeSlider()
 	self:NewFadeDelaySlider("OUT")
 	self:NewFadeDurationSlider("OUT")
 end

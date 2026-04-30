@@ -15,122 +15,122 @@ Addon.callbacks = LibStub('CallbackHandler-1.0'):New(Addon)
 --------------------------------------------------------------------------------
 
 function Addon:OnInitialize()
-    -- setup db
-    self:CreateDatabase()
-    self:UpgradeDatabase()
+	-- setup db
+	self:CreateDatabase()
+	self:UpgradeDatabase()
 
-    -- keybound support
-    local kb = KeyBound
-    kb.RegisterCallback(self, 'LIBKEYBOUND_ENABLED')
-    kb.RegisterCallback(self, 'LIBKEYBOUND_DISABLED')
+	-- keybound support
+	local kb = KeyBound
+	kb.RegisterCallback(self, 'LIBKEYBOUND_ENABLED')
+	kb.RegisterCallback(self, 'LIBKEYBOUND_DISABLED')
 
-    -- slash command support
-    self:RegisterSlashCommands()
+	-- slash command support
+	self:RegisterSlashCommands()
 
-    -- debounce UPDATE_BINDINGS call
-    self.UPDATE_BINDINGS = self:Defer(self.UPDATE_BINDINGS, 0.1, self)
+	-- debounce UPDATE_BINDINGS call
+	self.UPDATE_BINDINGS = self:Defer(self.UPDATE_BINDINGS, 0.1, self)
 end
 
 function Addon:OnEnable()
-    self:RegisterEvent('UPDATE_BINDINGS')
-    self:HideBlizzard()
-    self:CreateDataBrokerPlugin()
-    self:Load()
+	self:RegisterEvent('UPDATE_BINDINGS')
+	self:HideBlizzard()
+	self:CreateDataBrokerPlugin()
+	self:Load()
 end
 
 function Addon:CreateDataBrokerPlugin()
-    local dataObject = LibStub:GetLibrary('LibDataBroker-1.1'):NewDataObject(AddonName, {
-        type = 'launcher',
-        icon = [[Interface\Addons\Dominos\icons\Dominos]],
+	local dataObject = LibStub:GetLibrary('LibDataBroker-1.1'):NewDataObject(AddonName, {
+		type = 'launcher',
+		icon = [[Interface\Addons\Dominos\icons\Dominos]],
 
-        OnClick = function(_, button)
-            if button == 'LeftButton' then
-                if IsShiftKeyDown() then
-                    Addon:ToggleBindingMode()
-                else
-                    Addon:ToggleLockedFrames()
-                end
-            elseif button == 'RightButton' then
-                Addon:ShowOptionsFrame()
-            end
-        end,
+		OnClick = function(_, button)
+			if button == 'LeftButton' then
+				if IsShiftKeyDown() then
+					Addon:ToggleBindingMode()
+				else
+					Addon:ToggleLockedFrames()
+				end
+			elseif button == 'RightButton' then
+				Addon:ShowOptionsFrame()
+			end
+		end,
 
-        OnTooltipShow = function(tooltip)
-            if not tooltip or not tooltip.AddLine then
-                return
-            end
+		OnTooltipShow = function(tooltip)
+			if not tooltip or not tooltip.AddLine then
+				return
+			end
 
-            GameTooltip_SetTitle(tooltip, AddonName)
+			GameTooltip_SetTitle(tooltip, AddonName)
 
-            if Addon:Locked() then
-                GameTooltip_AddInstructionLine(tooltip, L.ConfigEnterTip)
-            else
-                GameTooltip_AddInstructionLine(tooltip, L.ConfigExitTip)
-            end
+			if Addon:Locked() then
+				GameTooltip_AddInstructionLine(tooltip, L.ConfigEnterTip)
+			else
+				GameTooltip_AddInstructionLine(tooltip, L.ConfigExitTip)
+			end
 
-            if Addon:IsBindingModeEnabled() then
-                GameTooltip_AddInstructionLine(tooltip, L.BindingExitTip)
-            else
-                GameTooltip_AddInstructionLine(tooltip, L.BindingEnterTip)
-            end
+			if Addon:IsBindingModeEnabled() then
+				GameTooltip_AddInstructionLine(tooltip, L.BindingExitTip)
+			else
+				GameTooltip_AddInstructionLine(tooltip, L.BindingEnterTip)
+			end
 
-            if Addon:IsConfigAddonEnabled() then
-                GameTooltip_AddInstructionLine(tooltip, L.ShowOptionsTip)
-            end
-        end,
-    })
+			if Addon:IsConfigAddonEnabled() then
+				GameTooltip_AddInstructionLine(tooltip, L.ShowOptionsTip)
+			end
+		end,
+	})
 
-    LibStub('LibDBIcon-1.0'):Register(AddonName, dataObject, self.db.profile.minimap)
+	LibStub('LibDBIcon-1.0'):Register(AddonName, dataObject, self.db.profile.minimap)
 end
 
 -- configuration events
 function Addon:OnUpgradeAddon(oldVersion, newVersion)
-    self:Printf(L.Updated, ADDON_VERSION)
+	self:Printf(L.Updated, ADDON_VERSION)
 end
 
 -- keybound events
 function Addon:UPDATE_BINDINGS()
-    self.Frame:ForAll('ForButtons', 'UpdateHotkeys')
+	self.Frame:ForAll('ForButtons', 'UpdateHotkeys')
 
-    if not InCombatLockdown() then
-        self.Frame:ForAll('ForButtons', 'UpdateOverrideBindings')
-    end
+	if not InCombatLockdown() then
+		self.Frame:ForAll('ForButtons', 'UpdateOverrideBindings')
+	end
 end
 
 function Addon:LIBKEYBOUND_ENABLED()
-    self.Frame:ForAll('KEYBOUND_ENABLED')
+	self.Frame:ForAll('KEYBOUND_ENABLED')
 end
 
 function Addon:LIBKEYBOUND_DISABLED()
-    self.Frame:ForAll('KEYBOUND_DISABLED')
+	self.Frame:ForAll('KEYBOUND_DISABLED')
 end
 
 -- profile events
 function Addon:OnNewProfile(msg, db, name)
-    self:Printf(L.ProfileCreated, name)
+	self:Printf(L.ProfileCreated, name)
 end
 
 function Addon:OnProfileDeleted(msg, db, name)
-    self:Printf(L.ProfileDeleted, name)
+	self:Printf(L.ProfileDeleted, name)
 end
 
 function Addon:OnProfileChanged(msg, db, name)
-    self:Printf(L.ProfileLoaded, name)
-    self:Load()
+	self:Printf(L.ProfileLoaded, name)
+	self:Load()
 end
 
 function Addon:OnProfileCopied(msg, db, name)
-    self:Printf(L.ProfileCopied, name)
-    self:Reload()
+	self:Printf(L.ProfileCopied, name)
+	self:Reload()
 end
 
 function Addon:OnProfileReset(msg, db)
-    self:Printf(L.ProfileReset, db:GetCurrentProfile())
-    self:Reload()
+	self:Printf(L.ProfileReset, db:GetCurrentProfile())
+	self:Reload()
 end
 
 function Addon:OnProfileShutdown(msg, db, name)
-    self:Unload()
+	self:Unload()
 end
 
 --------------------------------------------------------------------------------
@@ -140,59 +140,59 @@ end
 -- Load is called when the addon is first enabled, and also whenever a profile
 -- is loaded
 function Addon:Load()
-    self.callbacks:Fire('LAYOUT_LOADING')
+	self.callbacks:Fire('LAYOUT_LOADING')
 
-    local function module_load(module, id)
-        if not self.db.profile.modules[id] then
-            return
-        end
+	local function module_load(module, id)
+		if not self.db.profile.modules[id] then
+			return
+		end
 
-        local f = module.Load
-        if type(f) == 'function' then
-            f(module)
-        end
-    end
+		local f = module.Load
+		if type(f) == 'function' then
+			f(module)
+		end
+	end
 
-    for id, module in self:IterateModules() do
-        local success, msg = pcall(module_load, module, id)
-        if not success then
-            self:Printf('Failed to load %s\n%s', module:GetName(), msg)
-        end
-    end
+	for id, module in self:IterateModules() do
+		local success, msg = pcall(module_load, module, id)
+		if not success then
+			self:Printf('Failed to load %s\n%s', module:GetName(), msg)
+		end
+	end
 
-    self.Frame:ForAll('RestoreAnchor')
-    self.callbacks:Fire('LAYOUT_LOADED')
+	self.Frame:ForAll('RestoreAnchor')
+	self.callbacks:Fire('LAYOUT_LOADED')
 end
 
 -- unload is called when we're switching profiles
 function Addon:Unload()
-    self.callbacks:Fire('LAYOUT_UNLOADING')
+	self.callbacks:Fire('LAYOUT_UNLOADING')
 
-    local function module_unload(module, id)
-        if not self.db.profile.modules[id] then
-            return
-        end
+	local function module_unload(module, id)
+		if not self.db.profile.modules[id] then
+			return
+		end
 
-        local f = module.Unload
-        if type(f) == 'function' then
-            f(module)
-        end
-    end
+		local f = module.Unload
+		if type(f) == 'function' then
+			f(module)
+		end
+	end
 
-    -- unload any module stuff
-    for id, module in self:IterateModules() do
-        local success, msg = pcall(module_unload, module, id)
-        if not success then
-            self:Printf('Failed to unload %s\n%s', module:GetName(), msg)
-        end
-    end
+	-- unload any module stuff
+	for id, module in self:IterateModules() do
+		local success, msg = pcall(module_unload, module, id)
+		if not success then
+			self:Printf('Failed to unload %s\n%s', module:GetName(), msg)
+		end
+	end
 
-    self.callbacks:Fire('LAYOUT_UNLOADED')
+	self.callbacks:Fire('LAYOUT_UNLOADED')
 end
 
 function Addon:Reload()
-    self:Unload()
-    self:Load()
+	self:Unload()
+	self:Load()
 end
 
 --------------------------------------------------------------------------------
@@ -201,56 +201,56 @@ end
 
 -- db actions
 function Addon:CreateDatabase()
-    local dbName = AddonName .. 'DB'
-    local dbDefaults = self:GetDatabaseDefaults()
-    local defaultProfileName = UnitClass('player')
-    local db = LibStub('AceDB-3.0'):New(dbName, dbDefaults, defaultProfileName)
+	local dbName = AddonName .. 'DB'
+	local dbDefaults = self:GetDatabaseDefaults()
+	local defaultProfileName = UnitClass('player')
+	local db = LibStub('AceDB-3.0'):New(dbName, dbDefaults, defaultProfileName)
 
-    db.RegisterCallback(self, 'OnNewProfile')
-    db.RegisterCallback(self, 'OnProfileChanged')
-    db.RegisterCallback(self, 'OnProfileCopied')
-    db.RegisterCallback(self, 'OnProfileDeleted')
-    db.RegisterCallback(self, 'OnProfileReset')
-    db.RegisterCallback(self, 'OnProfileShutdown')
+	db.RegisterCallback(self, 'OnNewProfile')
+	db.RegisterCallback(self, 'OnProfileChanged')
+	db.RegisterCallback(self, 'OnProfileCopied')
+	db.RegisterCallback(self, 'OnProfileDeleted')
+	db.RegisterCallback(self, 'OnProfileReset')
+	db.RegisterCallback(self, 'OnProfileShutdown')
 
-    self.db = db
+	self.db = db
 end
 
 function Addon:GetDatabaseDefaults()
-    return {
-        profile = {
-            possessBar = 1,
-            sticky = true,
-            linkedOpacity = false,
-            showMacroText = true,
-            showBindingText = true,
-            showCounts = true,
-            showEquippedItemBorders = true,
-            showTooltips = true,
-            showTooltipsCombat = true,
-            useOverrideUI = true,
+	return {
+		profile = {
+			possessBar = 1,
+			sticky = true,
+			linkedOpacity = false,
+			showMacroText = true,
+			showBindingText = true,
+			showCounts = true,
+			showEquippedItemBorders = true,
+			showTooltips = true,
+			showTooltipsCombat = true,
+			useOverrideUI = true,
 
-            minimap = { hide = false },
+			minimap = { hide = false },
 
-            ab = { count = 10, showgrid = true, rightClickUnit = 'player' },
+			ab = { count = 10, showgrid = true, rightClickUnit = 'player' },
 
-            frames = { bags = { point = 'BOTTOMRIGHT', oneBag = true, keyRing = true, spacing = 2 } },
+			frames = { bags = { point = 'BOTTOMRIGHT', oneBag = true, keyRing = true, spacing = 2 } },
 
-            alignmentGrid = { enabled = true, size = 32 },
+			alignmentGrid = { enabled = true, size = 32 },
 
-            -- what modules are enabled
-            -- module[id] = enabled
-            modules = { ['**'] = true }
-        }
-    }
+			-- what modules are enabled
+			-- module[id] = enabled
+			modules = { ['**'] = true }
+		}
+	}
 end
 
 function Addon:UpgradeDatabase()
-    local addonVersion = self.db.global.addonVersion
-    if addonVersion ~= ADDON_VERSION then
-        self:OnUpgradeAddon(addonVersion, ADDON_VERSION)
-        self.db.global.addonVersion = ADDON_VERSION
-    end
+	local addonVersion = self.db.global.addonVersion
+	if addonVersion ~= ADDON_VERSION then
+		self:OnUpgradeAddon(addonVersion, ADDON_VERSION)
+		self.db.global.addonVersion = ADDON_VERSION
+	end
 end
 
 --------------------------------------------------------------------------------
@@ -259,70 +259,70 @@ end
 
 -- profile actions
 function Addon:SaveProfile(name)
-    local toCopy = self.db:GetCurrentProfile()
-    if name and name ~= toCopy then
-        self.db:SetProfile(name)
-        self.db:CopyProfile(toCopy)
-    end
+	local toCopy = self.db:GetCurrentProfile()
+	if name and name ~= toCopy then
+		self.db:SetProfile(name)
+		self.db:CopyProfile(toCopy)
+	end
 end
 
 function Addon:SetProfile(name)
-    local profile = self:MatchProfile(name)
-    if profile and profile ~= self.db:GetCurrentProfile() then
-        self.db:SetProfile(profile)
-    else
-        self:Printf(L.InvalidProfile, name or 'null')
-    end
+	local profile = self:MatchProfile(name)
+	if profile and profile ~= self.db:GetCurrentProfile() then
+		self.db:SetProfile(profile)
+	else
+		self:Printf(L.InvalidProfile, name or 'null')
+	end
 end
 
 function Addon:DeleteProfile(name)
-    local profile = self:MatchProfile(name)
-    if profile and profile ~= self.db:GetCurrentProfile() then
-        self.db:DeleteProfile(profile)
-    else
-        self:Print(L.CantDeleteCurrentProfile)
-    end
+	local profile = self:MatchProfile(name)
+	if profile and profile ~= self.db:GetCurrentProfile() then
+		self.db:DeleteProfile(profile)
+	else
+		self:Print(L.CantDeleteCurrentProfile)
+	end
 end
 
 function Addon:CopyProfile(name)
-    if name and name ~= self.db:GetCurrentProfile() then
-        self.db:CopyProfile(name)
-    end
+	if name and name ~= self.db:GetCurrentProfile() then
+		self.db:CopyProfile(name)
+	end
 end
 
 function Addon:ResetProfile()
-    self.db:ResetProfile()
+	self.db:ResetProfile()
 end
 
 function Addon:ListProfiles()
-    self:Print(L.AvailableProfiles)
+	self:Print(L.AvailableProfiles)
 
-    local current = self.db:GetCurrentProfile()
-    for _, k in ipairs(self.db:GetProfiles()) do
-        if k == current then
-            print(' - ' .. k, 1, 1, 0)
-        else
-            print(' - ' .. k)
-        end
-    end
+	local current = self.db:GetCurrentProfile()
+	for _, k in ipairs(self.db:GetProfiles()) do
+		if k == current then
+			print(' - ' .. k, 1, 1, 0)
+		else
+			print(' - ' .. k)
+		end
+	end
 end
 
 function Addon:MatchProfile(name)
-    name = name:lower()
+	name = name:lower()
 
-    local nameRealm = name .. ' - ' .. GetRealmName():lower()
-    local match
+	local nameRealm = name .. ' - ' .. GetRealmName():lower()
+	local match
 
-    for _, k in ipairs(self.db:GetProfiles()) do
-        local key = k:lower()
-        if key == name then
-            return k
-        elseif key == nameRealm then
-            match = k
-        end
-    end
+	for _, k in ipairs(self.db:GetProfiles()) do
+		local key = k:lower()
+		if key == name then
+			return k
+		elseif key == nameRealm then
+			match = k
+		end
+	end
 
-    return match
+	return match
 end
 
 --------------------------------------------------------------------------------
@@ -330,39 +330,39 @@ end
 --------------------------------------------------------------------------------
 
 function Addon:ShowOptionsFrame()
-    if InCombatLockdown() then
-        self:Printf(_G.ERR_NOT_IN_COMBAT)
-        return
-    end
+	if InCombatLockdown() then
+		self:Printf(_G.ERR_NOT_IN_COMBAT)
+		return
+	end
 
-    if self:IsConfigAddonEnabled() and C_AddOns.LoadAddOn(CONFIG_ADDON_NAME) then
-        local dialog = LibStub('AceConfigDialog-3.0')
+	if self:IsConfigAddonEnabled() and C_AddOns.LoadAddOn(CONFIG_ADDON_NAME) then
+		local dialog = LibStub('AceConfigDialog-3.0')
 
-        dialog:Open(AddonName)
-        dialog:SelectGroup(AddonName, "general")
+		dialog:Open(AddonName)
+		dialog:SelectGroup(AddonName, "general")
 
-        return true
-    end
+		return true
+	end
 
-    return false
+	return false
 end
 
 function Addon:NewMenu()
-    if not self:IsConfigAddonEnabled() then
-        return
-    end
+	if not self:IsConfigAddonEnabled() then
+		return
+	end
 
-    if not C_AddOns.IsAddOnLoaded(CONFIG_ADDON_NAME) then
-        C_AddOns.LoadAddOn(CONFIG_ADDON_NAME)
-    end
+	if not C_AddOns.IsAddOnLoaded(CONFIG_ADDON_NAME) then
+		C_AddOns.LoadAddOn(CONFIG_ADDON_NAME)
+	end
 
-    return self.Options.Menu:New()
+	return self.Options.Menu:New()
 end
 
 function Addon:IsConfigAddonEnabled()
-    if C_AddOns.GetAddOnEnableState(CONFIG_ADDON_NAME, UnitName('player')) >= 1 then
-        return true
-    end
+	if C_AddOns.GetAddOnEnableState(CONFIG_ADDON_NAME, UnitName('player')) >= 1 then
+		return true
+	end
 end
 
 --------------------------------------------------------------------------------
@@ -372,355 +372,355 @@ end
 -- frame settings
 
 function Addon:SetFrameSets(id, sets)
-    id = tonumber(id) or id
+	id = tonumber(id) or id
 
-    self.db.profile.frames[id] = sets
+	self.db.profile.frames[id] = sets
 
-    return self.db.profile.frames[id]
+	return self.db.profile.frames[id]
 end
 
 function Addon:GetFrameSets(id)
-    return self.db.profile.frames[tonumber(id) or id]
+	return self.db.profile.frames[tonumber(id) or id]
 end
 
 -- configuration mode
 Addon.locked = true
 
 function Addon:SetLock(locked)
-    if InCombatLockdown() and (not locked) then
-        self:Printf(_G.ERR_NOT_IN_COMBAT)
-        return
-    end
+	if InCombatLockdown() and (not locked) then
+		self:Printf(_G.ERR_NOT_IN_COMBAT)
+		return
+	end
 
-    if locked and (not self:Locked()) then
-        self.locked = true
-        self.callbacks:Fire('CONFIG_MODE_DISABLED')
-    elseif (not locked) and self:Locked() then
-        self.locked = false
-        
-        if not C_AddOns.IsAddOnLoaded(CONFIG_ADDON_NAME) then
-            C_AddOns.LoadAddOn(CONFIG_ADDON_NAME)
-        end
+	if locked and (not self:Locked()) then
+		self.locked = true
+		self.callbacks:Fire('CONFIG_MODE_DISABLED')
+	elseif (not locked) and self:Locked() then
+		self.locked = false
+		
+		if not C_AddOns.IsAddOnLoaded(CONFIG_ADDON_NAME) then
+			C_AddOns.LoadAddOn(CONFIG_ADDON_NAME)
+		end
 
-        self.callbacks:Fire('CONFIG_MODE_ENABLED')
-    end
+		self.callbacks:Fire('CONFIG_MODE_ENABLED')
+	end
 end
 
 function Addon:Locked()
-    return self.locked
+	return self.locked
 end
 
 function Addon:ToggleLockedFrames()
-    self:SetLock(not self:Locked())
+	self:SetLock(not self:Locked())
 end
 
 -- binding mode
 function Addon:SetBindingMode(enable)
-    if enable and (not self:IsBindingModeEnabled()) then
-        self:SetLock(true)
-        KeyBound:Activate()
-    elseif (not enable) and self:IsBindingModeEnabled() then
-        KeyBound:Deactivate()
-    end
+	if enable and (not self:IsBindingModeEnabled()) then
+		self:SetLock(true)
+		KeyBound:Activate()
+	elseif (not enable) and self:IsBindingModeEnabled() then
+		KeyBound:Deactivate()
+	end
 end
 
 function Addon:IsBindingModeEnabled()
-    return KeyBound:IsShown()
+	return KeyBound:IsShown()
 end
 
 function Addon:ToggleBindingMode()
-    self:SetBindingMode(not self:IsBindingModeEnabled())
+	self:SetBindingMode(not self:IsBindingModeEnabled())
 end
 
 -- scale
 function Addon:ScaleFrames(...)
-    local numArgs = select('#', ...)
-    local scale = tonumber(select(numArgs, ...))
+	local numArgs = select('#', ...)
+	local scale = tonumber(select(numArgs, ...))
 
-    if scale and scale > 0 and scale <= 10 then
-        for i = 1, numArgs - 1 do
-            self.Frame:ForFrame(select(i, ...), 'SetFrameScale', scale)
-        end
-    end
+	if scale and scale > 0 and scale <= 10 then
+		for i = 1, numArgs - 1 do
+			self.Frame:ForFrame(select(i, ...), 'SetFrameScale', scale)
+		end
+	end
 end
 
 -- opacity
 function Addon:SetOpacityForFrames(...)
-    local numArgs = select('#', ...)
-    local alpha = tonumber(select(numArgs, ...))
+	local numArgs = select('#', ...)
+	local alpha = tonumber(select(numArgs, ...))
 
-    if alpha and alpha >= 0 and alpha <= 1 then
-        for i = 1, numArgs - 1 do
-            self.Frame:ForFrame(select(i, ...), 'SetFrameAlpha', alpha)
-        end
-    end
+	if alpha and alpha >= 0 and alpha <= 1 then
+		for i = 1, numArgs - 1 do
+			self.Frame:ForFrame(select(i, ...), 'SetFrameAlpha', alpha)
+		end
+	end
 end
 
 -- faded opacity
 function Addon:SetFadeForFrames(...)
-    local numArgs = select('#', ...)
-    local alpha = tonumber(select(numArgs, ...))
+	local numArgs = select('#', ...)
+	local alpha = tonumber(select(numArgs, ...))
 
-    if alpha and alpha >= 0 and alpha <= 1 then
-        for i = 1, numArgs - 1 do
-            self.Frame:ForFrame(select(i, ...), 'SetFadeMultiplier', alpha)
-        end
-    end
+	if alpha and alpha >= 0 and alpha <= 1 then
+		for i = 1, numArgs - 1 do
+			self.Frame:ForFrame(select(i, ...), 'SetFadeMultiplier', alpha)
+		end
+	end
 end
 
 -- columns
 function Addon:SetColumnsForFrames(...)
-    local numArgs = select('#', ...)
-    local cols = tonumber(select(numArgs, ...))
+	local numArgs = select('#', ...)
+	local cols = tonumber(select(numArgs, ...))
 
-    if cols then
-        for i = 1, numArgs - 1 do
-            self.Frame:ForFrame(select(i, ...), 'SetColumns', cols)
-        end
-    end
+	if cols then
+		for i = 1, numArgs - 1 do
+			self.Frame:ForFrame(select(i, ...), 'SetColumns', cols)
+		end
+	end
 end
 
 -- spacing
 function Addon:SetSpacingForFrame(...)
-    local numArgs = select('#', ...)
-    local spacing = tonumber(select(numArgs, ...))
+	local numArgs = select('#', ...)
+	local spacing = tonumber(select(numArgs, ...))
 
-    if spacing then
-        for i = 1, numArgs - 1 do
-            self.Frame:ForFrame(select(i, ...), 'SetSpacing', spacing)
-        end
-    end
+	if spacing then
+		for i = 1, numArgs - 1 do
+			self.Frame:ForFrame(select(i, ...), 'SetSpacing', spacing)
+		end
+	end
 end
 
 -- padding
 function Addon:SetPaddingForFrames(...)
-    local numArgs = select('#', ...)
-    local pW, pH = select(numArgs - 1, ...)
+	local numArgs = select('#', ...)
+	local pW, pH = select(numArgs - 1, ...)
 
-    if tonumber(pW) and tonumber(pH) then
-        for i = 1, numArgs - 2 do
-            self.Frame:ForFrame(select(i, ...), 'SetPadding', tonumber(pW), tonumber(pH))
-        end
-    end
+	if tonumber(pW) and tonumber(pH) then
+		for i = 1, numArgs - 2 do
+			self.Frame:ForFrame(select(i, ...), 'SetPadding', tonumber(pW), tonumber(pH))
+		end
+	end
 end
 
 -- visibility
 function Addon:ShowFrames(...)
-    for i = 1, select('#', ...) do
-        self.Frame:ForFrame(select(i, ...), 'ShowFrame')
-    end
+	for i = 1, select('#', ...) do
+		self.Frame:ForFrame(select(i, ...), 'ShowFrame')
+	end
 end
 
 function Addon:HideFrames(...)
-    for i = 1, select('#', ...) do
-        self.Frame:ForFrame(select(i, ...), 'HideFrame')
-    end
+	for i = 1, select('#', ...) do
+		self.Frame:ForFrame(select(i, ...), 'HideFrame')
+	end
 end
 
 function Addon:ToggleFrames(...)
-    for i = 1, select('#', ...) do
-        self.Frame:ForFrame(select(i, ...), 'ToggleFrame')
-    end
+	for i = 1, select('#', ...) do
+		self.Frame:ForFrame(select(i, ...), 'ToggleFrame')
+	end
 end
 
 -- clickthrough
 function Addon:SetClickThroughForFrames(...)
-    local numArgs = select('#', ...)
-    local enable = select(numArgs - 1, ...)
+	local numArgs = select('#', ...)
+	local enable = select(numArgs - 1, ...)
 
-    for i = 1, numArgs - 2 do
-        self.Frame:ForFrame(select(i, ...), 'SetClickThrough', tonumber(enable) == 1)
-    end
+	for i = 1, numArgs - 2 do
+		self.Frame:ForFrame(select(i, ...), 'SetClickThrough', tonumber(enable) == 1)
+	end
 end
 
 -- empty button display
 function Addon:ToggleGrid()
-    self:SetShowGrid(not self:ShowGrid())
+	self:SetShowGrid(not self:ShowGrid())
 end
 
 function Addon:SetShowGrid(enable)
-    self.db.profile.showgrid = enable or false
-    self.Frame:ForAll('UpdateGrid')
+	self.db.profile.showgrid = enable or false
+	self.Frame:ForAll('UpdateGrid')
 end
 
 function Addon:ShowGrid()
-    return self.db.profile.showgrid
+	return self.db.profile.showgrid
 end
 
 -- right click selfcast
 function Addon:SetRightClickUnit(unit)
-    self.db.profile.ab.rightClickUnit = unit
-    self.Frame:ForAll('SetRightClickUnit', unit)
+	self.db.profile.ab.rightClickUnit = unit
+	self.Frame:ForAll('SetRightClickUnit', unit)
 end
 
 function Addon:GetRightClickUnit()
-    return self.db.profile.ab.rightClickUnit
+	return self.db.profile.ab.rightClickUnit
 end
 
 -- binding text
 function Addon:SetShowBindingText(enable)
-    self.db.profile.showBindingText = enable or false
-    self.Frame:ForAll('ForButtons', 'UpdateHotkeys')
+	self.db.profile.showBindingText = enable or false
+	self.Frame:ForAll('ForButtons', 'UpdateHotkeys')
 end
 
 function Addon:ShowBindingText()
-    return self.db.profile.showBindingText
+	return self.db.profile.showBindingText
 end
 
 -- count text
 function Addon:SetShowCounts(enable)
-    self.db.profile.showCounts = enable or false
-    self.Frame:ForAll('ForButtons', 'SetShowCountText', enable)
+	self.db.profile.showCounts = enable or false
+	self.Frame:ForAll('ForButtons', 'SetShowCountText', enable)
 end
 
 function Addon:ShowCounts()
-    return self.db.profile.showCounts
+	return self.db.profile.showCounts
 end
 
 -- macro text
 function Addon:SetShowMacroText(enable)
-    self.db.profile.showMacroText = enable or false
-    self.Frame:ForAll('ForButtons', 'SetShowMacroText', enable)
+	self.db.profile.showMacroText = enable or false
+	self.Frame:ForAll('ForButtons', 'SetShowMacroText', enable)
 end
 
 function Addon:ShowMacroText()
-    return self.db.profile.showMacroText
+	return self.db.profile.showMacroText
 end
 
 -- border
 function Addon:SetShowEquippedItemBorders(enable)
-    self.db.profile.showEquippedItemBorders = enable or false
-    self.Frame:ForAll('ForButtons', 'SetShowEquippedItemBorders', enable)
+	self.db.profile.showEquippedItemBorders = enable or false
+	self.Frame:ForAll('ForButtons', 'SetShowEquippedItemBorders', enable)
 end
 
 function Addon:ShowEquippedItemBorders()
-    return self.db.profile.showEquippedItemBorders
+	return self.db.profile.showEquippedItemBorders
 end
 
 -- override action bar selection
 function Addon:SetOverrideBar(id)
-    local prevBar = self:GetOverrideBar()
+	local prevBar = self:GetOverrideBar()
 
-    self.db.profile.possessBar = id
-    local newBar = self:GetOverrideBar()
+	self.db.profile.possessBar = id
+	local newBar = self:GetOverrideBar()
 
-    prevBar:UpdateOverrideBar()
-    newBar:UpdateOverrideBar()
+	prevBar:UpdateOverrideBar()
+	newBar:UpdateOverrideBar()
 
-    self.callbacks:Fire('OVERRIDE_BAR_UPDATED', newBar)
+	self.callbacks:Fire('OVERRIDE_BAR_UPDATED', newBar)
 end
 
 function Addon:GetOverrideBar()
-    return self.Frame:Get(self.db.profile.possessBar)
+	return self.Frame:Get(self.db.profile.possessBar)
 end
 
 -- override ui
 function Addon:SetUseOverrideUI(enable)
-    self.db.profile.useOverrideUI = enable and true or false
-    self.callbacks:Fire("USE_OVERRRIDE_UI_CHANGED", self:UsingOverrideUI())
+	self.db.profile.useOverrideUI = enable and true or false
+	self.callbacks:Fire("USE_OVERRRIDE_UI_CHANGED", self:UsingOverrideUI())
 end
 
 function Addon:UsingOverrideUI()
-    return self.db.profile.useOverrideUI
+	return self.db.profile.useOverrideUI
 end
 
 -- action bar counts
 function Addon:SetNumBars(count)
-    count = Clamp(count, 1, self.ACTION_BUTTON_COUNT)
+	count = Clamp(count, 1, self.ACTION_BUTTON_COUNT)
 
-    if count ~= self:NumBars() then
-        self.db.profile.ab.count = count
-        self.callbacks:Fire('ACTIONBAR_COUNT_UPDATED', count)
-    end
+	if count ~= self:NumBars() then
+		self.db.profile.ab.count = count
+		self.callbacks:Fire('ACTIONBAR_COUNT_UPDATED', count)
+	end
 end
 
 function Addon:SetNumButtons(count)
-    self:SetNumBars(self.ACTION_BUTTON_COUNT / count)
+	self:SetNumBars(self.ACTION_BUTTON_COUNT / count)
 end
 
 function Addon:NumBars()
-    return self.db.profile.ab.count
+	return self.db.profile.ab.count
 end
 
 -- tooltips
 function Addon:ShowTooltips()
-    return self.db.profile.showTooltips
+	return self.db.profile.showTooltips
 end
 
 function Addon:SetShowTooltips(enable)
-    self.db.profile.showTooltips = enable or false
-    self:GetModule('Tooltips'):SetShowTooltips(enable)
+	self.db.profile.showTooltips = enable or false
+	self:GetModule('Tooltips'):SetShowTooltips(enable)
 end
 
 function Addon:SetShowCombatTooltips(enable)
-    self.db.profile.showTooltipsCombat = enable or false
-    self:GetModule('Tooltips'):SetShowTooltipsInCombat(enable)
+	self.db.profile.showTooltipsCombat = enable or false
+	self:GetModule('Tooltips'):SetShowTooltipsInCombat(enable)
 end
 
 function Addon:ShowCombatTooltips()
-    return self.db.profile.showTooltipsCombat
+	return self.db.profile.showTooltipsCombat
 end
 
 -- minimap button
 function Addon:SetShowMinimap(enable)
-    self.db.profile.minimap.hide = not enable
-    self:GetModule('Launcher'):Update()
+	self.db.profile.minimap.hide = not enable
+	self:GetModule('Launcher'):Update()
 end
 
 function Addon:ShowingMinimap()
-    return not self.db.profile.minimap.hide
+	return not self.db.profile.minimap.hide
 end
 
 -- sticky bars
 function Addon:SetSticky(enable)
-    self.db.profile.sticky = enable or false
+	self.db.profile.sticky = enable or false
 
-    if not enable then
-        self.Frame:ForAll('Stick')
-        self.Frame:ForAll('Reposition')
-    end
+	if not enable then
+		self.Frame:ForAll('Stick')
+		self.Frame:ForAll('Reposition')
+	end
 end
 
 function Addon:Sticky()
-    return self.db.profile.sticky
+	return self.db.profile.sticky
 end
 
 -- linked opacity
 function Addon:SetLinkedOpacity(enable)
-    self.db.profile.linkedOpacity = enable or false
+	self.db.profile.linkedOpacity = enable or false
 
-    self.Frame:ForAll('UpdateWatched')
-    self.Frame:ForAll('UpdateAlpha')
+	self.Frame:ForAll('UpdateWatched')
+	self.Frame:ForAll('UpdateAlpha')
 end
 
 function Addon:IsLinkedOpacityEnabled()
-    return self.db.profile.linkedOpacity
+	return self.db.profile.linkedOpacity
 end
 
 -- alignment grid
 function Addon:SetAlignmentGridEnabled(enable)
-    self.db.profile.alignmentGrid.enabled = enable
-    self.callbacks:Fire('ALIGNMENT_GRID_ENABLED', self:GetAlignmentGridEnabled())
+	self.db.profile.alignmentGrid.enabled = enable
+	self.callbacks:Fire('ALIGNMENT_GRID_ENABLED', self:GetAlignmentGridEnabled())
 end
 
 function Addon:GetAlignmentGridEnabled()
-    return self.db.profile.alignmentGrid.enabled and true or false
+	return self.db.profile.alignmentGrid.enabled and true or false
 end
 
 function Addon:SetAlignmentGridSize(size)
-    self.db.profile.alignmentGrid.size = tonumber(size)
-    self.callbacks:Fire('ALIGNMENT_GRID_SIZE_CHANGED', self:GetAlignmentGridSize())
+	self.db.profile.alignmentGrid.size = tonumber(size)
+	self.callbacks:Fire('ALIGNMENT_GRID_SIZE_CHANGED', self:GetAlignmentGridSize())
 end
 
 function Addon:GetAlignmentGridSize()
-    return self.db.profile.alignmentGrid.size
+	return self.db.profile.alignmentGrid.size
 end
 
 function Addon:GetAlignmentGridScale()
-    -- due to changes in Dominos_Config\overlay\ui.lua to
-    -- function "DrawGrid", grid now displays with perfectly square subdivisions.
-    local gridScale = GetScreenHeight() / (Addon:GetAlignmentGridSize() * 2)
-    return gridScale, gridScale
+	-- due to changes in Dominos_Config\overlay\ui.lua to
+	-- function "DrawGrid", grid now displays with perfectly square subdivisions.
+	local gridScale = GetScreenHeight() / (Addon:GetAlignmentGridSize() * 2)
+	return gridScale, gridScale
 end
 
 --------------------------------------------------------------------------------
@@ -728,106 +728,106 @@ end
 --------------------------------------------------------------------------------
 
 function Addon:HideBlizzard()
-    local function apply(func, ...)
-        for i = 1, select('#', ...) do
-            local name = (select(i, ...))
-            local frame = _G[name]
+	local function apply(func, ...)
+		for i = 1, select('#', ...) do
+			local name = (select(i, ...))
+			local frame = _G[name]
 
-            if frame then
-                func(frame)
-            else
-                Addon:Printf('Could not find frame %q', name)
-            end
-        end
-    end
+			if frame then
+				func(frame)
+			else
+				Addon:Printf('Could not find frame %q', name)
+			end
+		end
+	end
 
-    local function banish(frame)
-        (frame.HideBase or frame.Hide)(frame)
-        frame:SetParent(Addon.ShadowUIParent)
-    end
+	local function banish(frame)
+		(frame.HideBase or frame.Hide)(frame)
+		frame:SetParent(Addon.ShadowUIParent)
+	end
 
-    local function unregisterEvents(frame)
-        frame:UnregisterAllEvents()
-    end
+	local function unregisterEvents(frame)
+		frame:UnregisterAllEvents()
+	end
 
-    local function disableActionButtons(bar)
-        local buttons = bar.actionButtons
-        if type(buttons) ~= "table" then
-            return
-        end
+	local function disableActionButtons(bar)
+		local buttons = bar.actionButtons
+		if type(buttons) ~= "table" then
+			return
+		end
 
-        for _, button in pairs(buttons) do
-            button:UnregisterAllEvents()
-            button:SetAttributeNoHandler("statehidden", true)
-            button:Hide()
-        end
-    end
+		for _, button in pairs(buttons) do
+			button:UnregisterAllEvents()
+			button:SetAttributeNoHandler("statehidden", true)
+			button:Hide()
+		end
+	end
 
-    local function wipeActionButtons(bar)
-        table.wipe(bar.actionButtons)
-    end
+	local function wipeActionButtons(bar)
+		table.wipe(bar.actionButtons)
+	end
 
-    apply(banish,
-        "MainActionBar",
-        "MultiBarBottomLeft",
-        "MultiBarBottomRight",
-        "MultiBarLeft",
-        "MultiBarRight",
-        "MultiBar5",
-        "MultiBar6",
-        "MultiBar7",
-        "StanceBar",
-        "PossessActionBar",
-        "PetActionBar",
-        "StatusTrackingBarManager",
-        "MainMenuBarVehicleLeaveButton",
-        "MicroButtonAndBagsBar",
-        "BagsBar",
-        "MicroMenu",
-        "MicroMenuContainer",
-        "PlayerCastingBarFrame"
-    )
+	apply(banish,
+		"MainActionBar",
+		"MultiBarBottomLeft",
+		"MultiBarBottomRight",
+		"MultiBarLeft",
+		"MultiBarRight",
+		"MultiBar5",
+		"MultiBar6",
+		"MultiBar7",
+		"StanceBar",
+		"PossessActionBar",
+		"PetActionBar",
+		"StatusTrackingBarManager",
+		"MainMenuBarVehicleLeaveButton",
+		"MicroButtonAndBagsBar",
+		"BagsBar",
+		"MicroMenu",
+		"MicroMenuContainer",
+		"PlayerCastingBarFrame"
+	)
 
-    apply(unregisterEvents,
-        "MultiBarBottomLeft",
-        "MultiBarBottomRight",
-        "MultiBarLeft",
-        "MultiBarRight",
-        "MultiBar5",
-        "MultiBar6",
-        "MultiBar7",
-        "StanceBar",
-        "PossessActionBar",
-        "MainMenuBarVehicleLeaveButton",
-        "BagsBar",
-        "MicroMenu",
-        "MicroMenuContainer",
-        "PlayerCastingBarFrame"
-    )
+	apply(unregisterEvents,
+		"MultiBarBottomLeft",
+		"MultiBarBottomRight",
+		"MultiBarLeft",
+		"MultiBarRight",
+		"MultiBar5",
+		"MultiBar6",
+		"MultiBar7",
+		"StanceBar",
+		"PossessActionBar",
+		"MainMenuBarVehicleLeaveButton",
+		"BagsBar",
+		"MicroMenu",
+		"MicroMenuContainer",
+		"PlayerCastingBarFrame"
+	)
 
-    apply(disableActionButtons,
-        "MainActionBar",
-        "MultiBarBottomLeft",
-        "MultiBarBottomRight",
-        "MultiBarLeft",
-        "MultiBarRight",
-        "MultiBar5",
-        "MultiBar6",
-        "MultiBar7"
-    )
+	apply(disableActionButtons,
+		"MainActionBar",
+		"MultiBarBottomLeft",
+		"MultiBarBottomRight",
+		"MultiBarLeft",
+		"MultiBarRight",
+		"MultiBar5",
+		"MultiBar6",
+		"MultiBar7"
+	)
 
-    apply(wipeActionButtons,
-        "MultiBarBottomLeft",
-        "MultiBarBottomRight",
-        "MultiBarLeft",
-        "MultiBarRight",
-        "MultiBar5",
-        "MultiBar6",
-        "MultiBar7"
-    )
+	apply(wipeActionButtons,
+		"MultiBarBottomLeft",
+		"MultiBarBottomRight",
+		"MultiBarLeft",
+		"MultiBarRight",
+		"MultiBar5",
+		"MultiBar6",
+		"MultiBar7"
+	)
 
-    _G.MultiActionBar_ShowAllGrids = function() end
-    _G.MultiActionBar_HideAllGrids = function() end
+	_G.MultiActionBar_ShowAllGrids = function() end
+	_G.MultiActionBar_HideAllGrids = function() end
 end
 
 --------------------------------------------------------------------------------
@@ -835,97 +835,97 @@ end
 --------------------------------------------------------------------------------
 
 function Addon:RegisterSlashCommands()
-    self:RegisterChatCommand('dominos', 'OnCmd')
-    self:RegisterChatCommand('dom', 'OnCmd')
+	self:RegisterChatCommand('dominos', 'OnCmd')
+	self:RegisterChatCommand('dom', 'OnCmd')
 end
 
 function Addon:OnCmd(args)
-    local cmd = string.split(' ', args):lower() or args:lower()
+	local cmd = string.split(' ', args):lower() or args:lower()
 
-    if cmd == 'config' or cmd == 'lock' then
-        Addon:ToggleLockedFrames()
-    elseif cmd == 'bind' then
-        Addon:ToggleBindingMode()
-    elseif cmd == 'scale' then
-        Addon:ScaleFrames(select(2, string.split(' ', args)))
-    elseif cmd == 'setalpha' then
-        Addon:SetOpacityForFrames(select(2, string.split(' ', args)))
-    elseif cmd == 'fade' then
-        Addon:SetFadeForFrames(select(2, string.split(' ', args)))
-    elseif cmd == 'setcols' then
-        Addon:SetColumnsForFrames(select(2, string.split(' ', args)))
-    elseif cmd == 'pad' then
-        Addon:SetPaddingForFrames(select(2, string.split(' ', args)))
-    elseif cmd == 'space' then
-        Addon:SetSpacingForFrame(select(2, string.split(' ', args)))
-    elseif cmd == 'show' then
-        Addon:ShowFrames(select(2, string.split(' ', args)))
-    elseif cmd == 'hide' then
-        Addon:HideFrames(select(2, string.split(' ', args)))
-    elseif cmd == 'toggle' then
-        Addon:ToggleFrames(select(2, string.split(' ', args)))
-    elseif cmd == 'numbars' then
-        Addon:SetNumBars(tonumber(select(2, string.split(' ', args))))
-    elseif cmd == 'numbuttons' then
-        Addon:SetNumButtons(tonumber(select(2, string.split(' ', args))))
-    elseif cmd == 'save' then
-        local profileName = string.join(' ', select(2, string.split(' ', args)))
-        Addon:SaveProfile(profileName)
-    elseif cmd == 'set' then
-        local profileName = string.join(' ', select(2, string.split(' ', args)))
-        Addon:SetProfile(profileName)
-    elseif cmd == 'copy' then
-        local profileName = string.join(' ', select(2, string.split(' ', args)))
-        Addon:CopyProfile(profileName)
-    elseif cmd == 'delete' then
-        local profileName = string.join(' ', select(2, string.split(' ', args)))
-        Addon:DeleteProfile(profileName)
-    elseif cmd == 'reset' then
-        Addon:ResetProfile()
-    elseif cmd == 'list' then
-        Addon:ListProfiles()
-    elseif cmd == 'version' then
-        Addon:PrintVersion()
-    elseif cmd == 'help' or cmd == '?' then
-        self:PrintHelp()
-    else
-        if not Addon:ShowOptionsFrame() then
-            self:PrintHelp()
-        end
-    end
+	if cmd == 'config' or cmd == 'lock' then
+		Addon:ToggleLockedFrames()
+	elseif cmd == 'bind' then
+		Addon:ToggleBindingMode()
+	elseif cmd == 'scale' then
+		Addon:ScaleFrames(select(2, string.split(' ', args)))
+	elseif cmd == 'setalpha' then
+		Addon:SetOpacityForFrames(select(2, string.split(' ', args)))
+	elseif cmd == 'fade' then
+		Addon:SetFadeForFrames(select(2, string.split(' ', args)))
+	elseif cmd == 'setcols' then
+		Addon:SetColumnsForFrames(select(2, string.split(' ', args)))
+	elseif cmd == 'pad' then
+		Addon:SetPaddingForFrames(select(2, string.split(' ', args)))
+	elseif cmd == 'space' then
+		Addon:SetSpacingForFrame(select(2, string.split(' ', args)))
+	elseif cmd == 'show' then
+		Addon:ShowFrames(select(2, string.split(' ', args)))
+	elseif cmd == 'hide' then
+		Addon:HideFrames(select(2, string.split(' ', args)))
+	elseif cmd == 'toggle' then
+		Addon:ToggleFrames(select(2, string.split(' ', args)))
+	elseif cmd == 'numbars' then
+		Addon:SetNumBars(tonumber(select(2, string.split(' ', args))))
+	elseif cmd == 'numbuttons' then
+		Addon:SetNumButtons(tonumber(select(2, string.split(' ', args))))
+	elseif cmd == 'save' then
+		local profileName = string.join(' ', select(2, string.split(' ', args)))
+		Addon:SaveProfile(profileName)
+	elseif cmd == 'set' then
+		local profileName = string.join(' ', select(2, string.split(' ', args)))
+		Addon:SetProfile(profileName)
+	elseif cmd == 'copy' then
+		local profileName = string.join(' ', select(2, string.split(' ', args)))
+		Addon:CopyProfile(profileName)
+	elseif cmd == 'delete' then
+		local profileName = string.join(' ', select(2, string.split(' ', args)))
+		Addon:DeleteProfile(profileName)
+	elseif cmd == 'reset' then
+		Addon:ResetProfile()
+	elseif cmd == 'list' then
+		Addon:ListProfiles()
+	elseif cmd == 'version' then
+		Addon:PrintVersion()
+	elseif cmd == 'help' or cmd == '?' then
+		self:PrintHelp()
+	else
+		if not Addon:ShowOptionsFrame() then
+			self:PrintHelp()
+		end
+	end
 end
 
 do
-    local function printCommand(cmd, desc)
-        print((' - |cFF33FF99%s|r: %s'):format(cmd, desc))
-    end
+	local function printCommand(cmd, desc)
+		print((' - |cFF33FF99%s|r: %s'):format(cmd, desc))
+	end
 
-    function Addon:PrintHelp(cmd)
-        Addon:Print('Commands (/dom, /dominos)')
+	function Addon:PrintHelp(cmd)
+		Addon:Print('Commands (/dom, /dominos)')
 
-        printCommand('config', L.ConfigDesc)
-        printCommand('scale <frameList> <scale>', L.SetScaleDesc)
-        printCommand('setalpha <frameList> <opacity>', L.SetAlphaDesc)
-        printCommand('fade <frameList> <opacity>', L.SetFadeDesc)
-        printCommand('setcols <frameList> <columns>', L.SetColsDesc)
-        printCommand('pad <frameList> <padding>', L.SetPadDesc)
-        printCommand('space <frameList> <spacing>', L.SetSpacingDesc)
-        printCommand('show <frameList>', L.ShowFramesDesc)
-        printCommand('hide <frameList>', L.HideFramesDesc)
-        printCommand('toggle <frameList>', L.ToggleFramesDesc)
-        printCommand('save <profile>', L.SaveDesc)
-        printCommand('set <profile>', L.SetDesc)
-        printCommand('copy <profile>', L.CopyDesc)
-        printCommand('delete <profile>', L.DeleteDesc)
-        printCommand('reset', L.ResetDesc)
-        printCommand('list', L.ListDesc)
-        printCommand('version', L.PrintVersionDesc)
-    end
+		printCommand('config', L.ConfigDesc)
+		printCommand('scale <frameList> <scale>', L.SetScaleDesc)
+		printCommand('setalpha <frameList> <opacity>', L.SetAlphaDesc)
+		printCommand('fade <frameList> <opacity>', L.SetFadeDesc)
+		printCommand('setcols <frameList> <columns>', L.SetColsDesc)
+		printCommand('pad <frameList> <padding>', L.SetPadDesc)
+		printCommand('space <frameList> <spacing>', L.SetSpacingDesc)
+		printCommand('show <frameList>', L.ShowFramesDesc)
+		printCommand('hide <frameList>', L.HideFramesDesc)
+		printCommand('toggle <frameList>', L.ToggleFramesDesc)
+		printCommand('save <profile>', L.SaveDesc)
+		printCommand('set <profile>', L.SetDesc)
+		printCommand('copy <profile>', L.CopyDesc)
+		printCommand('delete <profile>', L.DeleteDesc)
+		printCommand('reset', L.ResetDesc)
+		printCommand('list', L.ListDesc)
+		printCommand('version', L.PrintVersionDesc)
+	end
 end
 
 -- display the current addon build being used
 function Addon:PrintVersion()
-    self:Printf('%s', ADDON_VERSION)
+	self:Printf('%s', ADDON_VERSION)
 end
 
 --------------------------------------------------------------------------------
@@ -934,189 +934,189 @@ end
 
 -- create a frame, and then hide it
 function Addon:CreateHiddenFrame(...)
-    local frame = CreateFrame(...)
+	local frame = CreateFrame(...)
 
-    frame:Hide()
+	frame:Hide()
 
-    return frame
+	return frame
 end
 
 -- A utility function for extending blizzard widget types (Frames, Buttons, etc)
 do
-    -- extend basically just does a post hook of an existing object method
-    -- its here so that I can not forget to do class.proto.thing when hooking
-    -- thing
-    local function class_Extend(class, method, func)
-        if not (type(method) == 'string' and type(func) == 'function') then
-            error('Usage: Class:Extend("method", func)', 2)
-        end
+	-- extend basically just does a post hook of an existing object method
+	-- its here so that I can not forget to do class.proto.thing when hooking
+	-- thing
+	local function class_Extend(class, method, func)
+		if not (type(method) == 'string' and type(func) == 'function') then
+			error('Usage: Class:Extend("method", func)', 2)
+		end
 
-        if type(class.proto[method]) ~= 'function' then
-            error(('Parent has no method named %q'):format(method), 2)
-        end
+		if type(class.proto[method]) ~= 'function' then
+			error(('Parent has no method named %q'):format(method), 2)
+		end
 
-        class[method] = function(self, ...)
-            class.proto[method](self, ...)
+		class[method] = function(self, ...)
+			class.proto[method](self, ...)
 
-            return func(self, ...)
-        end
-    end
+			return func(self, ...)
+		end
+	end
 
-    function Addon:CreateClass(frameType, prototype)
-        local class = self:CreateHiddenFrame(frameType)
+	function Addon:CreateClass(frameType, prototype)
+		local class = self:CreateHiddenFrame(frameType)
 
-        local class_mt = {__index = class}
+		local class_mt = {__index = class}
 
-        class.Bind = function(_, object)
-            return setmetatable(object, class_mt)
-        end
+		class.Bind = function(_, object)
+			return setmetatable(object, class_mt)
+		end
 
-        if type(prototype) == 'table' then
-            class.proto = prototype
-            class.Extend = class_Extend
+		if type(prototype) == 'table' then
+			class.proto = prototype
+			class.Extend = class_Extend
 
-            setmetatable(class, {__index = prototype})
-        end
+			setmetatable(class, {__index = prototype})
+		end
 
-        return class
-    end
+		return class
+	end
 end
 
 -- returns a function that generates unique names for frames
 -- in the format <AddonName>_<Prefix>[1, 2, ...]
 function Addon:CreateNameGenerator(prefix)
-    local id = 0
-    return function()
-        id = id + 1
-        return ('%s_%s_%d'):format(AddonName, prefix, id)
-    end
+	local id = 0
+	return function()
+		id = id + 1
+		return ('%s_%s_%d'):format(AddonName, prefix, id)
+	end
 end
 
 -- A functional way to fade a frame from one opacity to another without constantly
 -- creating new animation groups for the frame
 do
 
-    local function clouseEnough(value1, value2)
-        return _G.Round(value1 * 100) == _G.Round(value2 * 100)
-    end
+	local function clouseEnough(value1, value2)
+		return _G.Round(value1 * 100) == _G.Round(value2 * 100)
+	end
 
-    -- track the time the animation started playing
-    -- this is so that we can figure out how long we've been delaying for
-    local function animation_OnPlay(self)
-        self.start = _G.GetTime()
-    end
+	-- track the time the animation started playing
+	-- this is so that we can figure out how long we've been delaying for
+	local function animation_OnPlay(self)
+		self.start = _G.GetTime()
+	end
 
-    local function sequence_OnFinished(self)
-        if self.alpha then
-            self:GetParent():SetAlpha(self.alpha)
-            self.alpha = nil
-        end
-    end
+	local function sequence_OnFinished(self)
+		if self.alpha then
+			self:GetParent():SetAlpha(self.alpha)
+			self.alpha = nil
+		end
+	end
 
-    local function sequence_Create(frame)
-        local sequence = frame:CreateAnimationGroup()
-        sequence:SetLooping('NONE')
-        sequence:SetScript('OnFinished', sequence_OnFinished)
-        sequence.alpha = nil
+	local function sequence_Create(frame)
+		local sequence = frame:CreateAnimationGroup()
+		sequence:SetLooping('NONE')
+		sequence:SetScript('OnFinished', sequence_OnFinished)
+		sequence.alpha = nil
 
-        local animation = sequence:CreateAnimation('Alpha')
-        animation:SetSmoothing('IN_OUT')
-        animation:SetOrder(0)
-        animation:SetScript('OnPlay', animation_OnPlay)
+		local animation = sequence:CreateAnimation('Alpha')
+		animation:SetSmoothing('IN_OUT')
+		animation:SetOrder(0)
+		animation:SetScript('OnPlay', animation_OnPlay)
 
-        return sequence, animation
-    end
+		return sequence, animation
+	end
 
-    Addon.Fade =
-        setmetatable(
-        {},
-        {
-            __call = function(self, addon, frame, toAlpha, delay, duration)
-                return self[frame](toAlpha, delay, duration)
-            end,
+	Addon.Fade =
+		setmetatable(
+		{},
+		{
+			__call = function(self, addon, frame, toAlpha, delay, duration)
+				return self[frame](toAlpha, delay, duration)
+			end,
 
-            __index = function(self, frame)
-                local sequence, animation
+			__index = function(self, frame)
+				local sequence, animation
 
-                -- handle animation requests
-                local function func(toAlpha, delay, duration)
-                    -- we're already at target alpha, stop
-                    if clouseEnough(frame:GetAlpha(), toAlpha) then
-                        if sequence and sequence:IsPlaying() then
-                            sequence:Stop()
-                            return
-                        end
-                    end
+				-- handle animation requests
+				local function func(toAlpha, delay, duration)
+					-- we're already at target alpha, stop
+					if clouseEnough(frame:GetAlpha(), toAlpha) then
+						if sequence and sequence:IsPlaying() then
+							sequence:Stop()
+							return
+						end
+					end
 
-                    -- create the animation if we've not yet done so
-                    if not sequence then
-                        sequence, animation = sequence_Create(frame)
-                    end
+					-- create the animation if we've not yet done so
+					if not sequence then
+						sequence, animation = sequence_Create(frame)
+					end
 
-                    local fromAlpha = frame:GetAlpha()
+					local fromAlpha = frame:GetAlpha()
 
-                    -- animation already started, but is in the delay phase
-                    -- so shorten the delay by however much time has gone by
-                    if animation:IsDelaying() then
-                        delay = math.max(delay - (_G.GetTime() - animation.start), 0)
-                    -- we're already in the middle of a fade animation
-                    elseif animation:IsPlaying() then
-                        -- set delay to zero, as we don't want to pause in the
-                        -- middle of an animation
-                        delay = 0
+					-- animation already started, but is in the delay phase
+					-- so shorten the delay by however much time has gone by
+					if animation:IsDelaying() then
+						delay = math.max(delay - (_G.GetTime() - animation.start), 0)
+					-- we're already in the middle of a fade animation
+					elseif animation:IsPlaying() then
+						-- set delay to zero, as we don't want to pause in the
+						-- middle of an animation
+						delay = 0
 
-                        -- figure out what opacity we're currently at
-                        -- by using the animation progress
-                        local delta = animation:GetFromAlpha() - animation:GetToAlpha()
-                        fromAlpha = animation:GetFromAlpha() + (delta * animation:GetSmoothProgress())
-                    end
+						-- figure out what opacity we're currently at
+						-- by using the animation progress
+						local delta = animation:GetFromAlpha() - animation:GetToAlpha()
+						fromAlpha = animation:GetFromAlpha() + (delta * animation:GetSmoothProgress())
+					end
 
-                    -- check that value against our current one
-                    -- if so, quit early
-                    if clouseEnough(fromAlpha, toAlpha) then
-                        frame:SetAlpha(toAlpha)
+					-- check that value against our current one
+					-- if so, quit early
+					if clouseEnough(fromAlpha, toAlpha) then
+						frame:SetAlpha(toAlpha)
 
-                        if sequence:IsPlaying() then
-                            sequence:Stop()
-                            return
-                        end
-                    end
+						if sequence:IsPlaying() then
+							sequence:Stop()
+							return
+						end
+					end
 
-                    sequence.alpha = toAlpha
-                    animation:SetFromAlpha(frame:GetAlpha())
-                    animation:SetToAlpha(toAlpha)
-                    animation:SetStartDelay(delay)
-                    animation:SetDuration(duration)
+					sequence.alpha = toAlpha
+					animation:SetFromAlpha(frame:GetAlpha())
+					animation:SetToAlpha(toAlpha)
+					animation:SetStartDelay(delay)
+					animation:SetDuration(duration)
 
-                    sequence:Restart()
-                end
+					sequence:Restart()
+				end
 
-                self[frame] = func
-                return func
-            end
-        }
-    )
+				self[frame] = func
+				return func
+			end
+		}
+	)
 end
 
 -- somewhere between a debounce and a throttle
 function Addon:Defer(func, delay, arg1)
-    delay = delay or 0
+	delay = delay or 0
 
-    local waiting = false
+	local waiting = false
 
-    local function callback()
-        func(arg1)
+	local function callback()
+		func(arg1)
 
-        waiting = false
-    end
+		waiting = false
+	end
 
-    return function()
-        if not waiting then
-            waiting = true
+	return function()
+		if not waiting then
+			waiting = true
 
-            C_Timer.After(delay or 0, callback)
-        end
-    end
+			C_Timer.After(delay or 0, callback)
+		end
+	end
 end
 
 --------------------------------------------------------------------------------
@@ -1124,18 +1124,18 @@ end
 --------------------------------------------------------------------------------
 
 if not (C_AddOns.IsAddOnLoaded("ClassicFrames")) then
-    hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
-        self:SetParent(MinimapBackdrop)
-        self:SetFrameLevel(6)
-        self:ClearAllPoints()
-        self:SetPoint("TOPLEFT", -8, -175)
-        self:SetScale(0.75)
-    end)
+	hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
+		self:SetParent(MinimapBackdrop)
+		self:SetFrameLevel(6)
+		self:ClearAllPoints()
+		self:SetPoint("TOPLEFT", -8, -175)
+		self:SetScale(0.75)
+	end)
 
-    hooksecurefunc(QueueStatusFrame, "UpdatePosition", function(self)
-        self:ClearAllPoints()
-        self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT")
-    end)
+	hooksecurefunc(QueueStatusFrame, "UpdatePosition", function(self)
+		self:ClearAllPoints()
+		self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT")
+	end)
 end
 
 -- exports

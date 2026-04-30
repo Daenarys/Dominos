@@ -27,58 +27,58 @@ local frame_OnEnter = [[
 ]]
 
 function TooltipsModule:OnInitialize()
-    self.header = Addon:CreateHiddenFrame('Frame', nil, nil, 'SecureHandlerStateTemplate')
+	self.header = Addon:CreateHiddenFrame('Frame', nil, nil, 'SecureHandlerStateTemplate')
 
-    RegisterStateDriver(self.header, 'combat', '[combat]1;nil')
+	RegisterStateDriver(self.header, 'combat', '[combat]1;nil')
 
-    -- keybound support
-    local kb = LibStub('LibKeyBound-1.0')
+	-- keybound support
+	local kb = LibStub('LibKeyBound-1.0')
 
-    kb.RegisterCallback(
-        self,
-        'LIBKEYBOUND_ENABLED',
-        function()
-            self.header:SetAttribute('keybound-enabled', true)
-        end
-    )
+	kb.RegisterCallback(
+		self,
+		'LIBKEYBOUND_ENABLED',
+		function()
+			self.header:SetAttribute('keybound-enabled', true)
+		end
+	)
 
-    kb.RegisterCallback(
-        self,
-        'LIBKEYBOUND_DISABLED',
-        function()
-            self.header:SetAttribute('keybound-enabled', false)
-        end
-    )
+	kb.RegisterCallback(
+		self,
+		'LIBKEYBOUND_DISABLED',
+		function()
+			self.header:SetAttribute('keybound-enabled', false)
+		end
+	)
 end
 
 function TooltipsModule:OnEnable()
-    self:SetShowTooltips(Addon:ShowTooltips())
-    self:SetShowTooltipsInCombat(Addon:ShowCombatTooltips())
+	self:SetShowTooltips(Addon:ShowTooltips())
+	self:SetShowTooltipsInCombat(Addon:ShowCombatTooltips())
 end
 
 function TooltipsModule:Register(frame)
-    -- track and reapply the IsMouseEnabled on the frame
-    -- for some reason, wrapping the OnEnter handler of the frame causes
-    -- the frame to have mouse support enabled (at least as of 9.0.1)
-    local mouseEnabled = frame:IsMouseEnabled()
+	-- track and reapply the IsMouseEnabled on the frame
+	-- for some reason, wrapping the OnEnter handler of the frame causes
+	-- the frame to have mouse support enabled (at least as of 9.0.1)
+	local mouseEnabled = frame:IsMouseEnabled()
 
-    self.header:WrapScript(frame, 'OnEnter', frame_OnEnter)
+	self.header:WrapScript(frame, 'OnEnter', frame_OnEnter)
 
-    frame:EnableMouse(mouseEnabled)
+	frame:EnableMouse(mouseEnabled)
 end
 
 function TooltipsModule:Unregister(frame)
-    local mouseEnabled = frame:IsMouseEnabled()
+	local mouseEnabled = frame:IsMouseEnabled()
 
-    self.header:UnwrapScript(frame, 'OnEnter')
+	self.header:UnwrapScript(frame, 'OnEnter')
 
-    frame:EnableMouse(mouseEnabled)
+	frame:EnableMouse(mouseEnabled)
 end
 
 function TooltipsModule:SetShowTooltips(enable)
-    self.header:SetAttribute('tooltips-enabled', tobool(enable))
+	self.header:SetAttribute('tooltips-enabled', tobool(enable))
 end
 
 function TooltipsModule:SetShowTooltipsInCombat(enable)
-    self.header:SetAttribute('tooltips-enabled-combat', tobool(enable))
+	self.header:SetAttribute('tooltips-enabled-combat', tobool(enable))
 end

@@ -2,7 +2,6 @@ local _, Addon = ...
 local Dominos = _G.Dominos
 local GoldBar = Dominos:CreateClass("Frame", Addon.ProgressBar)
 
-
 function GoldBar:Init()
 	self:Update()
 	self:SetColor(Addon.Config:GetColor("gold"))
@@ -14,25 +13,25 @@ function GoldBar:Update()
 	local max = Addon.Config:GoldGoal()
 
 	if DataStore then
-	    realm = 0
-         for _, c in pairs(DataStore:GetCharacters()) do
-             realm = realm + DataStore:GetMoney(c)
-         end
-         realm = realm - gold
+		realm = 0
+		 for _, c in pairs(DataStore:GetCharacters()) do
+			 realm = realm + DataStore:GetMoney(c)
+		 end
+		 realm = realm - gold
 	else
-	    realm = 0
+		realm = 0
 	end
 
-     if max == 0 then
-         max = (gold + realm) / 10000
-     end
+	 if max == 0 then
+		 max = (gold + realm) / 10000
+	 end
 
 	self:SetValues(gold, max*10000, realm)
 	self:UpdateText(_G.MONEY, gold/10000, max, realm/10000)
 end
 
 function GoldBar:IsModeActive()
-     local goal = Addon.Config:GoldGoal()
+	 local goal = Addon.Config:GoldGoal()
 	return goal and goal > 0
 end
 
