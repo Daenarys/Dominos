@@ -239,12 +239,12 @@ function MenuBarModule:OnInitialize()
 		perf:SetPoint("BOTTOM")
 	end
 
-	if FramerateFrame then
-		hooksecurefunc(FramerateFrame, "UpdatePosition", function()
+	hooksecurefunc(MicroMenu, "UpdateFramerateFrameAnchor", function()
+		if FramerateFrame then
 			FramerateFrame:ClearAllPoints()
 			FramerateFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 150)
-		end)
-	end
+		end
+	end)
 
 	hooksecurefunc(MicroMenu, "UpdateHelpTicketButtonAnchor", function()
 		if HelpOpenWebTicketButton then
