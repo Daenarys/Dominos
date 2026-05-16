@@ -29,18 +29,18 @@ if MicroMenu then
 end
 
 local MICRO_BUTTON_NAMES = {
-	['CharacterMicroButton'] = CHARACTER_BUTTON,
-	['ProfessionMicroButton'] = PROFESSIONS_BUTTON,
-	['PlayerSpellsMicroButton'] = TALENTS_BUTTON,
-	['AchievementMicroButton'] = ACHIEVEMENT_BUTTON,
-	['QuestLogMicroButton'] = QUESTLOG_BUTTON,
-	['HousingMicroButton'] = HOUSING_MICRO_BUTTON,
-	['GuildMicroButton'] = LOOKINGFORGUILD,
-	['LFDMicroButton'] = DUNGEONS_BUTTON,
-	['CollectionsMicroButton'] = COLLECTIONS,
-	['EJMicroButton'] = ENCOUNTER_JOURNAL,
-	['StoreMicroButton'] = BLIZZARD_STORE,
-	['MainMenuMicroButton'] = MAINMENU_BUTTON
+	["CharacterMicroButton"] = CHARACTER_BUTTON,
+	["ProfessionMicroButton"] = PROFESSIONS_BUTTON,
+	["PlayerSpellsMicroButton"] = TALENTS_BUTTON,
+	["AchievementMicroButton"] = ACHIEVEMENT_BUTTON,
+	["QuestLogMicroButton"] = QUESTLOG_BUTTON,
+	["HousingMicroButton"] = HOUSING_MICRO_BUTTON,
+	["GuildMicroButton"] = LOOKINGFORGUILD,
+	["LFDMicroButton"] = DUNGEONS_BUTTON,
+	["CollectionsMicroButton"] = COLLECTIONS,
+	["EJMicroButton"] = ENCOUNTER_JOURNAL,
+	["StoreMicroButton"] = BLIZZARD_STORE,
+	["MainMenuMicroButton"] = MAINMENU_BUTTON
 }
 
 --------------------------------------------------------------------------------
@@ -55,6 +55,38 @@ end
 
 function MenuBar:GetDisplayName()
 	return L.MenuBarDisplayName
+end
+
+function MenuBar:Skin(button)
+	if button.skinned then return end
+
+	local buttons = {
+		{button = ProfessionMicroButton, name = "SpellbookAbilities"}
+	}
+
+	local function replaceAtlases(self, name)
+		local prefix = "UI-HUD-MicroMenu-"
+		self:SetNormalAtlas(prefix..name.."-Up")
+		self:SetPushedAtlas(prefix..name.."-Down")
+		self:SetDisabledAtlas(prefix..name.."-Disabled")
+
+		self:HookScript("OnUpdate", function()
+			if(self:GetButtonState() == "NORMAL") then 
+				self:SetHighlightAtlas(prefix..name.."-Mouseover", "BLEND")
+			else 
+				self:SetHighlightAtlas(prefix..name.."-Down", "ADD")
+			end 
+		end)
+	end
+
+	local function replaceAllAtlases()
+		for _, data in pairs(buttons) do
+			replaceAtlases(data.button, data.name)
+		end
+	end
+	replaceAllAtlases()
+
+	button.skinned = true
 end
 
 MenuBar:Extend('OnCreate', function(self)
@@ -83,6 +115,7 @@ function MenuBar:UpdateActiveButtons()
 	for _, button in ipairs(MicroButtons) do
 		if self:IsMenuButtonEnabled(button) then
 			self.activeButtons[#self.activeButtons + 1] = button
+			self:Skin(button)
 		end
 	end
 end
@@ -236,20 +269,20 @@ function MenuBarModule:OnInitialize()
 	local perf = MainMenuMicroButton and MainMenuMicroButton.MainMenuBarPerformanceBar
 	if perf then
 		perf:ClearAllPoints()
-		perf:SetPoint('BOTTOM')
+		perf:SetPoint("BOTTOM")
 	end
 
-	hooksecurefunc(MicroMenu, 'UpdateFramerateFrameAnchor', function()
-		if FramerateFrame then
+	if FramerateFrame then
+		hooksecurefunc(FramerateFrame, "UpdatePosition", function()
 			FramerateFrame:ClearAllPoints()
-			FramerateFrame:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 150)
-		end
-	end)
+			FramerateFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 150)
+		end)
+	end
 
-	hooksecurefunc(MicroMenu, 'UpdateHelpTicketButtonAnchor', function()
+	hooksecurefunc(MicroMenu, "UpdateHelpTicketButtonAnchor", function()
 		if HelpOpenWebTicketButton then
 			HelpOpenWebTicketButton:ClearAllPoints()
-			HelpOpenWebTicketButton:SetPoint('CENTER', CharacterMicroButton, 'CENTER', 0, 20)
+			HelpOpenWebTicketButton:SetPoint("CENTER", CharacterMicroButton, "CENTER", 0, 20)
 		end
 	end)
 
@@ -260,18 +293,18 @@ function MenuBarModule:OnInitialize()
 		end
 	end)
 
-	hooksecurefunc('UpdateMicroButtons', layout)
+	hooksecurefunc("UpdateMicroButtons", layout)
 
 	if OverrideActionBar then
-		local f = CreateFrame('Frame', nil, OverrideActionBar)
-		f:SetScript('OnShow', layout)
-		f:SetScript('OnHide', layout)
+		local f = CreateFrame("Frame", nil, OverrideActionBar)
+		f:SetScript("OnShow", layout)
+		f:SetScript("OnHide", layout)
 	end
 
 	if PetMicroButtonFrame then
-		local f = CreateFrame('Frame', nil, PetMicroButtonFrame)
-		f:SetScript('OnShow', layout)
-		f:SetScript('OnHide', layout)
+		local f = CreateFrame("Frame", nil, PetMicroButtonFrame)
+		f:SetScript("OnShow", layout)
+		f:SetScript("OnHide", layout)
 	end
 end
 

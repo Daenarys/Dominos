@@ -92,11 +92,11 @@ function Config:SkipInactiveModes()
 end
 
 function Config:GoldGoal()
-	 return self.db.profile.gold_goal
+     return self.db.profile.gold_goal
 end
 
 function Config:SetGoldGoal(value)
-	 self.db.profile.gold_goal = value or 0
+     self.db.profile.gold_goal = value or 0
 end
 
 function Config:SetColor(key, ...)
