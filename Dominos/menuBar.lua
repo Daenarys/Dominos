@@ -29,18 +29,18 @@ if MicroMenu then
 end
 
 local MICRO_BUTTON_NAMES = {
-	["CharacterMicroButton"] = CHARACTER_BUTTON,
-	["ProfessionMicroButton"] = PROFESSIONS_BUTTON,
-	["PlayerSpellsMicroButton"] = TALENTS_BUTTON,
-	["AchievementMicroButton"] = ACHIEVEMENT_BUTTON,
-	["QuestLogMicroButton"] = QUESTLOG_BUTTON,
-	["HousingMicroButton"] = HOUSING_MICRO_BUTTON,
-	["GuildMicroButton"] = LOOKINGFORGUILD,
-	["LFDMicroButton"] = DUNGEONS_BUTTON,
-	["CollectionsMicroButton"] = COLLECTIONS,
-	["EJMicroButton"] = ENCOUNTER_JOURNAL,
-	["StoreMicroButton"] = BLIZZARD_STORE,
-	["MainMenuMicroButton"] = MAINMENU_BUTTON
+	['CharacterMicroButton'] = CHARACTER_BUTTON,
+	['ProfessionMicroButton'] = PROFESSIONS_BUTTON,
+	['PlayerSpellsMicroButton'] = TALENTS_BUTTON,
+	['AchievementMicroButton'] = ACHIEVEMENT_BUTTON,
+	['QuestLogMicroButton'] = QUESTLOG_BUTTON,
+	['HousingMicroButton'] = HOUSING_MICRO_BUTTON,
+	['GuildMicroButton'] = LOOKINGFORGUILD,
+	['LFDMicroButton'] = DUNGEONS_BUTTON,
+	['CollectionsMicroButton'] = COLLECTIONS,
+	['EJMicroButton'] = ENCOUNTER_JOURNAL,
+	['StoreMicroButton'] = BLIZZARD_STORE,
+	['MainMenuMicroButton'] = MAINMENU_BUTTON
 }
 
 --------------------------------------------------------------------------------
@@ -236,20 +236,20 @@ function MenuBarModule:OnInitialize()
 	local perf = MainMenuMicroButton and MainMenuMicroButton.MainMenuBarPerformanceBar
 	if perf then
 		perf:ClearAllPoints()
-		perf:SetPoint("BOTTOM")
+		perf:SetPoint('BOTTOM')
 	end
 
-	hooksecurefunc(MicroMenu, "UpdateFramerateFrameAnchor", function()
+	hooksecurefunc(MicroMenu, 'UpdateFramerateFrameAnchor', function()
 		if FramerateFrame then
 			FramerateFrame:ClearAllPoints()
-			FramerateFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 150)
+			FramerateFrame:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 150)
 		end
 	end)
 
-	hooksecurefunc(MicroMenu, "UpdateHelpTicketButtonAnchor", function()
+	hooksecurefunc(MicroMenu, 'UpdateHelpTicketButtonAnchor', function()
 		if HelpOpenWebTicketButton then
 			HelpOpenWebTicketButton:ClearAllPoints()
-			HelpOpenWebTicketButton:SetPoint("CENTER", CharacterMicroButton, "CENTER", 0, 20)
+			HelpOpenWebTicketButton:SetPoint('CENTER', CharacterMicroButton, 'CENTER', 0, 20)
 		end
 	end)
 
@@ -260,18 +260,18 @@ function MenuBarModule:OnInitialize()
 		end
 	end)
 
-	hooksecurefunc("UpdateMicroButtons", layout)
+	hooksecurefunc('UpdateMicroButtons', layout)
 
 	if OverrideActionBar then
-		local f = CreateFrame("Frame", nil, OverrideActionBar)
-		f:SetScript("OnShow", layout)
-		f:SetScript("OnHide", layout)
+		local f = CreateFrame('Frame', nil, OverrideActionBar)
+		f:SetScript('OnShow', layout)
+		f:SetScript('OnHide', layout)
 	end
 
 	if PetMicroButtonFrame then
-		local f = CreateFrame("Frame", nil, PetMicroButtonFrame)
-		f:SetScript("OnShow", layout)
-		f:SetScript("OnHide", layout)
+		local f = CreateFrame('Frame', nil, PetMicroButtonFrame)
+		f:SetScript('OnShow', layout)
+		f:SetScript('OnHide', layout)
 	end
 end
 
