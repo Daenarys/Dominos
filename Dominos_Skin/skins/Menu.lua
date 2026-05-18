@@ -69,6 +69,7 @@ local function SkinMenu(manager, owner, menuDescription)
 		elseif region:IsObjectType("Texture") and region:GetAtlas() == "common-dropdown-c-bg" then
 			DialogSkin:Hide()
 			TooltipSkin:Hide()
+			return
 		end
 	end
 
