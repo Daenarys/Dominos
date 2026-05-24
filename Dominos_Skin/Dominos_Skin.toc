@@ -11,7 +11,6 @@ skins\AuctionHouse.lua
 skins\Bank.lua
 skins\Calendar.lua
 skins\Character.lua
-skins\Chat.lua
 skins\Cinematic.lua
 skins\ClassTrainer.lua
 skins\Collections.lua
