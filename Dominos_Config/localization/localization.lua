@@ -100,7 +100,7 @@ L.State_CTRLALTSHIFT = strjoin("-", CTRL_KEY_TEXT, ALT_KEY_TEXT, SHIFT_KEY_TEXT)
 L.State_CTRLSHIFT = strjoin("-", CTRL_KEY_TEXT, SHIFT_KEY_TEXT)
 
 if IsMacClient() then
-	L.State_META = 'CMD Key'
+    L.State_META = 'CMD Key'
 else
-	L.State_META = 'Meta Key'
+    L.State_META = 'Meta Key'
 end

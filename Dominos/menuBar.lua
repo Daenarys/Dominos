@@ -1,5 +1,6 @@
 --------------------------------------------------------------------------------
 -- Menu Bar
+-- A movable bar for the micro menu buttons
 --------------------------------------------------------------------------------
 
 local AddonName, Addon = ...
@@ -54,38 +55,6 @@ function MenuBar:GetDisplayName()
 	return L.MenuBarDisplayName
 end
 
-function MenuBar:Skin(button)
-	if button.skinned then return end
-
-	local buttons = {
-		{button = ProfessionMicroButton, name = 'SpellbookAbilities'}
-	}
-
-	local function replaceAtlases(self, name)
-		local prefix = 'UI-HUD-MicroMenu-'
-		self:SetNormalAtlas(prefix..name..'-Up')
-		self:SetPushedAtlas(prefix..name..'-Down')
-		self:SetDisabledAtlas(prefix..name..'-Disabled')
-
-		self:HookScript('OnUpdate', function()
-			if(self:GetButtonState() == 'NORMAL') then 
-				self:SetHighlightAtlas(prefix..name..'-Mouseover', 'BLEND')
-			else 
-				self:SetHighlightAtlas(prefix..name..'-Down', 'ADD')
-			end 
-		end)
-	end
-
-	local function replaceAllAtlases()
-		for _, data in pairs(buttons) do
-			replaceAtlases(data.button, data.name)
-		end
-	end
-	replaceAllAtlases()
-
-	button.skinned = true
-end
-
 MenuBar:Extend('OnCreate', function(self)
 	self.activeButtons = {}
 end)
@@ -112,7 +81,6 @@ function MenuBar:UpdateActiveButtons()
 	for _, button in ipairs(MicroButtons) do
 		if self:IsMenuButtonEnabled(button) then
 			self.activeButtons[#self.activeButtons + 1] = button
-			self:Skin(button)
 		end
 	end
 end
@@ -269,12 +237,12 @@ function MenuBarModule:OnInitialize()
 		perf:SetPoint('BOTTOM')
 	end
 
-	if FramerateFrame then
-		hooksecurefunc(FramerateFrame, 'UpdatePosition', function()
+	hooksecurefunc(MicroMenu, 'UpdateFramerateFrameAnchor', function()
+		if FramerateFrame then
 			FramerateFrame:ClearAllPoints()
 			FramerateFrame:SetPoint('BOTTOM', UIParent, 'BOTTOM', 0, 150)
-		end)
-	end
+		end
+	end)
 
 	hooksecurefunc(MicroMenu, 'UpdateHelpTicketButtonAnchor', function()
 		if HelpOpenWebTicketButton then
