@@ -1,6 +1,14 @@
 local function IsDialogMenu(owner)
 	if not owner then return false end
 
+	if EditModeSystemSettingsDialog then
+		for _, frame in next, { EditModeSystemSettingsDialog.Settings:GetChildren() } do
+			if frame.Dropdown == owner then
+				return true
+			end
+		end
+	end
+
 	if TransmogFrame and TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.SituationFramePool then
 		for situationFrame in TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.SituationFramePool:EnumerateActive() do
 			if situationFrame.Dropdown == owner then
@@ -22,6 +30,8 @@ local function IsDialogMenu(owner)
 		or (owner == CompactRaidFrameManagerDisplayFrameModeControlDropdown)
 		or (owner == CompactRaidFrameManagerDisplayFrameRestrictPingsDropdown)
 		or (owner == AddonList.Dropdown)
+		or (owner == BankPanel.TabSettingsMenu.BorderBox.IconTypeDropdown)
+		or (owner == BankPanel.TabSettingsMenu.DepositSettingsMenu.ExpansionFilterDropdown)
 		or (owner == ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
 		or (owner == ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
 		or (owner == ClubFinderCommunityAndGuildFinderFrame.OptionsList.ClubFilterDropdown)
@@ -44,7 +54,7 @@ local function IsDialogMenu(owner)
 		or (CalendarCreateEventFrame and owner == CalendarCreateEventFrame.MinuteDropdown)
 		or (CalendarCreateEventFrame and owner == CalendarCreateEventFrame.AMPMDropdown)
 		or (DelvesDifficultyPickerFrame and owner == DelvesDifficultyPickerFrame.Dropdown)
-		or (EncounterJournalInstanceSelect and owner == EncounterJournalInstanceSelect.ExpansionDropdown)
+		or (EncounterJournal and owner == EncounterJournalInstanceSelect.ExpansionDropdown)
 		or (HeirloomsJournal and owner == HeirloomsJournal.ClassDropdown)
 		or (ItemUpgradeFrame and owner == ItemUpgradeFrame.ItemInfo.Dropdown)
 		or (MacroPopupFrame and owner == MacroPopupFrame.BorderBox.IconTypeDropdown)
