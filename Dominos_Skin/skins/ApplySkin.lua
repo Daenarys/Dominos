@@ -1,3 +1,11 @@
+function ApplyCheckBox(frame)
+	frame:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Up")
+	frame:SetPushedTexture("Interface\\Buttons\\UI-CheckBox-Down")
+	frame:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight")
+	frame:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
+	frame:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled")
+end
+
 function ApplyDropDown(frame)
 	frame.Background:Hide()
 
