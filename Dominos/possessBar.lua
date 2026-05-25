@@ -131,7 +131,7 @@ function PossessBar:Update()
 	icon:SetDesaturated(false)
 
 	-- hide the border texture
-	button.NormalTexture:SetTexture()
+	button.NormalTexture:SetAlpha(0)
 
 	button:SetChecked(false)
 	button:Enable()
