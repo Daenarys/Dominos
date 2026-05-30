@@ -24,6 +24,7 @@ skins\EncounterJournal.lua
 skins\Friends.lua
 skins\GameMenu.lua
 skins\GroupLoot.lua
+skins\Housing.lua
 skins\ItemUpgrade.lua
 skins\LFG.lua
 skins\Macro.lua
