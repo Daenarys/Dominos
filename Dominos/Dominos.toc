@@ -19,8 +19,9 @@ overrideController.lua
 tooltipController.lua
 actionButton.lua
 actionBar.lua
-petBar.lua
-stanceBar.lua
 bagBar.lua
 menuBar.lua
+petBar.lua
 possessBar.lua
+rollBar.lua
+stanceBar.lua

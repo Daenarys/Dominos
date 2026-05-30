@@ -3,14 +3,14 @@
 -- A module for moving the Alerts and Group Loot frames
 --------------------------------------------------------------------------------
 
-local Dominos = LibStub("AceAddon-3.0"):GetAddon("Dominos")
-local L = LibStub('AceLocale-3.0'):GetLocale('Dominos')
+local AddonName, Addon = ...
+local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
 --------------------------------------------------------------------------------
 -- bar template
 --------------------------------------------------------------------------------
 
-local AlertsBar = Dominos:CreateClass('Frame', Dominos.Frame)
+local AlertsBar = Addon:CreateClass('Frame', Addon.Frame)
 
 function AlertsBar:New(id, frame, description)
 	local bar = AlertsBar.proto.New(self, id, description)
@@ -67,7 +67,7 @@ end
 -- module
 --------------------------------------------------------------------------------
 
-local AlertsBarModule = Dominos:NewModule('Alerts')
+local AlertsBarModule = Addon:NewModule('Alerts')
 
 function AlertsBarModule:Load()
 	if AlertFrame then
