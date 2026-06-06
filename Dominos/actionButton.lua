@@ -39,9 +39,17 @@ local function skinActionButton(self)
 	self.NormalTexture:SetPoint("TOPLEFT", -15, 15)
 	self.NormalTexture:SetPoint("BOTTOMRIGHT", 15, -15)
 	self.NormalTexture:SetVertexColor(1, 1, 1, 0.5)
-	if self.SlotBackground then
-		self.SlotBackground:Hide()
-	end
+	self.PushedTexture:SetTexture([[Interface\Buttons\UI-Quickslot-Depress]])
+	self.PushedTexture:ClearAllPoints()
+	self.PushedTexture:SetAllPoints()
+	self.HighlightTexture:SetTexture([[Interface\Buttons\ButtonHilight-Square]])
+	self.HighlightTexture:SetBlendMode("ADD")
+	self.HighlightTexture:ClearAllPoints()
+	self.HighlightTexture:SetAllPoints()
+	self.CheckedTexture:SetTexture([[Interface\Buttons\CheckButtonHilight]])
+	self.CheckedTexture:ClearAllPoints()
+	self.CheckedTexture:SetAllPoints()
+	self.CheckedTexture:SetBlendMode("ADD")
 end
 
 function ActionButtonMixin:OnCreate(id)
