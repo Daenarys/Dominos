@@ -51,6 +51,7 @@ local trackers = {
 	_G.AdventureObjectiveTracker,
 	_G.BonusObjectiveTracker,
 	_G.CampaignQuestObjectiveTracker,
+	_G.InitiativeTasksObjectiveTracker,
 	_G.MonthlyActivitiesObjectiveTracker,
 	_G.ProfessionsRecipeTracker,
 	_G.QuestObjectiveTracker,
