@@ -52,6 +52,7 @@ local function skinActionButton(self)
 	self.CheckedTexture:SetBlendMode("ADD")
 	self.chargeCooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
 	self.lossOfControlCooldown:SetEdgeTexture("Interface\\Cooldown\\edge-LoC")
+	self.lossOfControlCooldown:SetSwipeColor(1, 1, 1, .8)
 end
 
 function ActionButtonMixin:OnCreate(id)
