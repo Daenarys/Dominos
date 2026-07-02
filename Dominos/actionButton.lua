@@ -33,10 +33,6 @@ local function GetActionButtonCommand(id)
 	end
 end
 
-local function skinActionButton(self)
-	self.lossOfControlCooldown:SetSwipeColor(1, 1, 1, .8)
-end
-
 function ActionButtonMixin:OnCreate(id)
 	-- initialize secure state
 	self:SetAttributeNoHandler("action", 0)
@@ -75,9 +71,6 @@ function ActionButtonMixin:OnCreate(id)
 
 	-- apply hooks for quick binding
 	Addon.BindableButton:AddQuickBindingSupport(self)
-
-	-- apply button skin
-	skinActionButton(self)
 end
 
 function ActionButtonMixin:UpdateOverrideBindings()
