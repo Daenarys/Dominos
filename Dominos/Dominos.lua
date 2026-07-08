@@ -1126,6 +1126,10 @@ end
 --------------------------------------------------------------------------------
 
 if not (C_AddOns.IsAddOnLoaded("ClassicFrames")) then
+	hooksecurefunc(AddonCompartmentFrame, "UpdateDisplay", function(self)
+		self:SetShown(false)
+	end)
+
 	hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
 		self:SetParent(MinimapBackdrop)
 		self:SetFrameLevel(6)
