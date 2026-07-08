@@ -1,0 +1,27 @@
+## Interface: 120007
+## IconTexture: Interface/AddOns/Dominos/icons/Dominos
+## Title: Dominos
+## Notes: A main actionbar replacement
+## Author: Daenarys
+## Version: 1.00
+## SavedVariables: DominosDB
+## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, FlyPaper
+embeds.xml
+localization.xml
+Dominos.lua
+barStates.lua
+shadowUIParent.lua
+frame.lua
+buttonBar.lua
+bindableButton.lua
+fadeManager.lua
+overrideController.lua
+tooltipController.lua
+actionButton.lua
+actionBar.lua
+bagBar.lua
+menuBar.lua
+petBar.lua
+possessBar.lua
+rollBar.lua
+stanceBar.lua
