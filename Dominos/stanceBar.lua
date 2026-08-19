@@ -27,6 +27,11 @@ local function getStanceButton(id)
 	return _G[('StanceButton%d'):format(id)]
 end
 
+local function skinStanceButton(self)
+	self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
+	self.lossOfControlCooldown:SetSwipeColor(0.17, 0, 0, 0.8)
+end
+
 for id = 1, 10 do
 	local button = getStanceButton(id)
 
@@ -35,6 +40,9 @@ for id = 1, 10 do
 
 	-- apply hooks for quick binding
 	Addon.BindableButton:AddQuickBindingSupport(button)
+
+	-- apply button skin
+	skinStanceButton(button)
 end
 
 --------------------------------------------------------------------------------
