@@ -1,10 +1,10 @@
-local function SkinTargetCastbar(self)
-	hooksecurefunc(self, 'HandleInterruptOrSpellFailed', function(_, event)
-		if ( self.Text ) then
+local function SkinTargetCastbar(frame)
+	hooksecurefunc(frame, "HandleInterruptOrSpellFailed", function(_, _, event)
+		if ( frame.Text ) then
 			if ( event == "UNIT_SPELLCAST_FAILED" ) then
-				self.Text:SetText(FAILED)
+				frame.Text:SetText(FAILED)
 			else
-				self.Text:SetText(INTERRUPTED)
+				frame.Text:SetText(INTERRUPTED)
 			end
 		end
 	end)
