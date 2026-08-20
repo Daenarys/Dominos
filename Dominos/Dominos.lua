@@ -232,7 +232,7 @@ function Addon:GetDatabaseDefaults()
 
 			minimap = { hide = false },
 
-			ab = { count = 10, showgrid = true, rightClickUnit = 'player' },
+			ab = { count = 10, showgrid = true },
 
 			frames = { bags = { point = 'BOTTOMRIGHT', oneBag = true, keyRing = true, spacing = 2 } },
 
@@ -545,16 +545,6 @@ end
 
 function Addon:ShowGrid()
 	return self.db.profile.showgrid
-end
-
--- right click selfcast
-function Addon:SetRightClickUnit(unit)
-	self.db.profile.ab.rightClickUnit = unit
-	self.Frame:ForAll('SetRightClickUnit', unit)
-end
-
-function Addon:GetRightClickUnit()
-	return self.db.profile.ab.rightClickUnit
 end
 
 -- binding text

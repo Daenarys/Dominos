@@ -63,7 +63,6 @@ L.RCUFocus = _G.FOCUS
 L.RCUPlayer = "Self"
 L.RCUToT = "Target of Target"
 L.ResetProfile = "Reset Profile..."
-L.RightClickUnit = "Right Click Target"
 L.Save = _G.SAVE
 L.Scale = "Scale"
 L.SelfcastKey = "Selfcast Key"

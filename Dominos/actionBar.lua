@@ -69,8 +69,6 @@ ActionBar:Extend('OnAcquire', function(self)
 
 	self:LoadStateController()
 	self:UpdateStateDriver()
-	self:SetUnit(self:GetUnit())
-	self:SetRightClickUnit(self:GetRightClickUnit())
 	self:UpdateGrid()
 	self:UpdateTransparent(true)
 	self:UpdateFlyoutDirection()
@@ -83,9 +81,7 @@ function ActionBar:GetDefaults()
 		x = 0,
 		y = (ActionButton1:GetHeight()) * (self.id - 1),
 		pages = {},
-		numButtons = self:MaxLength(),
-		unit = "none",
-		rightClickUnit = "none"
+		numButtons = self:MaxLength()
 	}
 end
 
@@ -257,45 +253,6 @@ end
 
 function ActionBar:KEYBOUND_DISABLED()
 	self:HideGrid()
-end
-
--- right click targeting support
-function ActionBar:SetUnit(unit)
-	unit = unit or 'none'
-
-	if unit == 'none' then
-		self:SetAttribute('*unit*', nil)
-	else
-		self:SetAttribute('*unit*', unit)
-	end
-
-	self.sets.unit = unit
-end
-
-function ActionBar:GetUnit()
-	return self.sets.unit or 'none'
-end
-
-function ActionBar:SetRightClickUnit(unit)
-	unit = unit or 'none'
-
-	if unit == 'none' then
-		self:SetAttribute('*unit2', nil)
-	else
-		self:SetAttribute('*unit2', unit)
-	end
-
-	self.sets.rightClickUnit = unit
-end
-
-function ActionBar:GetRightClickUnit()
-	local unit = self.sets.rightClickUnit
-
-	if unit ~= "none" then
-		return unit
-	end
-
-	return Addon:GetRightClickUnit() or "none"
 end
 
 function ActionBar:OnSetAlpha(_alpha)

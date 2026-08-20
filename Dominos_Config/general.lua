@@ -47,20 +47,6 @@ Addon:AddOptionsPanel(
 				width = 1.5,
 			},
 			h(L.ActionBarBehavior),
-			select(L.RightClickUnit) {
-				values = {
-					player = L.RCUPlayer,
-					focus = L.RCUFocus,
-					targettarget = L.RCUToT,
-					none = DEFAULT
-				},
-				get = function()
-					return ParentAddon:GetRightClickUnit() or "none"
-				end,
-				set = function(_, value)
-					ParentAddon:SetRightClickUnit(value)
-				end
-			},
 			check(L.ShowOverrideUI) {
 				desc = L.ShowOverrideUIDesc,
 				get = function()
