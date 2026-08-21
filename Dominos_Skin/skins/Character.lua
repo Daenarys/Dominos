@@ -34,3 +34,12 @@ hooksecurefunc(CharacterFrame, "UpdateTitle", function(self)
 	self:SetTitleColor(HIGHLIGHT_FONT_COLOR)
 	self:SetTitle(UnitPVPName("player"))
 end)
+
+hooksecurefunc("PaperDollItemSlotButton_Update", function(self)
+	local cooldown = self.Cooldown
+	if ( cooldown ) then
+		cooldown:SetBlingTexture("Interface\\Cooldown\\star4", 0.3, 0.6, 1, 0.8)
+		cooldown:SetSwipeColor(0, 0, 0, 0.8)
+		cooldown:SetHideCountdownNumbers(true)
+	end
+end)
