@@ -57,7 +57,6 @@ local function getOrCreatePossessButton(id)
 	if not button then
 		if SmallActionButtonMixin then
 			button = CreateFrame("CheckButton", name, nil, "SmallActionButtonTemplate", id)
-			button.cooldown:SetSwipeColor(0, 0, 0)
 		else
 			button = CreateFrame("CheckButton", name, nil, "ActionButtonTemplate", id)
 			button:SetSize(30, 30)
