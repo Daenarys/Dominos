@@ -6,25 +6,19 @@
 local AddonName, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
-local MicroButtons = {}
-local PetMicroButtonFrame = PetBattleFrame and PetBattleFrame.BottomFrame.MicroButtonFrame
-
-if MicroMenu then
-	-- post edit mode, grab all of the buttons in order
-	for _, button in ipairs { MicroMenu:GetChildren() } do
-		-- always reparent the button in retail
-		button:SetParent(Addon.ShadowUIParent)
-
-		-- hide the housing button
-		if button == HousingMicroButton then
-			button:Hide()
-		end
-
-		if button:IsShown() then
-			MicroButtons[#MicroButtons + 1] = button
-		end
-	end
-end
+local MICRO_BUTTONS = {
+	"CharacterMicroButton",
+	"ProfessionMicroButton",
+	"PlayerSpellsMicroButton",
+	"AchievementMicroButton",
+	"QuestLogMicroButton",
+	"GuildMicroButton",
+	"LFDMicroButton",
+	"CollectionsMicroButton",
+	"EJMicroButton",
+	"StoreMicroButton",
+	"MainMenuMicroButton"
+}
 
 local MICRO_BUTTON_NAMES = {
 	['CharacterMicroButton'] = CHARACTER_BUTTON,
@@ -32,7 +26,6 @@ local MICRO_BUTTON_NAMES = {
 	['PlayerSpellsMicroButton'] = TALENTS_BUTTON,
 	['AchievementMicroButton'] = ACHIEVEMENT_BUTTON,
 	['QuestLogMicroButton'] = QUESTLOG_BUTTON,
-	['HousingMicroButton'] = HOUSING_MICRO_BUTTON,
 	['GuildMicroButton'] = LOOKINGFORGUILD,
 	['LFDMicroButton'] = DUNGEONS_BUTTON,
 	['CollectionsMicroButton'] = COLLECTIONS,
@@ -124,6 +117,9 @@ function MenuBar:Skin(button)
 		end
 		if self.HighlightEmblem then
 			self.HighlightEmblem:Hide()
+		end
+		if self.NotificationOverlay then
+			self.NotificationOverlay:Hide()
 		end
 		self:SetHighlightAtlas('hud-microbutton-highlight')
 	end)
@@ -315,15 +311,74 @@ function MenuBar:Skin(button)
 	button.skinned = true
 end
 
-MenuBar:Extend('OnCreate', function(self)
-	self.activeButtons = {}
-end)
+MenuBar:Extend(
+	'OnCreate',
+	function(self)
+		self.activeButtons = {}
+		self.overrideButtons = {}
+
+		local function getOrHook(frame, script, action)
+			if frame:GetScript(script) then
+				frame:HookScript(script, action)
+			else
+				frame:SetScript(script, action)
+			end
+		end
+
+		local requestLayoutUpdate = Addon:Defer(function() self:Layout() end, 0)
+
+		hooksecurefunc('UpdateMicroButtons', requestLayoutUpdate)
+
+		if PetBattleFrame and PetBattleFrame.BottomFrame and PetBattleFrame.BottomFrame.MicroButtonFrame then
+			local petMicroButtons = PetBattleFrame.BottomFrame.MicroButtonFrame
+
+			getOrHook(
+				petMicroButtons,
+				'OnShow',
+				function()
+					self.isPetBattleUIShown = true
+					requestLayoutUpdate()
+				end
+			)
+
+			getOrHook(
+				petMicroButtons,
+				'OnHide',
+				function()
+					self.isPetBattleUIShown = nil
+					requestLayoutUpdate()
+				end
+			)
+		end
+
+		if OverrideActionBar then
+			getOrHook(
+				OverrideActionBar,
+				'OnShow',
+				function()
+					self.isOverrideUIShown = Addon:UsingOverrideUI()
+					requestLayoutUpdate()
+				end
+			)
+
+			getOrHook(
+				OverrideActionBar,
+				'OnHide',
+				function()
+					self.isOverrideUIShown = nil
+					requestLayoutUpdate()
+				end
+			)
+		end
+	end
+)
 
 function MenuBar:GetDefaults()
 	return {
+		displayLayer = 'LOW',
 		point = 'BOTTOMRIGHT',
-		x = 0,
-		y = 48
+		x = -244,
+		y = 0
 	}
 end
 
@@ -335,13 +390,42 @@ function MenuBar:NumButtons()
 	return #self.activeButtons
 end
 
+function MenuBar:GetButtonInsets()
+	local l, r, t, b = MenuBar.proto.GetButtonInsets(self)
+
+	return l, r + 1, t + 3, b
+end
+
 function MenuBar:UpdateActiveButtons()
 	wipe(self.activeButtons)
 
-	for _, button in ipairs(MicroButtons) do
-		if self:IsMenuButtonEnabled(button) then
-			self.activeButtons[#self.activeButtons + 1] = button
-			self:Skin(button)
+	for _, name in ipairs(MICRO_BUTTONS) do
+		local button = _G[name]
+		self:Skin(button)
+		if not self:IsMenuButtonDisabled(button) then
+			tinsert(self.activeButtons, button)
+		end
+	end
+end
+
+function MenuBar:UpdateOverrideBarButtons()
+	wipe(self.overrideButtons)
+
+	local isStoreEnabled = C_StorePublic.IsEnabled()
+
+	for _, buttonName in ipairs(MICRO_BUTTONS) do
+		local shouldAddButton
+
+		if buttonName == 'HelpMicroButton' then
+			shouldAddButton = not isStoreEnabled
+		elseif buttonName == 'StoreMicroButton' then
+			shouldAddButton = isStoreEnabled
+		else
+			shouldAddButton = true
+		end
+
+		if shouldAddButton then
+			tinsert(self.overrideButtons, _G[buttonName])
 		end
 	end
 end
@@ -352,80 +436,75 @@ function MenuBar:ReloadButtons()
 	MenuBar.proto.ReloadButtons(self)
 end
 
-function MenuBar:SetEnableMenuButton(button, enabled)
-	enabled = enabled and true
+function MenuBar:DisableMenuButton(button, disabled)
+	local disabledButtons = self.sets.disabled or {}
 
-	if enabled then
-		local disabled = self.sets.disabled
-
-		if disabled then
-			disabled[button:GetName()] = false
-		end
-	else
-		local disabled = self.sets.disabled
-
-		if not disabled then
-			disabled = {}
-			self.sets.disabled = disabled
-		end
-
-		disabled[button:GetName()] = true
-	end
+	disabledButtons[button:GetName()] = disabled or false
+	self.sets.disabled = disabledButtons
 
 	self:ReloadButtons()
 end
 
-function MenuBar:IsMenuButtonEnabled(button)
-	local disabled = self.sets.disabled
+function MenuBar:IsMenuButtonDisabled(button)
+	local disabledButtons = self.sets.disabled
 
-	return not (disabled and disabled[button:GetName()])
+	if disabledButtons then
+		return disabledButtons[button:GetName()]
+	end
+
+	return false
 end
 
 function MenuBar:Layout()
-	for _, button in pairs(MicroButtons) do
-		button:Hide()
+	if self.isPetBattleUIShown then
+		self:LayoutPetBattle()
+	elseif self.isOverrideUIShown then
+		self:LayoutOverrideUI()
+	else
+		self:LayoutNormal()
+	end
+end
+
+function MenuBar:LayoutNormal()
+	for _, name in pairs(MICRO_BUTTONS) do
+		local button = _G[name]
+		if button then
+			button:Hide()
+		end
 	end
 
-	if OverrideActionBar and OverrideActionBar:IsVisible() then
-		for i, button in pairs(MicroButtons) do
+	for _, button in pairs(self.buttons) do
+		button:Show()
+	end
+
+	MenuBar.proto.Layout(self)
+end
+
+function MenuBar:LayoutPetBattle()
+	self:FixButtonPositions()
+end
+
+function MenuBar:LayoutOverrideUI()
+	self:FixButtonPositions()
+end
+
+function MenuBar:FixButtonPositions()
+	self:UpdateOverrideBarButtons()
+
+	local l, r, t, b = self:GetButtonInsets()
+
+	for i, button in ipairs(self.overrideButtons) do
+		if i > 1 then
 			button:ClearAllPoints()
-			button:SetParent(OverrideActionBar)
-			button:SetScale(0.8)
 
-			if i == 1 then
-				local x, y = OverrideActionBar:GetMicroButtonAnchor()
-				button:SetPoint('BOTTOMLEFT', x + button:GetWidth(), y + button:GetHeight())
-			elseif i == 7 then
-				button:SetPoint('TOPLEFT', MicroButtons[1], 'BOTTOMLEFT', 0, 0)
+			if i == 7 then
+				button:SetPoint('TOPLEFT', self.overrideButtons[1], 'BOTTOMLEFT', 0, (t - b) - 3)
 			else
-				button:SetPoint('BOTTOMLEFT', MicroButtons[i - 1], 'BOTTOMRIGHT', 0, 0)
+				button:SetPoint('BOTTOMLEFT', self.overrideButtons[i - 1], 'BOTTOMRIGHT', (l - r) - 1, 0)
 			end
-
-			button:Show()
-		end
-	elseif PetMicroButtonFrame and PetMicroButtonFrame:IsVisible() then
-		for i, button in ipairs(MicroButtons) do
-			button:ClearAllPoints()
-			button:SetParent(PetMicroButtonFrame)
-			button:SetScale(1)
-
-			if i == 1 then
-				button:SetPoint('TOPLEFT', -17, 9)
-			elseif i == 7 then
-				button:SetPoint('TOPLEFT', MicroButtons[1], 'BOTTOMLEFT', 0, 6)
-			else
-				button:SetPoint('TOPLEFT', MicroButtons[i - 1], 'TOPRIGHT', -5, 0)
-			end
-
-			button:Show()
-		end
-	else
-		for _, button in pairs(self.buttons) do
-			button:SetScale(1)
-			button:Show()
 		end
 
-		MenuBar.proto.Layout(self)
+		button:Show()
 	end
 end
 
@@ -436,38 +515,43 @@ Addon.MenuBar = MenuBar
 -- context menu
 --------------------------------------------------------------------------------
 
+local function MenuButtonCheckbox_Create(panel, button, name)
+	if not button then
+		return
+	end
+
+	return panel:NewCheckButton {
+		name = name or button:GetName(),
+		get = function()
+			return not panel.owner:IsMenuButtonDisabled(button)
+		end,
+		set = function(_, enable)
+			panel.owner:DisableMenuButton(button, not enable)
+		end
+	}
+end
+
 local function Menu_AddDisableMenuButtonsPanel(menu)
 	local L = LibStub('AceLocale-3.0'):GetLocale('Dominos-Config')
 
 	local panel = menu:NewPanel(L.Buttons)
-	local width, height = 0, 0
 	local prev = nil
+	local width, height = 0, 0
 
-	for _, button in ipairs(MicroButtons) do
-		local toggle = panel:NewCheckButton({
-			name = MICRO_BUTTON_NAMES[button:GetName()] or button:GetName(),
-
-			get = function()
-				return panel.owner:IsMenuButtonEnabled(button)
-			end,
-
-			set = function(_, enable)
-				panel.owner:SetEnableMenuButton(button, enable)
+	for _, buttonName in ipairs(MICRO_BUTTONS) do
+		local button = MenuButtonCheckbox_Create(panel, _G[buttonName], MICRO_BUTTON_NAMES[buttonName])
+		if button then
+			if prev then
+				button:SetPoint('TOPLEFT', prev, 'BOTTOMLEFT', 0, -2)
+			else
+				button:SetPoint('TOPLEFT', 0, -2)
 			end
-		})
 
-		if prev then
-			toggle:SetPoint('TOPLEFT', prev, 'BOTTOMLEFT', 0, -2)
-		else
-			toggle:SetPoint('TOPLEFT', 0, -2)
+			local bWidth, bHeight = button:GetEffectiveSize()
+			width = math.max(width, bWidth)
+			height = height + (bHeight + 2)
+			prev = button
 		end
-
-		local bWidth, bHeight = toggle:GetEffectiveSize()
-
-		width = math.max(width, bWidth)
-		height = height + (bHeight + 2)
-
-		prev = toggle
 	end
 
 	panel.width = width
@@ -490,8 +574,6 @@ end
 local MenuBarModule = Addon:NewModule('MenuBar')
 
 function MenuBarModule:OnInitialize()
-	-- the performance bar actually appears under the game menu button if you
-	-- move it somewhere else
 	local perf = MainMenuMicroButton and MainMenuMicroButton.MainMenuBarPerformanceBar
 	if perf then
 		perf:SetSize(28, 58)
@@ -513,26 +595,8 @@ function MenuBarModule:OnInitialize()
 		end
 	end)
 
-	local layout = Addon:Defer(function()
-		local frame = self.frame
-		if frame then
-			self.frame:Layout()
-		end
-	end)
-
-	hooksecurefunc('UpdateMicroButtons', layout)
-
-	if OverrideActionBar then
-		local f = CreateFrame('Frame', nil, OverrideActionBar)
-		f:SetScript('OnShow', layout)
-		f:SetScript('OnHide', layout)
-	end
-
-	if PetMicroButtonFrame then
-		local f = CreateFrame('Frame', nil, PetMicroButtonFrame)
-		f:SetScript('OnShow', layout)
-		f:SetScript('OnHide', layout)
-	end
+	-- temp fix for 10.2.6 bug
+	MicroMenu.GetEdgeButton = function() end
 end
 
 function MenuBarModule:Load()
