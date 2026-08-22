@@ -10,7 +10,7 @@ local GRID_SIZE_MINIMUM = 1
 local GRID_SIZE_MAXIMUM = 128
 local GRID_SIZE_STEP = 1
 
-local HelpDialog = _G.CreateFrame('Frame', nil, nil)
+local HelpDialog = _G.CreateFrame('Frame', nil, nil, "BackdropTemplate")
 
 HelpDialog:Hide()
 
@@ -21,16 +21,31 @@ function HelpDialog:OnLoad(owner)
 	self:RegisterForDrag('LeftButton')
 	self:SetClampedToScreen(true)
 	self:SetFrameStrata('FULLSCREEN_DIALOG')
-	self:SetMovable(true)
 	self:SetSize(360, 120)
+
+	self:SetBackdrop {
+		bgFile = 'Interface\\DialogFrame\\UI-DialogBox-Background',
+		edgeFile = 'Interface\\DialogFrame\\UI-DialogBox-Border',
+		tile = true,
+		insets = {left = 11, right = 12, top = 12, bottom = 11},
+		tileSize = 32,
+		edgeSize = 32
+	}
+
 	self:SetPoint('TOP', 0, -24)
 	self:SetScript('OnDragStart', self.OnDragStart)
 	self:SetScript('OnDragStop', self.OnDragStop)
 
-	local border = CreateFrame('Frame', nil, self, 'DialogBorderTemplate')
+	local header = self:CreateTexture(nil, 'ARTWORK')
+	header:SetTexture('Interface\\DialogFrame\\UI-DialogBox-Header')
+	header:SetWidth(326)
+	header:SetHeight(64)
+	header:SetPoint('TOP', 0, 12)
 
-	local header = CreateFrame('Frame', nil, self, 'DialogHeaderTemplate')
-	header.Text:SetText(L.ConfigMode)
+	local title = self:CreateFontString(nil, 'ARTWORK')
+	title:SetFontObject('GameFontNormal')
+	title:SetPoint('TOP', header, 'TOP', 0, -14)
+	title:SetText(L.ConfigMode)
 
 	local desc = self:CreateFontString(nil, 'ARTWORK')
 	desc:SetFontObject('GameFontHighlight')
@@ -54,7 +69,6 @@ function HelpDialog:OnLoad(owner)
 	showGridButton:SetChecked(Addon:GetParent():GetAlignmentGridEnabled())
 	showGridButton:SetScript('OnClick', function(button) self:OnShowGridButtonClicked(button) end)
 	showGridButton:SetPoint('BOTTOMLEFT', 14, 10)
-
 
 	local slider = Addon.Slider:New({
 		name = L.GridDensity,
