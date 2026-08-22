@@ -118,9 +118,6 @@ function MenuBar:Skin(button)
 		if self.HighlightEmblem then
 			self.HighlightEmblem:Hide()
 		end
-		if self.NotificationOverlay then
-			self.NotificationOverlay:Hide()
-		end
 		self:SetHighlightAtlas('hud-microbutton-highlight')
 	end)
 
