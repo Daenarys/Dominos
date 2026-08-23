@@ -10,14 +10,6 @@ local MENU_HEIGHT = 320
 function Menu:New(parent)
 	local menu = self:Bind(CreateFrame('Frame', nextName(), parent or UIParent, "UIPanelDialogTemplate"))
 
-	_G[menu:GetName().."Close"]:SetSize(32, 32)
-	_G[menu:GetName().."Close"]:SetDisabledTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Disabled")
-	_G[menu:GetName().."Close"]:SetNormalTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Up")
-	_G[menu:GetName().."Close"]:SetPushedTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Down")
-	_G[menu:GetName().."Close"]:SetHighlightTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Highlight")
-	_G[menu:GetName().."Close"]:ClearAllPoints()
-	_G[menu:GetName().."Close"]:SetPoint("TOPRIGHT", 2, 1)
-
 	menu:Hide()
 	menu:SetSize(MENU_WIDTH, MENU_HEIGHT)
 	menu:EnableMouse(true)
