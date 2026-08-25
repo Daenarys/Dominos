@@ -1,0 +1,18 @@
+if not _G.CommunitiesFrame then return end
+
+ApplyDropDown(ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
+ApplyDropDown(ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
+ApplyDropDown(ClubFinderCommunityAndGuildFinderFrame.OptionsList.ClubFilterDropdown)
+ApplyDropDown(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SortByDropdown)
+ApplyDropDown(CommunitiesFrame.NotificationSettingsDialog.CommunitiesListDropdown)
+ApplyDropDown(CommunitiesFrame.CommunitiesListDropdown)
+ApplyDropDown(CommunitiesFrame.GuildMemberListDropdown)
+ApplyDropDown(CommunitiesFrame.StreamDropdown)
+ApplyDropDown(CommunitiesFrame.GuildMemberDetailFrame.RankDropdown)
+ApplyDropDown(CommunitiesFrame.RecruitmentDialog.ClubFocusDropdown)
+ApplyDropDown(CommunitiesFrame.RecruitmentDialog.LookingForDropdown)
+ApplyDropDown(CommunitiesFrame.RecruitmentDialog.LanguageDropdown)
+ApplyDropDown(GuildControlUINavigationDropdown)
+
+ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown.Text:SetJustifyH("RIGHT")
+ClubFinderCommunityAndGuildFinderFrame.OptionsList.SortByDropdown.Text:SetJustifyH("RIGHT")
