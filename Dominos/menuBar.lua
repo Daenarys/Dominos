@@ -9,20 +9,16 @@ local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 local MicroButtons = {}
 local PetMicroButtonFrame = PetBattleFrame and PetBattleFrame.BottomFrame.MicroButtonFrame
 
-if MicroMenu then
-	-- post edit mode, grab all of the buttons in order
-	for _, button in ipairs { MicroMenu:GetChildren() } do
-		-- always reparent the button in retail
-		button:SetParent(Addon.ShadowUIParent)
+for _, buttonInfo in ipairs(MicroMenu:GenerateButtonInfos()) do
+	local button = buttonInfo.button
 
-		-- hide the housing button
-		if button == HousingMicroButton then
-			button:Hide()
-		end
+	-- hide the housing button
+	if button == HousingMicroButton then
+		button:Hide()
+	end
 
-		if button:IsShown() then
-			MicroButtons[#MicroButtons + 1] = button
-		end
+	if button:IsShown() then
+		MicroButtons[#MicroButtons + 1] = button
 	end
 end
 
@@ -32,7 +28,6 @@ local MICRO_BUTTON_NAMES = {
 	['PlayerSpellsMicroButton'] = TALENTS_BUTTON,
 	['AchievementMicroButton'] = ACHIEVEMENT_BUTTON,
 	['QuestLogMicroButton'] = QUESTLOG_BUTTON,
-	['HousingMicroButton'] = HOUSING_MICRO_BUTTON,
 	['GuildMicroButton'] = LOOKINGFORGUILD,
 	['LFDMicroButton'] = DUNGEONS_BUTTON,
 	['CollectionsMicroButton'] = COLLECTIONS,
@@ -159,7 +154,7 @@ function MenuBar:Layout()
 	end
 
 	if OverrideActionBar and OverrideActionBar:IsVisible() then
-		for i, button in pairs(MicroButtons) do
+		for i, button in ipairs(MicroButtons) do
 			button:ClearAllPoints()
 			button:SetParent(OverrideActionBar)
 			button:SetScale(0.8)
