@@ -14,19 +14,6 @@ local function getPetButton(id)
 	return _G[('PetActionButton%d'):format(id)]
 end
 
-local function skinPetButton(self)
-	self.AutoCastOverlay:ClearAllPoints()
-	self.AutoCastOverlay:SetPoint("CENTER")
-	self.AutoCastOverlay.Corners:SetSize(80, 80)
-	self.AutoCastOverlay.Corners:SetTexture([[Interface\Buttons\UI-AutoCastableOverlay]])
-	self.AutoCastOverlay.Corners:ClearAllPoints()
-	self.AutoCastOverlay.Corners:SetPoint("CENTER")
-	self.AutoCastOverlay.Mask:ClearAllPoints()
-	self.AutoCastOverlay.Mask:SetAllPoints()
-	self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
-	self.lossOfControlCooldown:SetSwipeColor(0.17, 0, 0, 0.8)
-end
-
 for id = 1, NUM_PET_ACTION_SLOTS do
 	local button = getPetButton(id)
 
@@ -35,9 +22,6 @@ for id = 1, NUM_PET_ACTION_SLOTS do
 
 	-- apply hooks for quick binding
 	Addon.BindableButton:AddQuickBindingSupport(button)
-
-	-- apply button skin
-	skinPetButton(button)
 end
 
 --------------------------------------------------------------------------------
