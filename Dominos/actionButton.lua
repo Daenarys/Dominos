@@ -55,6 +55,9 @@ local function skinActionButton(self)
 	self.chargeCooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
 	self.lossOfControlCooldown:SetEdgeTexture("Interface\\Cooldown\\edge-LoC")
 	self.lossOfControlCooldown:SetSwipeColor(0.17, 0, 0, 0.8)
+	if self.SlotBackground then
+		self.SlotBackground:Hide()
+	end
 end
 
 function ActionButtonMixin:OnCreate(id)
