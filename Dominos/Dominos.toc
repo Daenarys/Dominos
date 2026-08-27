@@ -23,5 +23,4 @@ bagBar.lua
 menuBar.lua
 petBar.lua
 possessBar.lua
-rollBar.lua
 stanceBar.lua
