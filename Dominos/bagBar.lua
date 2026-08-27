@@ -87,6 +87,8 @@ end
 local BagBarModule = Addon:NewModule('BagBar')
 
 function BagBarModule:OnInitialize()
+	self:RegisterButton('CharacterReagentBag0Slot')
+
 	for slot = (NUM_BAG_SLOTS - 1), 0, -1 do
 		self:RegisterButton(('CharacterBag%dSlot'):format(slot))
 	end
@@ -135,20 +137,14 @@ function BagBarModule:RegisterButton(name)
 		return
 	end
 
-	button:SetSize(36, 36)
+	button:SetSize(MainMenuBarBackpackButton:GetSize())
 	button:Hide()
 
 	if button.CircleMask then
 		button.CircleMask:Hide()
 	end
 
-	if button.IconBorder then
-		button.IconBorder:SetSize(37, 37)
-	end
-
-	if button.IconOverlay ~= nil then
-		button.IconOverlay:SetSize(37, 37)
-	end
+	MainMenuBarBackpackButtonIconTexture:SetAtlas("hud-backpack", false)
 
 	local function updateTextures(self)
 		self:GetNormalTexture():SetSize(64, 64)
@@ -164,13 +160,8 @@ function BagBarModule:RegisterButton(name)
 		self.SlotHighlightTexture:SetBlendMode("ADD")
 	end
 
-	hooksecurefunc(button, "SetItemButtonQuality", ItemButtonMixin.SetItemButtonQuality)
 	hooksecurefunc(button, "UpdateTextures", updateTextures)
-
 	updateTextures(button)
-	MainMenuBarBackpackButtonIconTexture:SetAtlas("hud-backpack", false)
-	MainMenuBarBackpackButtonCount:ClearAllPoints()
-	MainMenuBarBackpackButtonCount:SetPoint("CENTER", 0, -10)
 
 	tinsert(BagButtons, button)
 end
