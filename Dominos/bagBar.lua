@@ -140,5 +140,28 @@ function BagBarModule:RegisterButton(name)
 	button:SetSize(MainMenuBarBackpackButton:GetSize())
 	button:Hide()
 
+	if button.CircleMask then
+		button.CircleMask:Hide()
+	end
+
+	MainMenuBarBackpackButtonIconTexture:SetAtlas("hud-backpack", false)
+
+	local function updateTextures(self)
+		self:GetNormalTexture():SetSize(64, 64)
+		self:GetNormalTexture():SetTexture("Interface\\Buttons\\UI-Quickslot2")
+		self:GetNormalTexture():ClearAllPoints()
+		self:GetNormalTexture():SetPoint("TOPLEFT", -15, 15)
+		self:GetNormalTexture():SetPoint("BOTTOMRIGHT", 15, -15)
+		self:GetPushedTexture():SetTexture("Interface\\Buttons\\UI-Quickslot-Depress")
+		self:GetHighlightTexture():SetTexture("Interface\\Buttons\\ButtonHilight-Square")
+		self:GetHighlightTexture():SetAlpha(1)
+		self.icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
+		self.SlotHighlightTexture:SetTexture("Interface\\Buttons\\CheckButtonHilight")
+		self.SlotHighlightTexture:SetBlendMode("ADD")
+	end
+
+	hooksecurefunc(button, "UpdateTextures", updateTextures)
+	updateTextures(button)
+
 	tinsert(BagButtons, button)
 end

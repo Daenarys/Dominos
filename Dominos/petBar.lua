@@ -14,6 +14,68 @@ local function getPetButton(id)
 	return _G[('PetActionButton%d'):format(id)]
 end
 
+local function skinPetButton(self)
+	_G[self:GetName() .. 'Icon']:SetTexCoord(0.06, 0.94, 0.06, 0.94)
+	self.PushedTexture:SetTexture([[Interface\Buttons\UI-Quickslot-Depress]])
+	self.PushedTexture:ClearAllPoints()
+	self.PushedTexture:SetAllPoints()
+	self.HighlightTexture:SetTexture([[Interface\Buttons\ButtonHilight-Square]])
+	self.HighlightTexture:SetBlendMode("ADD")
+	self.HighlightTexture:ClearAllPoints()
+	self.HighlightTexture:SetAllPoints()
+	self.CheckedTexture:SetTexture([[Interface\Buttons\CheckButtonHilight]])
+	self.CheckedTexture:SetBlendMode("ADD")
+	self.CheckedTexture:ClearAllPoints()
+	self.CheckedTexture:SetAllPoints()
+	self.Flash:SetTexture([[Interface\Buttons\UI-QuickslotRed]])
+	self.Flash:ClearAllPoints()
+	self.Flash:SetAllPoints()
+	self.AutoCastOverlay:ClearAllPoints()
+	self.AutoCastOverlay:SetPoint("CENTER")
+	self.AutoCastOverlay.Corners:SetSize(58, 58)
+	self.AutoCastOverlay.Corners:SetTexture([[Interface\Buttons\UI-AutoCastableOverlay]])
+	self.AutoCastOverlay.Corners:ClearAllPoints()
+	self.AutoCastOverlay.Corners:SetPoint("CENTER")
+	self.AutoCastOverlay.Mask:ClearAllPoints()
+	self.AutoCastOverlay.Mask:SetAllPoints()
+	self.cooldown:SetBlingTexture("Interface\\Cooldown\\star4", 0.3, 0.6, 1, 0.8)
+	self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
+	self.cooldown:ClearAllPoints()
+	self.cooldown:SetAllPoints()
+	self.chargeCooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
+	self.chargeCooldown:ClearAllPoints()
+	self.chargeCooldown:SetAllPoints()
+	self.lossOfControlCooldown:SetEdgeTexture("Interface\\Cooldown\\edge-LoC")
+	self.lossOfControlCooldown:SetSwipeColor(0.17, 0, 0, 0.8)
+	self.lossOfControlCooldown:ClearAllPoints()
+	self.lossOfControlCooldown:SetAllPoints()
+	if self.IconMask then
+		self.IconMask:Hide()
+	end
+	if self.SlotBackground then
+		self.SlotBackground:Hide()
+	end
+
+	--simulate old floatingbg
+	hooksecurefunc(PetActionBar, 'Update', function()
+		local petActionID = self:GetID()
+		local texture = GetPetActionInfo(petActionID);
+		if ( texture ) then
+			self.NormalTexture:SetSize(54, 54)
+			self.NormalTexture:SetTexture([[Interface\Buttons\UI-Quickslot2]])
+			self.NormalTexture:ClearAllPoints()
+			self.NormalTexture:SetPoint("CENTER", 0, -1)
+			self.NormalTexture:SetVertexColor(1, 1, 1, 0.5)
+		else
+			self.NormalTexture:SetSize(54, 54)
+			self.NormalTexture:SetTexture([[Interface\Buttons\UI-Quickslot]])
+			self.NormalTexture:ClearAllPoints()
+			self.NormalTexture:SetPoint("CENTER", 0, -1)
+			self.NormalTexture:SetVertexColor(1, 1, 1, 0.5)
+		end
+	end)
+end
+
 for id = 1, NUM_PET_ACTION_SLOTS do
 	local button = getPetButton(id)
 
@@ -22,6 +84,20 @@ for id = 1, NUM_PET_ACTION_SLOTS do
 
 	-- apply hooks for quick binding
 	Addon.BindableButton:AddQuickBindingSupport(button)
+
+	-- disable new texture loading
+	if button.UpdateButtonArt then
+		button.UpdateButtonArt = function() end
+	end
+
+	-- apply pre 10.x button skin
+	skinPetButton(button)
+
+	-- enable cooldown bling
+	button.cooldown:SetDrawBling(true)
+
+	-- disable cooldown numbers
+	button.cooldown:SetHideCountdownNumbers(true)
 end
 
 --------------------------------------------------------------------------------
