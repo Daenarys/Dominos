@@ -27,6 +27,39 @@ local function getStanceButton(id)
 	return _G[('StanceButton%d'):format(id)]
 end
 
+local function skinStanceButton(self)
+	_G[self:GetName() .. 'Icon']:SetTexCoord(0.06, 0.94, 0.06, 0.94)
+	self.NormalTexture:SetSize(54, 54)
+	self.NormalTexture:SetTexture([[Interface\Buttons\UI-Quickslot2]])
+	self.NormalTexture:ClearAllPoints()
+	self.NormalTexture:SetPoint("CENTER", 0, -1)
+	self.NormalTexture:SetVertexColor(1, 1, 1, 0.5)
+	self.PushedTexture:SetSize(30, 30)
+	self.PushedTexture:SetTexture([[Interface\Buttons\UI-Quickslot-Depress]])
+	self.HighlightTexture:SetSize(30, 30)
+	self.HighlightTexture:SetTexture([[Interface\Buttons\ButtonHilight-Square]])
+	self.HighlightTexture:SetBlendMode("ADD")
+	self.CheckedTexture:SetTexture([[Interface\Buttons\CheckButtonHilight]])
+	self.CheckedTexture:SetBlendMode("ADD")
+	self.CheckedTexture:ClearAllPoints()
+	self.CheckedTexture:SetPoint("TOPLEFT", self.icon, "TOPLEFT")
+	self.CheckedTexture:SetPoint("BOTTOMRIGHT", self.icon, "BOTTOMRIGHT")
+	self.cooldown:SetBlingTexture("Interface\\Cooldown\\star4", 0.3, 0.6, 1, 0.8)
+	self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
+	self.cooldown:ClearAllPoints()
+	self.cooldown:SetAllPoints()
+	self.chargeCooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
+	self.chargeCooldown:ClearAllPoints()
+	self.chargeCooldown:SetAllPoints()
+	self.lossOfControlCooldown:SetEdgeTexture("Interface\\Cooldown\\edge-LoC")
+	self.lossOfControlCooldown:SetSwipeColor(0.17, 0, 0, 0.8)
+	self.lossOfControlCooldown:ClearAllPoints()
+	self.lossOfControlCooldown:SetAllPoints()
+	if self.IconMask then
+		self.IconMask:Hide()
+	end
+end
+
 for id = 1, 10 do
 	local button = getStanceButton(id)
 
@@ -35,6 +68,20 @@ for id = 1, 10 do
 
 	-- apply hooks for quick binding
 	Addon.BindableButton:AddQuickBindingSupport(button)
+
+	-- disable new texture loading
+	if button.UpdateButtonArt then
+		button.UpdateButtonArt = function() end
+	end
+
+	-- apply pre 10.x button skin
+	skinStanceButton(button)
+
+	-- enable cooldown bling
+	button.cooldown:SetDrawBling(true)
+
+	-- disable cooldown numbers
+	button.cooldown:SetHideCountdownNumbers(true)
 end
 
 --------------------------------------------------------------------------------
