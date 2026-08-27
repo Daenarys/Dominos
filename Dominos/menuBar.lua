@@ -326,7 +326,7 @@ MenuBar:Extend(
 
 		hooksecurefunc('UpdateMicroButtons', requestLayoutUpdate)
 
-		if PetBattleFrame and PetBattleFrame.BottomFrame and PetBattleFrame.BottomFrame.MicroButtonFrame then
+		if PetBattleFrame and PetBattleFrame.BottomFrame.MicroButtonFrame then
 			local petMicroButtons = PetBattleFrame.BottomFrame.MicroButtonFrame
 
 			getOrHook(
@@ -372,7 +372,6 @@ MenuBar:Extend(
 
 function MenuBar:GetDefaults()
 	return {
-		displayLayer = 'LOW',
 		point = 'BOTTOMRIGHT',
 		x = -244,
 		y = 0
@@ -398,9 +397,9 @@ function MenuBar:UpdateActiveButtons()
 
 	for _, name in ipairs(MICRO_BUTTONS) do
 		local button = _G[name]
-		self:Skin(button)
 		if not self:IsMenuButtonDisabled(button) then
 			tinsert(self.activeButtons, button)
+			self:Skin(button)
 		end
 	end
 end
