@@ -774,9 +774,7 @@ function Addon:HideBlizzard()
 		"MicroButtonAndBagsBar",
 		"BagsBar",
 		"MicroMenu",
-		"MicroMenuContainer",
-		"PlayerCastingBarFrame",
-		"OverlayPlayerCastingBarFrame"
+		"MicroMenuContainer"
 	)
 
 	apply(unregisterEvents,
@@ -792,9 +790,7 @@ function Addon:HideBlizzard()
 		"MainMenuBarVehicleLeaveButton",
 		"BagsBar",
 		"MicroMenu",
-		"MicroMenuContainer",
-		"PlayerCastingBarFrame",
-		"OverlayPlayerCastingBarFrame"
+		"MicroMenuContainer"
 	)
 
 	apply(disableActionButtons,
