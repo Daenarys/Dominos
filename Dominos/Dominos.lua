@@ -228,7 +228,7 @@ function Addon:GetDatabaseDefaults()
 			showEquippedItemBorders = true,
 			showTooltips = true,
 			showTooltipsCombat = true,
-			useOverrideUI = true,
+			useOverrideUI = false,
 
 			minimap = { hide = false },
 
@@ -774,7 +774,9 @@ function Addon:HideBlizzard()
 		"MicroButtonAndBagsBar",
 		"BagsBar",
 		"MicroMenu",
-		"MicroMenuContainer"
+		"MicroMenuContainer",
+		"PlayerCastingBarFrame",
+		"OverlayPlayerCastingBarFrame"
 	)
 
 	apply(unregisterEvents,
@@ -790,7 +792,9 @@ function Addon:HideBlizzard()
 		"MainMenuBarVehicleLeaveButton",
 		"BagsBar",
 		"MicroMenu",
-		"MicroMenuContainer"
+		"MicroMenuContainer",
+		"PlayerCastingBarFrame",
+		"OverlayPlayerCastingBarFrame"
 	)
 
 	apply(disableActionButtons,
