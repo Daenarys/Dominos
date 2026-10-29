@@ -228,7 +228,7 @@ function Addon:GetDatabaseDefaults()
 			showEquippedItemBorders = true,
 			showTooltips = true,
 			showTooltipsCombat = true,
-			useOverrideUI = false,
+			useOverrideUI = true,
 
 			minimap = { hide = false },
 
